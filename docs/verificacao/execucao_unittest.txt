@@ -1,6 +1,3 @@
-$ python --version
-Python 3.13.18
-$ python -m unittest discover -s tests -v
 test_conflito_no_pedido_nao_inclui_nenhuma_turma (test_dominio.TestGradeDoAluno.test_conflito_no_pedido_nao_inclui_nenhuma_turma) ... ok
 test_identificador_e_normalizado_e_somente_leitura (test_dominio.TestGradeDoAluno.test_identificador_e_normalizado_e_somente_leitura) ... ok
 test_setter_do_nome_valida_e_preserva_o_anterior (test_dominio.TestGradeDoAluno.test_setter_do_nome_valida_e_preserva_o_anterior) ... ok
@@ -88,6 +85,6 @@ test_minha_grade_pelo_menu (test_menu.TestMenu.test_minha_grade_pelo_menu) ... o
 test_planilha_pelo_menu (test_menu.TestMenu.test_planilha_pelo_menu) ... ok
 
 ----------------------------------------------------------------------
-Ran 85 tests in 0.772s
+Ran 85 tests in 0.743s
 
 OK

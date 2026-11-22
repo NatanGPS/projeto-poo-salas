@@ -67,13 +67,13 @@ Os testes criam uma base SQLite nova numa pasta temporária para cada caso e nun
 
 ## Bot no Raspberry Pi
 
+Com a pasta do projeto copiada para o Raspberry, dentro dela:
+
 ```bash
-git clone https://github.com/NatanGPS/projeto-poo-salas.git
-cd projeto-poo-salas
 bash deploy/instalar_raspberry.sh
 ```
 
-O script instala as dependências, pede o token do bot (gravado só em `.env`) e cria o serviço `guia-salas-bot`. Para atualizar o código: `git pull && sudo systemctl restart guia-salas-bot`. A base do bot fica em `base/guia_salas.db` no Raspberry e é atualizada pelo site do ICEx logo após o início e depois a cada `GUIA_SALAS_INTERVALO_MIN` minutos.
+O script instala as dependências, pede o token do bot (gravado só em `.env`) e cria o serviço `guia-salas-bot`. Depois de atualizar os arquivos do projeto, reinicie com `sudo systemctl restart guia-salas-bot`. A base do bot fica em `base/guia_salas.db` no Raspberry e é atualizada pelo site do ICEx logo após o início e depois a cada `GUIA_SALAS_INTERVALO_MIN` minutos.
 
 ## Estrutura
 
@@ -98,7 +98,7 @@ deploy/             instalação do bot como serviço no Raspberry Pi
 
 ## Documentos
 
-Os PDFs das etapas ficam na pasta `docs/` do repositório (fora do ZIP de código):
+Os PDFs das etapas ficam na pasta `docs/` do projeto (fora do ZIP de código):
 
 | Etapa | Arquivo |
 |---|---|

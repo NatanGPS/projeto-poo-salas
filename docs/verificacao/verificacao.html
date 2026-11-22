@@ -11,8 +11,8 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 </head><body>
 <h1>Guia de Salas: Verificação do produto final (5ª etapa)</h1>
 <p class="sub">Natan Gaspar de Souza</p>
-<p><strong>Versão verificada:</strong> 1.0.0, a mesma do produto final: arquivo <code>guia-salas-1.0.0.zip</code> (SHA-256 <code>7e06d28c73761ade0cdc62561dcd7104d900cbacec215b65bfa205e53f7f0e56</code>), commit <code>41aee24</code>. Os testes foram executados no conteúdo extraído desse ZIP em 22/11/2026, com Python 3.13.18.</p>
-<p><strong>Resultado da última execução:</strong> 85 testes <code>unittest</code>, 85 aprovados, nenhuma falha. São 59 cenários ligados às funcionalidades F01 a F05 e 8 verificações complementares de domínio, fontes e menu (seção 7).</p>
+<p>Versão verificada: 1.0.0, a mesma entregue no produto final (arquivo <code>guia-salas-1.0.0.zip</code>). Testes executados em 22/11/2026, com Python 3.13.18.</p>
+<p>Na última execução, os 85 testes <code>unittest</code> foram aprovados. São 59 cenários ligados às funcionalidades F01 a F05 e 8 verificações complementares de domínio, fontes e menu (seção 7).</p>
 <h2>1. Como reproduzir</h2>
 <table>
 <thead>
@@ -40,11 +40,11 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 </tr>
 </tbody>
 </table>
-<p><strong>Base de teste separada.</strong> A classe <code>TesteComBase</code> (<code>tests/apoio.py</code>) cria, antes de cada teste, uma pasta temporária com um arquivo SQLite novo (<code>teste.db</code>), carregado a partir de <code>tests/dados/</code>, e apaga a pasta ao final. A base de demonstração <code>base/guia_salas.db</code> nunca é aberta pelos testes. Como cada teste prepara o próprio estado, o resultado não depende da ordem de execução.</p>
-<p><strong>Como o estado é comparado.</strong> Nas consultas e recusas, os testes tiram um retrato antes e depois da operação: <code>retrato(catalogo)</code> lista todas as aulas do catálogo em memória e <code>retrato_banco(banco)</code> lista todas as linhas das sete tabelas do SQLite. "Catálogo igual" e "base igual" nas tabelas abaixo significam que esses retratos ficaram idênticos.</p>
+<p>Base de teste separada: A classe <code>TesteComBase</code> (<code>tests/apoio.py</code>) cria, antes de cada teste, uma pasta temporária com um arquivo SQLite novo (<code>teste.db</code>), carregado a partir de <code>tests/dados/</code>, e apaga a pasta ao final. A base de demonstração <code>base/guia_salas.db</code> nunca é aberta pelos testes. Como cada teste prepara o próprio estado, o resultado não depende da ordem de execução.</p>
+<p>Como o estado é comparado: nas consultas e recusas, os testes tiram um retrato antes e depois da operação: <code>retrato(catalogo)</code> lista todas as aulas do catálogo em memória e <code>retrato_banco(banco)</code> lista todas as linhas das sete tabelas do SQLite. "Catálogo igual" e "base igual" nas tabelas abaixo significam que esses retratos ficaram idênticos.</p>
 <h2>2. F01. Buscar a sala de uma disciplina</h2>
-<p><strong>Regras verificadas.</strong> Termo com pelo menos 3 caracteres; corresponde pelo código exato (sem diferenciar maiúsculas) ou por palavras do nome, ignorando acentos, com algarismos 1 a 9 equivalentes a romanos; resultado vazio é válido; a consulta não altera dados.</p>
-<p><strong>Preparação e estado inicial.</strong> C01 a C07: catálogo em memória montado de <code>registros_teste.json</code> (7 disciplinas, 19 aulas). C08 a C10: base de teste SQLite com os mesmos registros, usada pelos comandos do bot.</p>
+<p>Regras verificadas: termo com pelo menos 3 caracteres; corresponde pelo código exato (sem diferenciar maiúsculas) ou por palavras do nome, ignorando acentos, com algarismos 1 a 9 equivalentes a romanos; resultado vazio é válido; a consulta não altera dados.</p>
+<p>Preparação e estado inicial: C01 a C07: catálogo em memória montado de <code>registros_teste.json</code> (7 disciplinas, 19 aulas). C08 a C10: base de teste SQLite com os mesmos registros, usada pelos comandos do bot.</p>
 <table>
 <thead>
 <tr>
@@ -63,7 +63,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Devolve DCC011 com TB (seg e qua, 09:25-11:05, sala 2014 - DCC, ICEx) e TE (ter e qui, 19:00-20:40, sala 213, CAD3). Catálogo igual ao inicial.</td>
 <td>DCC011 com as 4 aulas esperadas, na ordem esperada. Retrato do catálogo igual ao inicial.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c01_busca_por_nome_devolve_turmas_e_salas</code><br>Anexo A, linha 16</td>
+<td><code>test_f01_busca.py</code><br><code>test_c01_busca_por_nome_devolve_turmas_e_salas</code><br>Anexo A, linha 13</td>
 </tr>
 <tr>
 <td>F01-C02</td>
@@ -71,7 +71,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Devolve somente DCC024. Catálogo igual.</td>
 <td>Somente DCC024. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c02_busca_por_codigo_ignora_maiusculas_e_espacos</code><br>Anexo A, linha 17</td>
+<td><code>test_f01_busca.py</code><br><code>test_c02_busca_por_codigo_ignora_maiusculas_e_espacos</code><br>Anexo A, linha 14</td>
 </tr>
 <tr>
 <td>F01-C03</td>
@@ -79,7 +79,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Devolve MAT001 (CALCULO DIFERENCIAL E INTEGRAL I).</td>
 <td>Somente MAT001.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados</code><br>Anexo A, linha 18</td>
+<td><code>test_f01_busca.py</code><br><code>test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados</code><br>Anexo A, linha 15</td>
 </tr>
 <tr>
 <td>F01-C04</td>
@@ -87,7 +87,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita e devolve DCC011.</td>
 <td>Aceito; devolve DCC011.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c04_termo_com_tres_caracteres_e_aceito</code><br>Anexo A, linha 19</td>
+<td><code>test_f01_busca.py</code><br><code>test_c04_termo_com_tres_caracteres_e_aceito</code><br>Anexo A, linha 16</td>
 </tr>
 <tr>
 <td>F01-C05</td>
@@ -95,7 +95,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com TermoDeBuscaInvalido. Catálogo igual.</td>
 <td>TermoDeBuscaInvalido nos dois casos. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo</code><br>Anexo A, linha 20</td>
+<td><code>test_f01_busca.py</code><br><code>test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo</code><br>Anexo A, linha 17</td>
 </tr>
 <tr>
 <td>F01-C06</td>
@@ -103,7 +103,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Resultado vazio válido (encontrou = falso), sem erro. Catálogo igual.</td>
 <td>Resultado vazio, sem exceção. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c06_disciplina_ausente_devolve_resultado_vazio_valido</code><br>Anexo A, linha 21</td>
+<td><code>test_f01_busca.py</code><br><code>test_c06_disciplina_ausente_devolve_resultado_vazio_valido</code><br>Anexo A, linha 18</td>
 </tr>
 <tr>
 <td>F01-C07</td>
@@ -111,7 +111,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Devolve DCC001, DCC006 e DCC017, em ordem de código.</td>
 <td>DCC001, DCC006 e DCC017.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c07_termo_comum_a_varias_disciplinas_devolve_todas</code><br>Anexo A, linha 22</td>
+<td><code>test_f01_busca.py</code><br><code>test_c07_termo_comum_a_varias_disciplinas_devolve_todas</code><br>Anexo A, linha 19</td>
 </tr>
 <tr>
 <td>F01-C08</td>
@@ -119,7 +119,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Texto com "DCC011 - INTRODUCAO A BANCO DE DADOS" e a linha da turma TE. Base SQLite igual.</td>
 <td>Texto com as duas linhas esperadas. Todas as tabelas da base iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c08_comando_sala_responde_e_nao_altera_a_base</code><br>Anexo A, linha 23</td>
+<td><code>test_f01_busca.py</code><br><code>test_c08_comando_sala_responde_e_nao_altera_a_base</code><br>Anexo A, linha 20</td>
 </tr>
 <tr>
 <td>F01-C09</td>
@@ -127,7 +127,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Mensagem "Informe ao menos 3 caracteres..." com o exemplo de uso.</td>
 <td>Mensagem e exemplo presentes.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c09_comando_sala_com_termo_curto_mostra_exemplo</code><br>Anexo A, linha 24</td>
+<td><code>test_f01_busca.py</code><br><code>test_c09_comando_sala_com_termo_curto_mostra_exemplo</code><br>Anexo A, linha 21</td>
 </tr>
 <tr>
 <td>F01-C10</td>
@@ -135,13 +135,13 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Partes com no máximo 4000 caracteres que, juntas, reproduzem o texto.</td>
 <td>Todas as partes dentro do limite; texto reconstruído igual.</td>
 <td>Aprovado</td>
-<td><code>test_f01_busca.py</code><br><code>test_c10_resposta_longa_e_dividida_entre_linhas</code><br>Anexo A, linha 25</td>
+<td><code>test_f01_busca.py</code><br><code>test_c10_resposta_longa_e_dividida_entre_linhas</code><br>Anexo A, linha 22</td>
 </tr>
 </tbody>
 </table>
 <h2>3. F02. Consultar salas livres</h2>
-<p><strong>Regras verificadas.</strong> Sala ocupada quando uma aula a usa no dia com início ≤ hora &lt; fim; turmas conjuntas ocupam a sala; sala on-line nunca é livre; dia, hora, andar e prédio validados; lista vazia é válida; a consulta não altera dados.</p>
-<p><strong>Preparação e estado inicial.</strong> C01 a C09: catálogo em memória de <code>registros_teste.json</code>. No 2º andar do ICEx há 2009 - DCC, 2013 - DCC e 2014 - DCC; a 2014 - DCC tem DCC011 TB na segunda, 09:25-11:05; a sala 407 do CAD3 tem DCC006 TL1 e DCC017 TN na segunda, 14:55-16:35; MAT001 TOL1 é on-line. C10 a C12: base de teste SQLite com os mesmos registros.</p>
+<p>Regras verificadas: sala ocupada quando uma aula a usa no dia com início ≤ hora &lt; fim; turmas conjuntas ocupam a sala; sala on-line nunca é livre; dia, hora, andar e prédio validados; lista vazia é válida; a consulta não altera dados.</p>
+<p>Preparação e estado inicial: C01 a C09: catálogo em memória de <code>registros_teste.json</code>. No 2º andar do ICEx há 2009 - DCC, 2013 - DCC e 2014 - DCC; a 2014 - DCC tem DCC011 TB na segunda, 09:25-11:05; a sala 407 do CAD3 tem DCC006 TL1 e DCC017 TN na segunda, 14:55-16:35; MAT001 TOL1 é on-line. C10 a C12: base de teste SQLite com os mesmos registros.</p>
 <table>
 <thead>
 <tr>
@@ -160,7 +160,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Devolve 2009 - DCC e 2013 - DCC; 2014 - DCC (DCC011 TB) não aparece. Catálogo igual.</td>
 <td>[2009 - DCC, 2013 - DCC]. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c01_sala_ocupada_nao_aparece</code><br>Anexo A, linha 29</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c01_sala_ocupada_nao_aparece</code><br>Anexo A, linha 26</td>
 </tr>
 <tr>
 <td>F02-C02</td>
@@ -168,7 +168,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>2014 - DCC aparece livre (fim exclusivo).</td>
 <td>2014 - DCC na lista.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c02_sala_fica_livre_no_horario_de_termino</code><br>Anexo A, linha 30</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c02_sala_fica_livre_no_horario_de_termino</code><br>Anexo A, linha 27</td>
 </tr>
 <tr>
 <td>F02-C03</td>
@@ -176,7 +176,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>2014 - DCC não aparece (início inclusivo).</td>
 <td>2014 - DCC fora da lista.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c03_sala_ocupada_no_horario_de_inicio</code><br>Anexo A, linha 31</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c03_sala_ocupada_no_horario_de_inicio</code><br>Anexo A, linha 28</td>
 </tr>
 <tr>
 <td>F02-C04</td>
@@ -184,7 +184,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Sala 407 ocupada; as turmas na sala são DCC006 e DCC017.</td>
 <td>407 fora da lista; ocupantes DCC006 e DCC017.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c04_turma_conjunta_ocupa_a_sala</code><br>Anexo A, linha 32</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c04_turma_conjunta_ocupa_a_sala</code><br>Anexo A, linha 29</td>
 </tr>
 <tr>
 <td>F02-C05</td>
@@ -192,7 +192,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>ON-LINE nunca aparece como livre.</td>
 <td>ON-LINE fora da lista.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c05_aula_online_nunca_vira_sala_livre</code><br>Anexo A, linha 33</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c05_aula_online_nunca_vira_sala_livre</code><br>Anexo A, linha 30</td>
 </tr>
 <tr>
 <td>F02-C06</td>
@@ -200,7 +200,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com PredioDesconhecido. Catálogo igual.</td>
 <td>PredioDesconhecido. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo</code><br>Anexo A, linha 34</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo</code><br>Anexo A, linha 31</td>
 </tr>
 <tr>
 <td>F02-C07</td>
@@ -208,7 +208,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com DadoInvalido. Catálogo igual.</td>
 <td>DadoInvalido. Catálogo igual.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c07_andar_negativo_e_rejeitado</code><br>Anexo A, linha 35</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c07_andar_negativo_e_rejeitado</code><br>Anexo A, linha 32</td>
 </tr>
 <tr>
 <td>F02-C08</td>
@@ -216,7 +216,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Cada valor é rejeitado com DadoInvalido.</td>
 <td>DadoInvalido em todos os casos.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao</code><br>Anexo A, linha 36</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao</code><br>Anexo A, linha 33</td>
 </tr>
 <tr>
 <td>F02-C09</td>
@@ -224,7 +224,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Lista vazia válida, sem erro.</td>
 <td>Lista vazia.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c09_andar_sem_salas_devolve_lista_vazia_valida</code><br>Anexo A, linha 37</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c09_andar_sem_salas_devolve_lista_vazia_valida</code><br>Anexo A, linha 34</td>
 </tr>
 <tr>
 <td>F02-C10</td>
@@ -232,7 +232,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Considera todos os andares do ICEx: inclui 1012, não inclui 2014 - DCC. Base igual.</td>
 <td>Cabeçalho "Salas livres (Segunda, 09:30)", 1012 presente, 2014 - DCC ausente. Base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c10_livres_sem_andar_considera_todos_e_aceita_predio</code><br>Anexo A, linha 26</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c10_livres_sem_andar_considera_todos_e_aceita_predio</code><br>Anexo A, linha 23</td>
 </tr>
 <tr>
 <td>F02-C11</td>
@@ -240,7 +240,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Mostra "Horário inválido: '25:00'" e o uso do comando.</td>
 <td>Motivo e uso presentes.</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c11_livres_com_hora_invalida_mostra_motivo_e_uso</code><br>Anexo A, linha 27</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c11_livres_com_hora_invalida_mostra_motivo_e_uso</code><br>Anexo A, linha 24</td>
 </tr>
 <tr>
 <td>F02-C12</td>
@@ -248,13 +248,13 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Mostra o uso do comando.</td>
 <td>Resposta começa com "Uso: /livres".</td>
 <td>Aprovado</td>
-<td><code>test_f02_salas_livres.py</code><br><code>test_c12_livres_sem_hora_mostra_uso</code><br>Anexo A, linha 28</td>
+<td><code>test_f02_salas_livres.py</code><br><code>test_c12_livres_sem_hora_mostra_uso</code><br>Anexo A, linha 25</td>
 </tr>
 </tbody>
 </table>
 <h2>4. F03. Preencher planilha de disciplinas</h2>
-<p><strong>Regras verificadas.</strong> Só aceita arquivo .xlsx existente e legível, com ao menos uma disciplina; cada linha segue a busca da F01 e a coluna "Turma", se houver; linhas não encontradas viram "não localizada" sem interromper as outras; a original nunca é alterada; nenhuma cópia é criada em caso de recusa.</p>
-<p><strong>Preparação e estado inicial.</strong> Base de teste com <code>registros_teste.json</code> e uma cópia de <code>exemplos/grade_exemplo.xlsx</code> na pasta temporária, cujo hash SHA-256 é guardado antes do teste. Nos cenários C02 e C06 a planilha é criada pelo próprio teste com as linhas indicadas; em C04 e C05 o arquivo é um texto comum.</p>
+<p>Regras verificadas: só aceita arquivo .xlsx existente e legível, com ao menos uma disciplina; cada linha segue a busca da F01 e a coluna "Turma", se houver; linhas não encontradas viram "não localizada" sem interromper as outras; a original nunca é alterada; nenhuma cópia é criada em caso de recusa.</p>
+<p>Preparação e estado inicial: base de teste com <code>registros_teste.json</code> e uma cópia de <code>exemplos/grade_exemplo.xlsx</code> na pasta temporária, cujo conteúdo é registrado antes do teste para comparação. Nos cenários C02 e C06 a planilha é criada pelo próprio teste com as linhas indicadas; em C04 e C05 o arquivo é um texto comum.</p>
 <table>
 <thead>
 <tr>
@@ -271,9 +271,9 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>F03-C01</td>
 <td>Planilha de exemplo (DCC011 TB; Linguagens de Programação; MAT038 TM4; Programação Orientada a Objetos).</td>
 <td>3 localizadas e 1 não localizada; cópia grade_com_salas.xlsx com as 3 colunas novas e valores corretos; original e base iguais.</td>
-<td>(3, 1); colunas e linhas conferidas célula a célula; hash da original igual; base igual.</td>
+<td>(3, 1); colunas e linhas conferidas célula a célula; conteúdo da original igual; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c01_planilha_de_exemplo_e_preenchida</code><br>Anexo A, linha 38</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c01_planilha_de_exemplo_e_preenchida</code><br>Anexo A, linha 35</td>
 </tr>
 <tr>
 <td>F03-C02</td>
@@ -281,7 +281,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>DCC011 TZ não localizada; DCC024 localizada.</td>
 <td>(1, 1).</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c02_turma_pedida_inexistente_vira_nao_localizada</code><br>Anexo A, linha 39</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c02_turma_pedida_inexistente_vira_nao_localizada</code><br>Anexo A, linha 36</td>
 </tr>
 <tr>
 <td>F03-C03</td>
@@ -289,7 +289,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com PlanilhaInvalida; nenhuma cópia criada.</td>
 <td>PlanilhaInvalida; nao_existe_com_salas.xlsx não existe.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c03_arquivo_inexistente_e_recusado</code><br>Anexo A, linha 40</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c03_arquivo_inexistente_e_recusado</code><br>Anexo A, linha 37</td>
 </tr>
 <tr>
 <td>F03-C04</td>
@@ -297,7 +297,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com PlanilhaInvalida.</td>
 <td>PlanilhaInvalida.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c04_extensao_diferente_de_xlsx_e_recusada</code><br>Anexo A, linha 41</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c04_extensao_diferente_de_xlsx_e_recusada</code><br>Anexo A, linha 38</td>
 </tr>
 <tr>
 <td>F03-C05</td>
@@ -305,7 +305,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com PlanilhaInvalida; nenhuma cópia criada.</td>
 <td>PlanilhaInvalida; cópia não criada.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c05_arquivo_corrompido_e_recusado</code><br>Anexo A, linha 42</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c05_arquivo_corrompido_e_recusado</code><br>Anexo A, linha 39</td>
 </tr>
 <tr>
 <td>F03-C06</td>
@@ -313,15 +313,15 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com PlanilhaInvalida; nenhuma cópia criada.</td>
 <td>PlanilhaInvalida; cópia não criada.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c06_planilha_sem_disciplinas_e_recusada</code><br>Anexo A, linha 43</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c06_planilha_sem_disciplinas_e_recusada</code><br>Anexo A, linha 40</td>
 </tr>
 <tr>
 <td>F03-C07</td>
 <td>Saída igual à entrada.</td>
 <td>Rejeita com PlanilhaInvalida; original intacta.</td>
-<td>PlanilhaInvalida; hash da original igual.</td>
+<td>PlanilhaInvalida; conteúdo da original igual.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado</code><br>Anexo A, linha 44</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado</code><br>Anexo A, linha 41</td>
 </tr>
 <tr>
 <td>F03-C08</td>
@@ -329,13 +329,13 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Legenda "3 disciplina(s) localizada(s), 1 não localizada(s)." e arquivo de resposta criado.</td>
 <td>Legenda igual; arquivo criado.</td>
 <td>Aprovado</td>
-<td><code>test_f03_planilha.py</code><br><code>test_c08_comando_do_bot_devolve_legenda</code><br>Anexo A, linha 45</td>
+<td><code>test_f03_planilha.py</code><br><code>test_c08_comando_do_bot_devolve_legenda</code><br>Anexo A, linha 42</td>
 </tr>
 </tbody>
 </table>
 <h2>5. F04. Atualizar a base de aulas</h2>
-<p><strong>Regras verificadas.</strong> Recusa a carga se a fonte falhar, se não houver aula válida ou se mais da metade dos registros for recusada (exatamente metade é aceita); grava tudo numa transação; só troca o catálogo depois de gravar; mantém as grades.</p>
-<p><strong>Preparação e estado inicial.</strong> Base de teste carregada de <code>registros_teste.json</code>: 7 disciplinas, 19 aulas e 1 linha no histórico. As cargas dos cenários C04 a C07 e C09 são arquivos JSON gravados pelo próprio teste na pasta temporária. Em C03, a fonte online recebe uma sessão HTTP falsa que simula o site fora do ar. Em C08, um gatilho (trigger) criado no SQLite de teste força erro na última inserção. Em C09, a grade "ana" é criada no início do teste.</p>
+<p>Regras verificadas: recusa a carga se a fonte falhar, se não houver aula válida ou se mais da metade dos registros for recusada (exatamente metade é aceita); grava tudo numa transação; só troca o catálogo depois de gravar; mantém as grades.</p>
+<p>Preparação e estado inicial: base de teste carregada de <code>registros_teste.json</code>: 7 disciplinas, 19 aulas e 1 linha no histórico. As cargas dos cenários C04 a C07 e C09 são arquivos JSON gravados pelo próprio teste na pasta temporária. Em C03, a fonte online recebe uma sessão HTTP falsa que simula o site fora do ar. Em C08, um gatilho (trigger) criado no SQLite de teste força erro na última inserção. Em C09, a grade "ana" é criada no início do teste.</p>
 <table>
 <thead>
 <tr>
@@ -354,7 +354,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita: 110 lidos, 199 aulas, 0 recusados; 30 disciplinas; após reabrir, 199 aulas e histórico com 2 cargas.</td>
 <td>(110, 199, 0); 30 disciplinas; base reaberta com 199 aulas; histórico [registros_teste.json, amostra_icex.json].</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c01_carga_valida_substitui_a_base_e_registra_historico</code><br>Anexo A, linha 46</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c01_carga_valida_substitui_a_base_e_registra_historico</code><br>Anexo A, linha 43</td>
 </tr>
 <tr>
 <td>F04-C02</td>
@@ -362,7 +362,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com AtualizacaoRecusada. Base e catálogo iguais.</td>
 <td>AtualizacaoRecusada. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c02_arquivo_inexistente_e_recusado_e_base_preservada</code><br>Anexo A, linha 47</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c02_arquivo_inexistente_e_recusado_e_base_preservada</code><br>Anexo A, linha 44</td>
 </tr>
 <tr>
 <td>F04-C03</td>
@@ -370,7 +370,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com AtualizacaoRecusada. Base e catálogo iguais.</td>
 <td>AtualizacaoRecusada. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c03_site_fora_do_ar_e_recusado_e_base_preservada</code><br>Anexo A, linha 48</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c03_site_fora_do_ar_e_recusado_e_base_preservada</code><br>Anexo A, linha 45</td>
 </tr>
 <tr>
 <td>F04-C04</td>
@@ -378,7 +378,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita. Base e catálogo iguais.</td>
 <td>AtualizacaoRecusada. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c04_carga_sem_aulas_e_recusada</code><br>Anexo A, linha 49</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c04_carga_sem_aulas_e_recusada</code><br>Anexo A, linha 46</td>
 </tr>
 <tr>
 <td>F04-C05</td>
@@ -386,7 +386,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita os quatro. Base e catálogo iguais.</td>
 <td>AtualizacaoRecusada nos quatro. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c05_json_em_formato_inesperado_e_recusado</code><br>Anexo A, linha 50</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c05_json_em_formato_inesperado_e_recusado</code><br>Anexo A, linha 47</td>
 </tr>
 <tr>
 <td>F04-C06</td>
@@ -394,7 +394,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita informando "2 de 3 registros foram recusados". Base igual.</td>
 <td>Mensagem esperada. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c06_mais_da_metade_recusada_e_rejeitada</code><br>Anexo A, linha 51</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c06_mais_da_metade_recusada_e_rejeitada</code><br>Anexo A, linha 48</td>
 </tr>
 <tr>
 <td>F04-C07</td>
@@ -402,7 +402,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita: 2 lidos, 1 recusado; base passa a ter só AAA001.</td>
 <td>(2, 1); base reaberta só com AAA001.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c07_metade_exata_recusada_ainda_e_aceita</code><br>Anexo A, linha 52</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c07_metade_exata_recusada_ainda_e_aceita</code><br>Anexo A, linha 49</td>
 </tr>
 <tr>
 <td>F04-C08</td>
@@ -410,7 +410,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita; a transação é desfeita e base e catálogo ficam iguais.</td>
 <td>AtualizacaoRecusada. Tabelas e catálogo iguais.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c08_falha_ao_gravar_desfaz_tudo</code><br>Anexo A, linha 53</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c08_falha_ao_gravar_desfaz_tudo</code><br>Anexo A, linha 50</td>
 </tr>
 <tr>
 <td>F04-C09</td>
@@ -418,7 +418,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita; linhas da grade iguais; DCC024 TM continua na grade e DCC011 TB aparece como ausente.</td>
 <td>grade_turma igual; turmas [DCC024]; ausentes {DCC011: TB}.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente</code><br>Anexo A, linha 54</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente</code><br>Anexo A, linha 51</td>
 </tr>
 <tr>
 <td>F04-C10</td>
@@ -426,13 +426,13 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita; mesmos dados após reabrir; histórico com 2 cargas.</td>
 <td>Catálogo igual ao inicial; 2 cargas no histórico.</td>
 <td>Aprovado</td>
-<td><code>test_f04_atualizacao.py</code><br><code>test_c10_carga_igual_mantem_os_mesmos_dados</code><br>Anexo A, linha 55</td>
+<td><code>test_f04_atualizacao.py</code><br><code>test_c10_carga_igual_mantem_os_mesmos_dados</code><br>Anexo A, linha 52</td>
 </tr>
 </tbody>
 </table>
 <h2>6. F05. Minha grade</h2>
-<p><strong>Regras verificadas.</strong> Disciplina e turma precisam existir; uma turma por disciplina; no máximo 8 disciplinas e 8 itens por pedido; sem sobreposição de horário entre turmas da grade; pedido atendido por inteiro ou recusado por inteiro; nome de 1 a 40 caracteres (setter); identificação de 2 a 40 caracteres permitidos; gravação persistente.</p>
-<p><strong>Preparação e estado inicial.</strong> C01 a C15: base de teste com <code>registros_teste.json</code>; antes de cada teste, a grade "ana" recebe DCC011 TB (segunda e quarta, 09:25-11:05). C16 e C17: base de teste com <code>registros_grade_cheia.json</code> (TST001 a TST009, turma TA, cada uma num horário diferente) e grade "bia" vazia. C18 e C19: base com <code>registros_teste.json</code> e a conversa 42 do Telegram sem grade. Em C15, um gatilho no SQLite de teste força erro na gravação.</p>
+<p>Regras verificadas: disciplina e turma precisam existir; uma turma por disciplina; no máximo 8 disciplinas e 8 itens por pedido; sem sobreposição de horário entre turmas da grade; pedido atendido por inteiro ou recusado por inteiro; nome de 1 a 40 caracteres (setter); identificação de 2 a 40 caracteres permitidos; gravação persistente.</p>
+<p>Preparação e estado inicial: C01 a C15: base de teste com <code>registros_teste.json</code>; antes de cada teste, a grade "ana" recebe DCC011 TB (segunda e quarta, 09:25-11:05). C16 e C17: base de teste com <code>registros_grade_cheia.json</code> (TST001 a TST009, turma TA, cada uma num horário diferente) e grade "bia" vazia. C18 e C19: base com <code>registros_teste.json</code> e a conversa 42 do Telegram sem grade. Em C15, um gatilho no SQLite de teste força erro na gravação.</p>
 <table>
 <thead>
 <tr>
@@ -451,7 +451,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita DCC024 TM; após reabrir, a grade tem DCC011 TB e DCC024 TM.</td>
 <td>[(DCC024, TM)] devolvido; base reaberta com as duas turmas.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c01_adiciona_turma_e_grava</code><br>Anexo A, linha 60</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c01_adiciona_turma_e_grava</code><br>Anexo A, linha 57</td>
 </tr>
 <tr>
 <td>F05-C02</td>
@@ -459,7 +459,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita as três; grade com quatro disciplinas.</td>
 <td>Grade com DCC011, DCC024, MAT001, MAT038.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c02_adiciona_varias_turmas_num_pedido</code><br>Anexo A, linha 61</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c02_adiciona_varias_turmas_num_pedido</code><br>Anexo A, linha 58</td>
 </tr>
 <tr>
 <td>F05-C03</td>
@@ -467,7 +467,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com ConflitoDeHorario. Grade e base iguais.</td>
 <td>ConflitoDeHorario. Tabelas iguais; grade só com DCC011 TB.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c03_conflito_com_turma_salva_e_recusado</code><br>Anexo A, linha 62</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c03_conflito_com_turma_salva_e_recusado</code><br>Anexo A, linha 59</td>
 </tr>
 <tr>
 <td>F05-C04</td>
@@ -475,7 +475,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita o pedido inteiro; DCC024 TM também não é gravada.</td>
 <td>ConflitoDeHorario; grade "outro" com 0 disciplinas; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c04_conflito_no_pedido_recusa_todas_as_turmas</code><br>Anexo A, linha 63</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c04_conflito_no_pedido_recusa_todas_as_turmas</code><br>Anexo A, linha 60</td>
 </tr>
 <tr>
 <td>F05-C05</td>
@@ -483,7 +483,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com NaoEncontrado; nada gravado.</td>
 <td>NaoEncontrado; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c05_disciplina_inexistente_recusa_o_pedido_inteiro</code><br>Anexo A, linha 64</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c05_disciplina_inexistente_recusa_o_pedido_inteiro</code><br>Anexo A, linha 61</td>
 </tr>
 <tr>
 <td>F05-C06</td>
@@ -491,7 +491,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com NaoEncontrado, listando "TE, TM".</td>
 <td>Mensagem com "Turmas existentes: TE, TM"; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c06_turma_inexistente_e_recusada_com_as_turmas_validas</code><br>Anexo A, linha 65</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c06_turma_inexistente_e_recusada_com_as_turmas_validas</code><br>Anexo A, linha 62</td>
 </tr>
 <tr>
 <td>F05-C07</td>
@@ -499,7 +499,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com Duplicidade.</td>
 <td>Duplicidade; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c07_disciplina_ja_na_grade_e_recusada</code><br>Anexo A, linha 66</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c07_disciplina_ja_na_grade_e_recusada</code><br>Anexo A, linha 63</td>
 </tr>
 <tr>
 <td>F05-C08</td>
@@ -507,7 +507,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com Duplicidade.</td>
 <td>Duplicidade; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c08_disciplina_repetida_no_pedido_e_recusada</code><br>Anexo A, linha 67</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c08_disciplina_repetida_no_pedido_e_recusada</code><br>Anexo A, linha 64</td>
 </tr>
 <tr>
 <td>F05-C09</td>
@@ -515,7 +515,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita cada um com DadoInvalido.</td>
 <td>DadoInvalido nos quatro; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c09_pedido_mal_formatado_e_recusado</code><br>Anexo A, linha 68</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c09_pedido_mal_formatado_e_recusado</code><br>Anexo A, linha 65</td>
 </tr>
 <tr>
 <td>F05-C10</td>
@@ -523,7 +523,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Remove DCC011; após reabrir, grade vazia.</td>
 <td>Devolve DCC011; base reaberta com 0 disciplinas.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c10_remove_disciplina_e_grava</code><br>Anexo A, linha 69</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c10_remove_disciplina_e_grava</code><br>Anexo A, linha 66</td>
 </tr>
 <tr>
 <td>F05-C11</td>
@@ -531,7 +531,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com NaoEncontrado.</td>
 <td>NaoEncontrado; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c11_remover_disciplina_fora_da_grade_e_recusado</code><br>Anexo A, linha 70</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c11_remover_disciplina_fora_da_grade_e_recusado</code><br>Anexo A, linha 67</td>
 </tr>
 <tr>
 <td>F05-C12</td>
@@ -539,7 +539,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Grava "Ana Souza"; aceita o limite de 40.</td>
 <td>"Ana Souza" após reabrir; nome de 40 caracteres aceito.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c12_nome_valido_e_alterado_pelo_setter</code><br>Anexo A, linha 71</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c12_nome_valido_e_alterado_pelo_setter</code><br>Anexo A, linha 68</td>
 </tr>
 <tr>
 <td>F05-C13</td>
@@ -547,7 +547,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com DadoInvalido; nome anterior mantido.</td>
 <td>DadoInvalido nos três; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c13_nome_vazio_ou_longo_e_recusado</code><br>Anexo A, linha 72</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c13_nome_vazio_ou_longo_e_recusado</code><br>Anexo A, linha 69</td>
 </tr>
 <tr>
 <td>F05-C14</td>
@@ -555,7 +555,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com DadoInvalido; nenhuma grade criada.</td>
 <td>DadoInvalido nos cinco; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c14_identificacao_invalida_e_recusada</code><br>Anexo A, linha 73</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c14_identificacao_invalida_e_recusada</code><br>Anexo A, linha 70</td>
 </tr>
 <tr>
 <td>F05-C15</td>
@@ -563,7 +563,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com GravacaoFalhou; grade igual.</td>
 <td>GravacaoFalhou; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c15_falha_ao_gravar_preserva_a_grade</code><br>Anexo A, linha 74</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c15_falha_ao_gravar_preserva_a_grade</code><br>Anexo A, linha 71</td>
 </tr>
 <tr>
 <td>F05-C16</td>
@@ -571,7 +571,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Aceita as 8; rejeita a 9ª com LimiteExcedido; base igual após a recusa.</td>
 <td>8 disciplinas; LimiteExcedido; base igual.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada</code><br>Anexo A, linha 58</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada</code><br>Anexo A, linha 55</td>
 </tr>
 <tr>
 <td>F05-C17</td>
@@ -579,7 +579,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Rejeita com DadoInvalido; grade vazia.</td>
 <td>DadoInvalido; 0 disciplinas.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c17_pedido_com_nove_disciplinas_e_recusado</code><br>Anexo A, linha 59</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c17_pedido_com_nove_disciplinas_e_recusado</code><br>Anexo A, linha 56</td>
 </tr>
 <tr>
 <td>F05-C18</td>
@@ -587,7 +587,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Grade vazia; confirmação das duas; grade com 2 disciplinas e a linha de DCC011 TB; confirmação da remoção.</td>
 <td>Todas as respostas iguais às esperadas.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c18_fluxo_adicionar_ver_e_remover</code><br>Anexo A, linha 56</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c18_fluxo_adicionar_ver_e_remover</code><br>Anexo A, linha 53</td>
 </tr>
 <tr>
 <td>F05-C19</td>
@@ -595,7 +595,7 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>"Nada foi alterado." com o conflito; uso do /remover.</td>
 <td>Respostas iguais às esperadas.</td>
 <td>Aprovado</td>
-<td><code>test_f05_minha_grade.py</code><br><code>test_c19_recusa_no_bot_informa_que_nada_mudou</code><br>Anexo A, linha 57</td>
+<td><code>test_f05_minha_grade.py</code><br><code>test_c19_recusa_no_bot_informa_que_nada_mudou</code><br>Anexo A, linha 54</td>
 </tr>
 </tbody>
 </table>
@@ -617,63 +617,63 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <td>Setter de Sala.andar: 0 e None; depois -1, "2", 1.5 e True.</td>
 <td>Aceita os dois primeiros; rejeita os demais mantendo o valor anterior. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_dominio.py</code><br><code>test_setter_do_andar_recusa_negativo_e_texto_sem_alterar</code><br>Anexo A, linha 15</td>
+<td><code>test_dominio.py</code><br><code>test_setter_do_andar_recusa_negativo_e_texto_sem_alterar</code><br>Anexo A, linha 12</td>
 </tr>
 <tr>
 <td>D-02</td>
 <td>Sala.criar com prédio "on-line".</td>
 <td>Cria SalaOnline, não presencial, sem andar e nunca livre. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_dominio.py</code><br><code>test_criar_devolve_a_especializacao_certa</code><br>Anexo A, linha 11</td>
+<td><code>test_dominio.py</code><br><code>test_criar_devolve_a_especializacao_certa</code><br>Anexo A, linha 8</td>
 </tr>
 <tr>
 <td>D-03</td>
 <td>Intervalos 09:25-11:05 e 11:05-12:45.</td>
 <td>Não se sobrepõem; 11:04 já sobrepõe. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_dominio.py</code><br><code>test_intervalos_encostados_nao_se_sobrepoem</code><br>Anexo A, linha 9</td>
+<td><code>test_dominio.py</code><br><code>test_intervalos_encostados_nao_se_sobrepoem</code><br>Anexo A, linha 6</td>
 </tr>
 <tr>
 <td>D-04</td>
 <td>Turma com aulas sobrepostas no mesmo dia.</td>
 <td>ConflitoDeHorario; turma continua com 1 aula. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_dominio.py</code><br><code>test_turma_nao_aceita_aulas_sobrepostas</code><br>Anexo A, linha 10</td>
+<td><code>test_dominio.py</code><br><code>test_turma_nao_aceita_aulas_sobrepostas</code><br>Anexo A, linha 7</td>
 </tr>
 <tr>
 <td>D-05</td>
 <td>GradeDoAluno com turmas encostadas (07:30-09:10 e 09:10-10:50).</td>
 <td>Aceita as duas. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_dominio.py</code><br><code>test_turmas_encostadas_nao_conflitam</code><br>Anexo A, linha 7</td>
+<td><code>test_dominio.py</code><br><code>test_turmas_encostadas_nao_conflitam</code><br>Anexo A, linha 4</td>
 </tr>
 <tr>
 <td>D-06</td>
 <td>Três fontes concretas (arquivo, site simulado, base local).</td>
 <td>Mesmos registros e mesmo catálogo pela mesma chamada coletar(). Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_fontes.py</code><br><code>test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original</code><br>Anexo A, linha 75</td>
+<td><code>test_fontes.py</code><br><code>test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original</code><br>Anexo A, linha 72</td>
 </tr>
 <tr>
 <td>D-07</td>
 <td>Menu: opções 4, ana, adicionar, conflito, renomear, ver.</td>
 <td>Mensagens de sucesso e de recusa; menu continua. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_menu.py</code><br><code>test_minha_grade_pelo_menu</code><br>Anexo A, linha 87</td>
+<td><code>test_menu.py</code><br><code>test_minha_grade_pelo_menu</code><br>Anexo A, linha 84</td>
 </tr>
 <tr>
 <td>D-08</td>
 <td>Menu: atualização por arquivo inexistente e origem inválida.</td>
 <td>"A base anterior foi mantida." e "Origem inválida"; base igual. Observado igual.</td>
 <td>Aprovado</td>
-<td><code>test_menu.py</code><br><code>test_atualizacao_recusada_pelo_menu_mantem_a_base</code><br>Anexo A, linha 83</td>
+<td><code>test_menu.py</code><br><code>test_atualizacao_recusada_pelo_menu_mantem_a_base</code><br>Anexo A, linha 80</td>
 </tr>
 </tbody>
 </table>
 <h2>8. Defeitos e pendências</h2>
-<p><strong>Defeitos.</strong> Nenhum defeito do código foi encontrado na última execução: os 85 testes foram aprovados.</p>
-<p><strong>Erro na previsão, corrigido antes da última execução.</strong> Na primeira versão do cenário F01-C07, o resultado esperado para "computadores" listava apenas DCC001 e DCC006. Na execução, o sistema devolveu também DCC017 (INTRODUCAO A ARQUITETURA DE COMPUTADORES). Conferindo a regra, a palavra "computadores" de fato aparece no nome de DCC017, então o comportamento estava correto e o erro era da previsão. O esperado foi corrigido para DCC001, DCC006 e DCC017, o cenário foi executado de novo junto com todos os demais testes da F01 e foi aprovado.</p>
-<p><strong>Cenários não executados nesta verificação.</strong></p>
+<p>Nenhum defeito foi encontrado na última execução.</p>
+<p>Na primeira execução, o cenário F01-C07 falhou porque o resultado esperado para "computadores" listava só DCC001 e DCC006, e o sistema devolveu também DCC017 (INTRODUCAO A ARQUITETURA DE COMPUTADORES). Pela regra R9 a resposta do sistema está correta, pois "computadores" aparece no nome de DCC017. O resultado esperado foi corrigido para DCC001, DCC006 e DCC017, e o cenário foi repetido junto com os demais testes da F01, com aprovação.</p>
+<h3>Cenários não executados</h3>
 <table>
 <thead>
 <tr>
@@ -686,110 +686,107 @@ td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
 <tr>
 <td>F04-C11</td>
 <td>Atualização pelo site real do ICEx (opção 1 do menu).</td>
-<td>Não executado: o ambiente usado para os testes não alcança o site do ICEx. O comportamento de recusa foi coberto com a sessão simulada (F04-C03). Antes desta versão, o bot no Raspberry Pi já baixou a lista completa do site com a mesma classe <code>FonteIcexOnline</code> (997 registros), mas a versão 1.0.0 ainda não foi executada contra o site real.</td>
+<td>Não executado. Os testes automatizados não acessam a internet, para não depender do site estar no ar. A recusa por site indisponível foi verificada com uma sessão simulada (F04-C03).</td>
 </tr>
 <tr>
 <td>F05-C20</td>
 <td>Comandos digitados no aplicativo do Telegram.</td>
-<td>Não executado por unittest: os testes chamam <code>ComandosDoBot</code>, que recebe e devolve o mesmo texto do bot sem depender da biblioteca do Telegram (F01-C08, F02-C10, F03-C08, F05-C18). A camada <code>BotGuiaDeSalas</code>, que só repassa as mensagens, foi usada no Raspberry Pi com a versão anterior (/ajuda, /sala e /livres responderam corretamente); os comandos novos da versão 1.0.0 ainda não foram conferidos no aplicativo.</td>
+<td>Não executado com unittest. Os testes chamam <code>ComandosDoBot</code>, que recebe e devolve o mesmo texto do bot sem depender do Telegram (F01-C08, F02-C10, F03-C08, F05-C18). A classe <code>BotGuiaDeSalas</code> apenas repassa as mensagens e não tem teste automatizado.</td>
 </tr>
 </tbody>
 </table>
 <h2>Anexo A. Saída da última execução</h2>
-<p>Execução de <code>python -m unittest discover -s tests -v</code> no conteúdo de <code>guia-salas-1.0.0.zip</code>, em 22/11/2026. Os números à esquerda são as linhas citadas na coluna Evidência. A mesma saída está em <code>docs/verificacao/execucao_unittest.txt</code> no repositório.</p>
-<pre class="saida">  1  $ python --version
-  2  Python 3.13.18
-  3  $ python -m unittest discover -s tests -v
-  4  test_conflito_no_pedido_nao_inclui_nenhuma_turma (test_dominio.TestGradeDoAluno.test_conflito_no_pedido_nao_inclui_nenhuma_turma) ... ok
-  5  test_identificador_e_normalizado_e_somente_leitura (test_dominio.TestGradeDoAluno.test_identificador_e_normalizado_e_somente_leitura) ... ok
-  6  test_setter_do_nome_valida_e_preserva_o_anterior (test_dominio.TestGradeDoAluno.test_setter_do_nome_valida_e_preserva_o_anterior) ... ok
-  7  test_turmas_encostadas_nao_conflitam (test_dominio.TestGradeDoAluno.test_turmas_encostadas_nao_conflitam) ... ok
-  8  test_inicio_depois_do_fim_e_recusado (test_dominio.TestIntervaloETurma.test_inicio_depois_do_fim_e_recusado) ... ok
-  9  test_intervalos_encostados_nao_se_sobrepoem (test_dominio.TestIntervaloETurma.test_intervalos_encostados_nao_se_sobrepoem) ... ok
- 10  test_turma_nao_aceita_aulas_sobrepostas (test_dominio.TestIntervaloETurma.test_turma_nao_aceita_aulas_sobrepostas) ... ok
- 11  test_criar_devolve_a_especializacao_certa (test_dominio.TestSala.test_criar_devolve_a_especializacao_certa) ... ok
- 12  test_sala_online_nunca_esta_livre_e_nao_tem_andar (test_dominio.TestSala.test_sala_online_nunca_esta_livre_e_nao_tem_andar) ... ok
- 13  test_salas_com_mesma_chave_sao_iguais (test_dominio.TestSala.test_salas_com_mesma_chave_sao_iguais) ... ok
- 14  test_setter_do_andar_aceita_inteiro_nao_negativo_ou_none (test_dominio.TestSala.test_setter_do_andar_aceita_inteiro_nao_negativo_ou_none) ... ok
- 15  test_setter_do_andar_recusa_negativo_e_texto_sem_alterar (test_dominio.TestSala.test_setter_do_andar_recusa_negativo_e_texto_sem_alterar) ... ok
- 16  test_c01_busca_por_nome_devolve_turmas_e_salas (test_f01_busca.TestF01Busca.test_c01_busca_por_nome_devolve_turmas_e_salas) ... ok
- 17  test_c02_busca_por_codigo_ignora_maiusculas_e_espacos (test_f01_busca.TestF01Busca.test_c02_busca_por_codigo_ignora_maiusculas_e_espacos) ... ok
- 18  test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados (test_f01_busca.TestF01Busca.test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados) ... ok
- 19  test_c04_termo_com_tres_caracteres_e_aceito (test_f01_busca.TestF01Busca.test_c04_termo_com_tres_caracteres_e_aceito) ... ok
- 20  test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo (test_f01_busca.TestF01Busca.test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo) ... ok
- 21  test_c06_disciplina_ausente_devolve_resultado_vazio_valido (test_f01_busca.TestF01Busca.test_c06_disciplina_ausente_devolve_resultado_vazio_valido) ... ok
- 22  test_c07_termo_comum_a_varias_disciplinas_devolve_todas (test_f01_busca.TestF01Busca.test_c07_termo_comum_a_varias_disciplinas_devolve_todas) ... ok
- 23  test_c08_comando_sala_responde_e_nao_altera_a_base (test_f01_busca.TestF01ComandoDoBot.test_c08_comando_sala_responde_e_nao_altera_a_base) ... ok
- 24  test_c09_comando_sala_com_termo_curto_mostra_exemplo (test_f01_busca.TestF01ComandoDoBot.test_c09_comando_sala_com_termo_curto_mostra_exemplo) ... ok
- 25  test_c10_resposta_longa_e_dividida_entre_linhas (test_f01_busca.TestF01ComandoDoBot.test_c10_resposta_longa_e_dividida_entre_linhas) ... ok
- 26  test_c10_livres_sem_andar_considera_todos_e_aceita_predio (test_f02_salas_livres.TestF02ComandoDoBot.test_c10_livres_sem_andar_considera_todos_e_aceita_predio) ... ok
- 27  test_c11_livres_com_hora_invalida_mostra_motivo_e_uso (test_f02_salas_livres.TestF02ComandoDoBot.test_c11_livres_com_hora_invalida_mostra_motivo_e_uso) ... ok
- 28  test_c12_livres_sem_hora_mostra_uso (test_f02_salas_livres.TestF02ComandoDoBot.test_c12_livres_sem_hora_mostra_uso) ... ok
- 29  test_c01_sala_ocupada_nao_aparece (test_f02_salas_livres.TestF02SalasLivres.test_c01_sala_ocupada_nao_aparece) ... ok
- 30  test_c02_sala_fica_livre_no_horario_de_termino (test_f02_salas_livres.TestF02SalasLivres.test_c02_sala_fica_livre_no_horario_de_termino) ... ok
- 31  test_c03_sala_ocupada_no_horario_de_inicio (test_f02_salas_livres.TestF02SalasLivres.test_c03_sala_ocupada_no_horario_de_inicio) ... ok
- 32  test_c04_turma_conjunta_ocupa_a_sala (test_f02_salas_livres.TestF02SalasLivres.test_c04_turma_conjunta_ocupa_a_sala) ... ok
- 33  test_c05_aula_online_nunca_vira_sala_livre (test_f02_salas_livres.TestF02SalasLivres.test_c05_aula_online_nunca_vira_sala_livre) ... ok
- 34  test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo (test_f02_salas_livres.TestF02SalasLivres.test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo) ... ok
- 35  test_c07_andar_negativo_e_rejeitado (test_f02_salas_livres.TestF02SalasLivres.test_c07_andar_negativo_e_rejeitado) ... ok
- 36  test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao (test_f02_salas_livres.TestF02SalasLivres.test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao) ... ok
- 37  test_c09_andar_sem_salas_devolve_lista_vazia_valida (test_f02_salas_livres.TestF02SalasLivres.test_c09_andar_sem_salas_devolve_lista_vazia_valida) ... ok
- 38  test_c01_planilha_de_exemplo_e_preenchida (test_f03_planilha.TestF03Planilha.test_c01_planilha_de_exemplo_e_preenchida) ... ok
- 39  test_c02_turma_pedida_inexistente_vira_nao_localizada (test_f03_planilha.TestF03Planilha.test_c02_turma_pedida_inexistente_vira_nao_localizada) ... ok
- 40  test_c03_arquivo_inexistente_e_recusado (test_f03_planilha.TestF03Planilha.test_c03_arquivo_inexistente_e_recusado) ... ok
- 41  test_c04_extensao_diferente_de_xlsx_e_recusada (test_f03_planilha.TestF03Planilha.test_c04_extensao_diferente_de_xlsx_e_recusada) ... ok
- 42  test_c05_arquivo_corrompido_e_recusado (test_f03_planilha.TestF03Planilha.test_c05_arquivo_corrompido_e_recusado) ... ok
- 43  test_c06_planilha_sem_disciplinas_e_recusada (test_f03_planilha.TestF03Planilha.test_c06_planilha_sem_disciplinas_e_recusada) ... ok
- 44  test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado (test_f03_planilha.TestF03Planilha.test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado) ... ok
- 45  test_c08_comando_do_bot_devolve_legenda (test_f03_planilha.TestF03Planilha.test_c08_comando_do_bot_devolve_legenda) ... ok
- 46  test_c01_carga_valida_substitui_a_base_e_registra_historico (test_f04_atualizacao.TestF04Atualizacao.test_c01_carga_valida_substitui_a_base_e_registra_historico) ... ok
- 47  test_c02_arquivo_inexistente_e_recusado_e_base_preservada (test_f04_atualizacao.TestF04Atualizacao.test_c02_arquivo_inexistente_e_recusado_e_base_preservada) ... ok
- 48  test_c03_site_fora_do_ar_e_recusado_e_base_preservada (test_f04_atualizacao.TestF04Atualizacao.test_c03_site_fora_do_ar_e_recusado_e_base_preservada) ... ok
- 49  test_c04_carga_sem_aulas_e_recusada (test_f04_atualizacao.TestF04Atualizacao.test_c04_carga_sem_aulas_e_recusada) ... ok
- 50  test_c05_json_em_formato_inesperado_e_recusado (test_f04_atualizacao.TestF04Atualizacao.test_c05_json_em_formato_inesperado_e_recusado) ... ok
- 51  test_c06_mais_da_metade_recusada_e_rejeitada (test_f04_atualizacao.TestF04Atualizacao.test_c06_mais_da_metade_recusada_e_rejeitada) ... ok
- 52  test_c07_metade_exata_recusada_ainda_e_aceita (test_f04_atualizacao.TestF04Atualizacao.test_c07_metade_exata_recusada_ainda_e_aceita) ... ok
- 53  test_c08_falha_ao_gravar_desfaz_tudo (test_f04_atualizacao.TestF04Atualizacao.test_c08_falha_ao_gravar_desfaz_tudo) ... ok
- 54  test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente (test_f04_atualizacao.TestF04Atualizacao.test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente) ... ok
- 55  test_c10_carga_igual_mantem_os_mesmos_dados (test_f04_atualizacao.TestF04Atualizacao.test_c10_carga_igual_mantem_os_mesmos_dados) ... ok
- 56  test_c18_fluxo_adicionar_ver_e_remover (test_f05_minha_grade.TestF05ComandosDoBot.test_c18_fluxo_adicionar_ver_e_remover) ... ok
- 57  test_c19_recusa_no_bot_informa_que_nada_mudou (test_f05_minha_grade.TestF05ComandosDoBot.test_c19_recusa_no_bot_informa_que_nada_mudou) ... ok
- 58  test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada (test_f05_minha_grade.TestF05LimiteDaGrade.test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada) ... ok
- 59  test_c17_pedido_com_nove_disciplinas_e_recusado (test_f05_minha_grade.TestF05LimiteDaGrade.test_c17_pedido_com_nove_disciplinas_e_recusado) ... ok
- 60  test_c01_adiciona_turma_e_grava (test_f05_minha_grade.TestF05MinhaGrade.test_c01_adiciona_turma_e_grava) ... ok
- 61  test_c02_adiciona_varias_turmas_num_pedido (test_f05_minha_grade.TestF05MinhaGrade.test_c02_adiciona_varias_turmas_num_pedido) ... ok
- 62  test_c03_conflito_com_turma_salva_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c03_conflito_com_turma_salva_e_recusado) ... ok
- 63  test_c04_conflito_no_pedido_recusa_todas_as_turmas (test_f05_minha_grade.TestF05MinhaGrade.test_c04_conflito_no_pedido_recusa_todas_as_turmas) ... ok
- 64  test_c05_disciplina_inexistente_recusa_o_pedido_inteiro (test_f05_minha_grade.TestF05MinhaGrade.test_c05_disciplina_inexistente_recusa_o_pedido_inteiro) ... ok
- 65  test_c06_turma_inexistente_e_recusada_com_as_turmas_validas (test_f05_minha_grade.TestF05MinhaGrade.test_c06_turma_inexistente_e_recusada_com_as_turmas_validas) ... ok
- 66  test_c07_disciplina_ja_na_grade_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c07_disciplina_ja_na_grade_e_recusada) ... ok
- 67  test_c08_disciplina_repetida_no_pedido_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c08_disciplina_repetida_no_pedido_e_recusada) ... ok
- 68  test_c09_pedido_mal_formatado_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c09_pedido_mal_formatado_e_recusado) ... ok
- 69  test_c10_remove_disciplina_e_grava (test_f05_minha_grade.TestF05MinhaGrade.test_c10_remove_disciplina_e_grava) ... ok
- 70  test_c11_remover_disciplina_fora_da_grade_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c11_remover_disciplina_fora_da_grade_e_recusado) ... ok
- 71  test_c12_nome_valido_e_alterado_pelo_setter (test_f05_minha_grade.TestF05MinhaGrade.test_c12_nome_valido_e_alterado_pelo_setter) ... ok
- 72  test_c13_nome_vazio_ou_longo_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c13_nome_vazio_ou_longo_e_recusado) ... ok
- 73  test_c14_identificacao_invalida_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c14_identificacao_invalida_e_recusada) ... ok
- 74  test_c15_falha_ao_gravar_preserva_a_grade (test_f05_minha_grade.TestF05MinhaGrade.test_c15_falha_ao_gravar_preserva_a_grade) ... ok
- 75  test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original (test_fontes.TestFonteBancoLocal.test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original) ... ok
- 76  test_arquivo_inexistente_lanca_fonte_indisponivel (test_fontes.TestFontes.test_arquivo_inexistente_lanca_fonte_indisponivel) ... ok
- 77  test_arquivo_inexistente_vira_falha_no_relatorio (test_fontes.TestFontes.test_arquivo_inexistente_vira_falha_no_relatorio) ... ok
- 78  test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte (test_fontes.TestFontes.test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte) ... ok
- 79  test_duas_fontes_concretas_entregam_os_mesmos_registros (test_fontes.TestFontes.test_duas_fontes_concretas_entregam_os_mesmos_registros) ... ok
- 80  test_separacao_de_predio_e_sala (test_fontes.TestFontes.test_separacao_de_predio_e_sala) ... ok
- 81  test_abertura_mostra_a_base_e_a_ultima_atualizacao (test_menu.TestMenu.test_abertura_mostra_a_base_e_a_ultima_atualizacao) ... ok
- 82  test_andar_nao_numerico_e_recusado_e_menu_continua (test_menu.TestMenu.test_andar_nao_numerico_e_recusado_e_menu_continua) ... ok
- 83  test_atualizacao_recusada_pelo_menu_mantem_a_base (test_menu.TestMenu.test_atualizacao_recusada_pelo_menu_mantem_a_base) ... ok
- 84  test_busca_pelo_menu (test_menu.TestMenu.test_busca_pelo_menu) ... ok
- 85  test_fim_da_entrada_encerra_sem_erro (test_menu.TestMenu.test_fim_da_entrada_encerra_sem_erro) ... ok
- 86  test_hora_invalida_e_opcao_invalida (test_menu.TestMenu.test_hora_invalida_e_opcao_invalida) ... ok
- 87  test_minha_grade_pelo_menu (test_menu.TestMenu.test_minha_grade_pelo_menu) ... ok
- 88  test_planilha_pelo_menu (test_menu.TestMenu.test_planilha_pelo_menu) ... ok
+<p>Execução de <code>python -m unittest discover -s tests -v</code> no conteúdo de <code>guia-salas-1.0.0.zip</code>, em 22/11/2026. Os números à esquerda são as linhas citadas na coluna Evidência.</p>
+<pre class="saida">  1  test_conflito_no_pedido_nao_inclui_nenhuma_turma (test_dominio.TestGradeDoAluno.test_conflito_no_pedido_nao_inclui_nenhuma_turma) ... ok
+  2  test_identificador_e_normalizado_e_somente_leitura (test_dominio.TestGradeDoAluno.test_identificador_e_normalizado_e_somente_leitura) ... ok
+  3  test_setter_do_nome_valida_e_preserva_o_anterior (test_dominio.TestGradeDoAluno.test_setter_do_nome_valida_e_preserva_o_anterior) ... ok
+  4  test_turmas_encostadas_nao_conflitam (test_dominio.TestGradeDoAluno.test_turmas_encostadas_nao_conflitam) ... ok
+  5  test_inicio_depois_do_fim_e_recusado (test_dominio.TestIntervaloETurma.test_inicio_depois_do_fim_e_recusado) ... ok
+  6  test_intervalos_encostados_nao_se_sobrepoem (test_dominio.TestIntervaloETurma.test_intervalos_encostados_nao_se_sobrepoem) ... ok
+  7  test_turma_nao_aceita_aulas_sobrepostas (test_dominio.TestIntervaloETurma.test_turma_nao_aceita_aulas_sobrepostas) ... ok
+  8  test_criar_devolve_a_especializacao_certa (test_dominio.TestSala.test_criar_devolve_a_especializacao_certa) ... ok
+  9  test_sala_online_nunca_esta_livre_e_nao_tem_andar (test_dominio.TestSala.test_sala_online_nunca_esta_livre_e_nao_tem_andar) ... ok
+ 10  test_salas_com_mesma_chave_sao_iguais (test_dominio.TestSala.test_salas_com_mesma_chave_sao_iguais) ... ok
+ 11  test_setter_do_andar_aceita_inteiro_nao_negativo_ou_none (test_dominio.TestSala.test_setter_do_andar_aceita_inteiro_nao_negativo_ou_none) ... ok
+ 12  test_setter_do_andar_recusa_negativo_e_texto_sem_alterar (test_dominio.TestSala.test_setter_do_andar_recusa_negativo_e_texto_sem_alterar) ... ok
+ 13  test_c01_busca_por_nome_devolve_turmas_e_salas (test_f01_busca.TestF01Busca.test_c01_busca_por_nome_devolve_turmas_e_salas) ... ok
+ 14  test_c02_busca_por_codigo_ignora_maiusculas_e_espacos (test_f01_busca.TestF01Busca.test_c02_busca_por_codigo_ignora_maiusculas_e_espacos) ... ok
+ 15  test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados (test_f01_busca.TestF01Busca.test_c03_algarismo_equivale_a_romano_e_acentos_sao_ignorados) ... ok
+ 16  test_c04_termo_com_tres_caracteres_e_aceito (test_f01_busca.TestF01Busca.test_c04_termo_com_tres_caracteres_e_aceito) ... ok
+ 17  test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo (test_f01_busca.TestF01Busca.test_c05_termo_curto_e_rejeitado_sem_alterar_catalogo) ... ok
+ 18  test_c06_disciplina_ausente_devolve_resultado_vazio_valido (test_f01_busca.TestF01Busca.test_c06_disciplina_ausente_devolve_resultado_vazio_valido) ... ok
+ 19  test_c07_termo_comum_a_varias_disciplinas_devolve_todas (test_f01_busca.TestF01Busca.test_c07_termo_comum_a_varias_disciplinas_devolve_todas) ... ok
+ 20  test_c08_comando_sala_responde_e_nao_altera_a_base (test_f01_busca.TestF01ComandoDoBot.test_c08_comando_sala_responde_e_nao_altera_a_base) ... ok
+ 21  test_c09_comando_sala_com_termo_curto_mostra_exemplo (test_f01_busca.TestF01ComandoDoBot.test_c09_comando_sala_com_termo_curto_mostra_exemplo) ... ok
+ 22  test_c10_resposta_longa_e_dividida_entre_linhas (test_f01_busca.TestF01ComandoDoBot.test_c10_resposta_longa_e_dividida_entre_linhas) ... ok
+ 23  test_c10_livres_sem_andar_considera_todos_e_aceita_predio (test_f02_salas_livres.TestF02ComandoDoBot.test_c10_livres_sem_andar_considera_todos_e_aceita_predio) ... ok
+ 24  test_c11_livres_com_hora_invalida_mostra_motivo_e_uso (test_f02_salas_livres.TestF02ComandoDoBot.test_c11_livres_com_hora_invalida_mostra_motivo_e_uso) ... ok
+ 25  test_c12_livres_sem_hora_mostra_uso (test_f02_salas_livres.TestF02ComandoDoBot.test_c12_livres_sem_hora_mostra_uso) ... ok
+ 26  test_c01_sala_ocupada_nao_aparece (test_f02_salas_livres.TestF02SalasLivres.test_c01_sala_ocupada_nao_aparece) ... ok
+ 27  test_c02_sala_fica_livre_no_horario_de_termino (test_f02_salas_livres.TestF02SalasLivres.test_c02_sala_fica_livre_no_horario_de_termino) ... ok
+ 28  test_c03_sala_ocupada_no_horario_de_inicio (test_f02_salas_livres.TestF02SalasLivres.test_c03_sala_ocupada_no_horario_de_inicio) ... ok
+ 29  test_c04_turma_conjunta_ocupa_a_sala (test_f02_salas_livres.TestF02SalasLivres.test_c04_turma_conjunta_ocupa_a_sala) ... ok
+ 30  test_c05_aula_online_nunca_vira_sala_livre (test_f02_salas_livres.TestF02SalasLivres.test_c05_aula_online_nunca_vira_sala_livre) ... ok
+ 31  test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo (test_f02_salas_livres.TestF02SalasLivres.test_c06_predio_desconhecido_e_rejeitado_sem_alterar_catalogo) ... ok
+ 32  test_c07_andar_negativo_e_rejeitado (test_f02_salas_livres.TestF02SalasLivres.test_c07_andar_negativo_e_rejeitado) ... ok
+ 33  test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao (test_f02_salas_livres.TestF02SalasLivres.test_c08_hora_e_dia_invalidos_sao_rejeitados_na_conversao) ... ok
+ 34  test_c09_andar_sem_salas_devolve_lista_vazia_valida (test_f02_salas_livres.TestF02SalasLivres.test_c09_andar_sem_salas_devolve_lista_vazia_valida) ... ok
+ 35  test_c01_planilha_de_exemplo_e_preenchida (test_f03_planilha.TestF03Planilha.test_c01_planilha_de_exemplo_e_preenchida) ... ok
+ 36  test_c02_turma_pedida_inexistente_vira_nao_localizada (test_f03_planilha.TestF03Planilha.test_c02_turma_pedida_inexistente_vira_nao_localizada) ... ok
+ 37  test_c03_arquivo_inexistente_e_recusado (test_f03_planilha.TestF03Planilha.test_c03_arquivo_inexistente_e_recusado) ... ok
+ 38  test_c04_extensao_diferente_de_xlsx_e_recusada (test_f03_planilha.TestF03Planilha.test_c04_extensao_diferente_de_xlsx_e_recusada) ... ok
+ 39  test_c05_arquivo_corrompido_e_recusado (test_f03_planilha.TestF03Planilha.test_c05_arquivo_corrompido_e_recusado) ... ok
+ 40  test_c06_planilha_sem_disciplinas_e_recusada (test_f03_planilha.TestF03Planilha.test_c06_planilha_sem_disciplinas_e_recusada) ... ok
+ 41  test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado (test_f03_planilha.TestF03Planilha.test_c07_saida_igual_a_entrada_e_recusada_e_original_preservado) ... ok
+ 42  test_c08_comando_do_bot_devolve_legenda (test_f03_planilha.TestF03Planilha.test_c08_comando_do_bot_devolve_legenda) ... ok
+ 43  test_c01_carga_valida_substitui_a_base_e_registra_historico (test_f04_atualizacao.TestF04Atualizacao.test_c01_carga_valida_substitui_a_base_e_registra_historico) ... ok
+ 44  test_c02_arquivo_inexistente_e_recusado_e_base_preservada (test_f04_atualizacao.TestF04Atualizacao.test_c02_arquivo_inexistente_e_recusado_e_base_preservada) ... ok
+ 45  test_c03_site_fora_do_ar_e_recusado_e_base_preservada (test_f04_atualizacao.TestF04Atualizacao.test_c03_site_fora_do_ar_e_recusado_e_base_preservada) ... ok
+ 46  test_c04_carga_sem_aulas_e_recusada (test_f04_atualizacao.TestF04Atualizacao.test_c04_carga_sem_aulas_e_recusada) ... ok
+ 47  test_c05_json_em_formato_inesperado_e_recusado (test_f04_atualizacao.TestF04Atualizacao.test_c05_json_em_formato_inesperado_e_recusado) ... ok
+ 48  test_c06_mais_da_metade_recusada_e_rejeitada (test_f04_atualizacao.TestF04Atualizacao.test_c06_mais_da_metade_recusada_e_rejeitada) ... ok
+ 49  test_c07_metade_exata_recusada_ainda_e_aceita (test_f04_atualizacao.TestF04Atualizacao.test_c07_metade_exata_recusada_ainda_e_aceita) ... ok
+ 50  test_c08_falha_ao_gravar_desfaz_tudo (test_f04_atualizacao.TestF04Atualizacao.test_c08_falha_ao_gravar_desfaz_tudo) ... ok
+ 51  test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente (test_f04_atualizacao.TestF04Atualizacao.test_c09_grades_sao_preservadas_e_turma_que_sumiu_fica_pendente) ... ok
+ 52  test_c10_carga_igual_mantem_os_mesmos_dados (test_f04_atualizacao.TestF04Atualizacao.test_c10_carga_igual_mantem_os_mesmos_dados) ... ok
+ 53  test_c18_fluxo_adicionar_ver_e_remover (test_f05_minha_grade.TestF05ComandosDoBot.test_c18_fluxo_adicionar_ver_e_remover) ... ok
+ 54  test_c19_recusa_no_bot_informa_que_nada_mudou (test_f05_minha_grade.TestF05ComandosDoBot.test_c19_recusa_no_bot_informa_que_nada_mudou) ... ok
+ 55  test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada (test_f05_minha_grade.TestF05LimiteDaGrade.test_c16_oito_disciplinas_sao_aceitas_e_a_nona_e_recusada) ... ok
+ 56  test_c17_pedido_com_nove_disciplinas_e_recusado (test_f05_minha_grade.TestF05LimiteDaGrade.test_c17_pedido_com_nove_disciplinas_e_recusado) ... ok
+ 57  test_c01_adiciona_turma_e_grava (test_f05_minha_grade.TestF05MinhaGrade.test_c01_adiciona_turma_e_grava) ... ok
+ 58  test_c02_adiciona_varias_turmas_num_pedido (test_f05_minha_grade.TestF05MinhaGrade.test_c02_adiciona_varias_turmas_num_pedido) ... ok
+ 59  test_c03_conflito_com_turma_salva_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c03_conflito_com_turma_salva_e_recusado) ... ok
+ 60  test_c04_conflito_no_pedido_recusa_todas_as_turmas (test_f05_minha_grade.TestF05MinhaGrade.test_c04_conflito_no_pedido_recusa_todas_as_turmas) ... ok
+ 61  test_c05_disciplina_inexistente_recusa_o_pedido_inteiro (test_f05_minha_grade.TestF05MinhaGrade.test_c05_disciplina_inexistente_recusa_o_pedido_inteiro) ... ok
+ 62  test_c06_turma_inexistente_e_recusada_com_as_turmas_validas (test_f05_minha_grade.TestF05MinhaGrade.test_c06_turma_inexistente_e_recusada_com_as_turmas_validas) ... ok
+ 63  test_c07_disciplina_ja_na_grade_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c07_disciplina_ja_na_grade_e_recusada) ... ok
+ 64  test_c08_disciplina_repetida_no_pedido_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c08_disciplina_repetida_no_pedido_e_recusada) ... ok
+ 65  test_c09_pedido_mal_formatado_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c09_pedido_mal_formatado_e_recusado) ... ok
+ 66  test_c10_remove_disciplina_e_grava (test_f05_minha_grade.TestF05MinhaGrade.test_c10_remove_disciplina_e_grava) ... ok
+ 67  test_c11_remover_disciplina_fora_da_grade_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c11_remover_disciplina_fora_da_grade_e_recusado) ... ok
+ 68  test_c12_nome_valido_e_alterado_pelo_setter (test_f05_minha_grade.TestF05MinhaGrade.test_c12_nome_valido_e_alterado_pelo_setter) ... ok
+ 69  test_c13_nome_vazio_ou_longo_e_recusado (test_f05_minha_grade.TestF05MinhaGrade.test_c13_nome_vazio_ou_longo_e_recusado) ... ok
+ 70  test_c14_identificacao_invalida_e_recusada (test_f05_minha_grade.TestF05MinhaGrade.test_c14_identificacao_invalida_e_recusada) ... ok
+ 71  test_c15_falha_ao_gravar_preserva_a_grade (test_f05_minha_grade.TestF05MinhaGrade.test_c15_falha_ao_gravar_preserva_a_grade) ... ok
+ 72  test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original (test_fontes.TestFonteBancoLocal.test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original) ... ok
+ 73  test_arquivo_inexistente_lanca_fonte_indisponivel (test_fontes.TestFontes.test_arquivo_inexistente_lanca_fonte_indisponivel) ... ok
+ 74  test_arquivo_inexistente_vira_falha_no_relatorio (test_fontes.TestFontes.test_arquivo_inexistente_vira_falha_no_relatorio) ... ok
+ 75  test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte (test_fontes.TestFontes.test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte) ... ok
+ 76  test_duas_fontes_concretas_entregam_os_mesmos_registros (test_fontes.TestFontes.test_duas_fontes_concretas_entregam_os_mesmos_registros) ... ok
+ 77  test_separacao_de_predio_e_sala (test_fontes.TestFontes.test_separacao_de_predio_e_sala) ... ok
+ 78  test_abertura_mostra_a_base_e_a_ultima_atualizacao (test_menu.TestMenu.test_abertura_mostra_a_base_e_a_ultima_atualizacao) ... ok
+ 79  test_andar_nao_numerico_e_recusado_e_menu_continua (test_menu.TestMenu.test_andar_nao_numerico_e_recusado_e_menu_continua) ... ok
+ 80  test_atualizacao_recusada_pelo_menu_mantem_a_base (test_menu.TestMenu.test_atualizacao_recusada_pelo_menu_mantem_a_base) ... ok
+ 81  test_busca_pelo_menu (test_menu.TestMenu.test_busca_pelo_menu) ... ok
+ 82  test_fim_da_entrada_encerra_sem_erro (test_menu.TestMenu.test_fim_da_entrada_encerra_sem_erro) ... ok
+ 83  test_hora_invalida_e_opcao_invalida (test_menu.TestMenu.test_hora_invalida_e_opcao_invalida) ... ok
+ 84  test_minha_grade_pelo_menu (test_menu.TestMenu.test_minha_grade_pelo_menu) ... ok
+ 85  test_planilha_pelo_menu (test_menu.TestMenu.test_planilha_pelo_menu) ... ok
+ 86  
+ 87  ----------------------------------------------------------------------
+ 88  Ran 85 tests in 0.743s
  89  
- 90  ----------------------------------------------------------------------
- 91  Ran 85 tests in 0.772s
- 92  
- 93  OK
+ 90  OK
 </pre>
 <script src="MERMAID"></script>
 <script>mermaid.initialize({startOnLoad:false, theme:'neutral', themeVariables:{fontSize:'15px'}, fontFamily:'DejaVu Sans, Arial', flowchart:{htmlLabels:false}, sequence:{useMaxWidth:true, actorFontSize:15, messageFontSize:15, noteFontSize:14, width:120}, class:{useMaxWidth:true}});

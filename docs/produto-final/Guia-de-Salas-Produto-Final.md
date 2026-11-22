@@ -2,15 +2,15 @@
 
 Natan Gaspar de Souza
 
-**Versão entregue:** 1.0.0, arquivo `guia-salas-1.0.0.zip` (SHA-256 `7e06d28c73761ade0cdc62561dcd7104d900cbacec215b65bfa205e53f7f0e56`), gerado a partir do commit `41aee24` do repositório. Python 3.10 ou superior (testado com 3.13.18).
+Versão entregue: 1.0.0, arquivo `guia-salas-1.0.0.zip`. Requer Python 3.10 ou superior (testado com 3.13.18).
 
 ## 1. Problema, público e escopo
 
-**Problema.** Para saber em que sala e horário acontece uma disciplina, o aluno consulta sites institucionais lentos, um por unidade, e repete a busca a cada mudança. Também não há uma forma simples de descobrir uma sala vazia para estudar entre duas aulas.
+Problema: para saber em que sala e horário acontece uma disciplina, o aluno consulta sites institucionais lentos, um por unidade, e repete a busca a cada mudança. Também não há uma forma simples de descobrir uma sala vazia para estudar entre duas aulas.
 
-**Público.** Alunos que têm aulas nas salas distribuídas pelo ICEx (prédio do ICEx e CAD1, CAD2 e CAD3), que usam o sistema pelo terminal ou pelo bot do Telegram. O mantenedor (o grupo) atualiza a base de aulas.
+Público: alunos que têm aulas nas salas distribuídas pelo ICEx (prédio do ICEx e CAD1, CAD2 e CAD3), que usam o sistema pelo terminal ou pelo bot do Telegram. O mantenedor (o grupo) atualiza a base de aulas.
 
-**Escopo.** O sistema reúne em uma base local o quadro "Distribuição de Salas" do ICEx e responde, sem depender do site no momento da consulta: onde é a aula de uma disciplina, quais salas estão livres, qual é a sala de cada disciplina de uma planilha e qual é a semana de aulas do aluno.
+Escopo: O sistema reúne em uma base local o quadro "Distribuição de Salas" do ICEx e responde, sem depender do site no momento da consulta: onde é a aula de uma disciplina, quais salas estão livres, qual é a sala de cada disciplina de uma planilha e qual é a semana de aulas do aluno.
 
 ### 1.1 Ajustes de escopo
 
@@ -32,11 +32,11 @@ Natan Gaspar de Souza
 | F04 | Atualizar a base de aulas | Nova (no protótipo a base era só memória) | Mantenedor ou bot | Base trocada pela carga nova, com histórico; ou recusa com a base anterior mantida. |
 | F05 | Minha grade: adicionar turmas, ver a semana, remover disciplina e alterar o nome | Nova | Aluno | Grade salva, sem conflito de horário, mostrada dia a dia com as salas. |
 
-**Como iniciar.** `python -m guia_salas` abre o menu do terminal com as opções 1 a 5. `python -m guia_salas --telegram` inicia o bot (comandos `/sala`, `/livres`, `/minhagrade`, `/adicionar`, `/remover` e envio de planilha). `python -m guia_salas --preparar-base` recria a base de demonstração.
+Como iniciar: `python -m guia_salas` abre o menu do terminal com as opções 1 a 5. `python -m guia_salas --telegram` inicia o bot (comandos `/sala`, `/livres`, `/minhagrade`, `/adicionar`, `/remover` e envio de planilha). `python -m guia_salas --preparar-base` recria a base de demonstração.
 
-**Funcionalidades opcionais.** O bot do Telegram é uma segunda interface para as mesmas funcionalidades; o terminal é suficiente para todas. A opção `--online` atualiza pelo site antes de abrir o menu.
+Funcionalidades opcionais: O bot do Telegram é uma segunda interface para as mesmas funcionalidades; o terminal é suficiente para todas. A opção `--online` atualiza pelo site antes de abrir o menu.
 
-**Pendências que afetam a versão entregue.** "Seg-Sex" no quadro é lido como segunda e sexta (não como segunda a sexta), a confirmar com o ICEx; abreviações como "BD" e "GAAL" não são reconhecidas; salas sem nenhuma aula no semestre nunca aparecem como livres.
+Pendências que afetam a versão entregue: "Seg-Sex" no quadro é lido como segunda e sexta (não como segunda a sexta), a confirmar com o ICEx; abreviações como "BD" e "GAAL" não são reconhecidas; salas sem nenhuma aula no semestre nunca aparecem como livres.
 
 ## 3. Contratos
 
@@ -130,9 +130,9 @@ flowchart TB
 | Negócio | `servicos/` (`ConsultaDeSalas`, `CatalogoDeAulas`, `PreenchedorDeGrade`, `ServicoDeAtualizacao`, `AtualizadorDeBase`, `ServicoMinhaGrade`) e `dominio/` (entidades, valores e exceções) | Aplicar as regras e coordenar as operações: validar antes de alterar, decidir o que é aceito e pedir a gravação. |
 | Dados | `dados/` (`FonteDeDados` e subclasses, `BancoDeDados`, `RepositorioDeAulas`, `RepositorioDeGrades`) | Obter registros brutos das fontes e guardar ou recuperar linhas do SQLite. Não conhece as regras do domínio. |
 
-**MVC.** O projeto não segue MVC à risca, mas há correspondência: o Model é a camada de negócio com o domínio; a View é o `FormatadorDeRespostas`, que transforma resultados em texto; o Controller é o `MenuTerminal` ou o `ComandosDoBot`, que recebe o pedido, chama o serviço e escolhe a resposta. A camada de dados fica abaixo do Model.
+MVC: O projeto não segue MVC à risca, mas há correspondência: o Model é a camada de negócio com o domínio; a View é o `FormatadorDeRespostas`, que transforma resultados em texto; o Controller é o `MenuTerminal` ou o `ComandosDoBot`, que recebe o pedido, chama o serviço e escolhe a resposta. A camada de dados fica abaixo do Model.
 
-**Colaboração em uma operação (F05, adicionar).** O menu lê o pedido e chama `ServicoMinhaGrade.adicionar`. O serviço abre a grade (o repositório devolve os códigos salvos e o catálogo devolve os objetos `Turma`), procura no catálogo cada turma do pedido, pede a `GradeDoAluno.adicionar` que aplique as regras e, só se todas passarem, manda o `RepositorioDeGrades` gravar numa transação. O formatador monta a confirmação.
+Colaboração em uma operação (F05, adicionar): O menu lê o pedido e chama `ServicoMinhaGrade.adicionar`. O serviço abre a grade (o repositório devolve os códigos salvos e o catálogo devolve os objetos `Turma`), procura no catálogo cada turma do pedido, pede a `GradeDoAluno.adicionar` que aplique as regras e, só se todas passarem, manda o `RepositorioDeGrades` gravar numa transação. O formatador monta a confirmação.
 
 PAISAGEM_INICIO
 
@@ -413,13 +413,13 @@ A base é um arquivo SQLite (módulo `sqlite3` da biblioteca padrão), escolhido
 | `grade` | identificador do aluno (chave) e nome da grade |
 | `grade_turma` | aluno, código da disciplina e código da turma |
 
-**Inicialização.** O ZIP traz `base/guia_salas.db` já preenchida. O comando `python -m guia_salas --preparar-base` refaz a carga a partir de `guia_salas/dados/amostra_icex.json` (110 registros reais do ICEx de 15/10/2026: 30 disciplinas, 199 aulas, 42 salas presenciais) e cria a grade fictícia `ana` (DCC011 TB, MAT038 TB1, MAT001 TA1). Se o arquivo não existir, o programa faz isso sozinho na primeira execução.
+Inicialização: O ZIP traz `base/guia_salas.db` já preenchida. O comando `python -m guia_salas --preparar-base` refaz a carga a partir de `guia_salas/dados/amostra_icex.json` (110 registros reais do ICEx de 15/10/2026: 30 disciplinas, 199 aulas, 42 salas presenciais) e cria a grade fictícia `ana` (DCC011 TB, MAT038 TB1, MAT001 TA1). Se o arquivo não existir, o programa faz isso sozinho na primeira execução.
 
-**Uso no programa.** Ao iniciar, a `FonteBancoLocal` lê as aulas gravadas e o `AtualizadorDeBase` monta o catálogo em memória, que responde às consultas. A F04 grava na base antes de trocar o catálogo. A F05 lê e grava a grade a cada operação.
+Uso no programa: ao iniciar, a `FonteBancoLocal` lê as aulas gravadas e o `AtualizadorDeBase` monta o catálogo em memória, que responde às consultas. A F04 grava na base antes de trocar o catálogo. A F05 lê e grava a grade a cada operação.
 
-**Base de teste.** Os testes criam, para cada caso, uma base nova numa pasta temporária, carregada de `tests/dados/`; a base de demonstração nunca é usada.
+Base de teste: os testes criam, para cada caso, uma base nova numa pasta temporária, carregada de `tests/dados/`; a base de demonstração nunca é usada.
 
-**Simulações.** O site do ICEx não é simulado no uso normal: a opção 1 da F04 baixa os dados reais. O arquivo JSON local (`FonteIcexArquivo`) reproduz a resposta do site, no mesmo formato, para uso sem internet. Nos testes, uma sessão HTTP falsa substitui a conexão e devolve o JSON de teste ou simula o site fora do ar.
+Simulações: O site do ICEx não é simulado no uso normal: a opção 1 da F04 baixa os dados reais. O arquivo JSON local (`FonteIcexArquivo`) reproduz a resposta do site, no mesmo formato, para uso sem internet. Nos testes, uma sessão HTTP falsa substitui a conexão e devolve o JSON de teste ou simula o site fora do ar.
 
 ## 8. Tratamento de erros
 
@@ -436,13 +436,13 @@ A base é um arquivo SQLite (módulo `sqlite3` da biblioteca padrão), escolhido
 
 ## 9. Decisões de projeto
 
-- **As regras ficam na camada de negócio.** O conflito de horário está em `GradeDoAluno` e a regra de sala ocupada em `Sala.esta_livre` e `IntervaloDeHorario`. O terminal e o bot chamam os mesmos serviços, então aceitam e recusam exatamente os mesmos pedidos. A mesma `IntervaloDeHorario.sobrepoe` decide conflito na turma (carga da base) e na grade do aluno, e `contem` decide ocupação na F02.
-- **Validar tudo antes de alterar.** `GradeDoAluno.adicionar` confere repetição, limite e conflito para o pedido inteiro e só então inclui as turmas; `ServicoDeAtualizacao` confere a carga antes de gravar e grava antes de trocar o catálogo. Assim, uma recusa nunca deixa metade da operação feita.
-- **Transação para operações com vários registros.** A F04 apaga e regrava quatro tabelas e a F05 regrava todas as linhas de uma grade; ambas usam uma única transação do SQLite, desfeita em caso de erro.
-- **Grade guarda códigos, não referências às aulas.** A base de aulas é substituída a cada atualização; se a grade apontasse para linhas de `aula`, perderia os dados. Guardando "DCC011 TB", a grade sobrevive à atualização, e uma turma que sumiu do quadro aparece como pendente em vez de desaparecer.
-- **Catálogo em memória com base persistente.** As consultas percorrem objetos em memória (rápido e testável sem banco); o SQLite garante que o sistema abra com a última base aceita mesmo com o site do ICEx fora do ar.
-- **`SalaOnline` como especialização.** Antes, cada consulta testava o nome do prédio. Agora a própria sala responde se está livre e como se descreve, e as consultas não precisam de condição especial.
-- **Formatador separado.** Os textos ficam em `FormatadorDeRespostas`; terminal e bot mostram as mesmas respostas, e mudar um texto não afeta regras.
+- As regras ficam na camada de negócio. O conflito de horário está em `GradeDoAluno` e a regra de sala ocupada em `Sala.esta_livre` e `IntervaloDeHorario`. O terminal e o bot chamam os mesmos serviços, então aceitam e recusam exatamente os mesmos pedidos. A mesma `IntervaloDeHorario.sobrepoe` decide conflito na turma (carga da base) e na grade do aluno, e `contem` decide ocupação na F02.
+- Validar tudo antes de alterar: `GradeDoAluno.adicionar` confere repetição, limite e conflito para o pedido inteiro e só então inclui as turmas; `ServicoDeAtualizacao` confere a carga antes de gravar e grava antes de trocar o catálogo. Assim, uma recusa nunca deixa metade da operação feita.
+- Transação para operações com vários registros. A F04 apaga e regrava quatro tabelas e a F05 regrava todas as linhas de uma grade; ambas usam uma única transação do SQLite, desfeita em caso de erro.
+- Grade guarda códigos, não referências às aulas. A base de aulas é substituída a cada atualização; se a grade apontasse para linhas de `aula`, perderia os dados. Guardando "DCC011 TB", a grade sobrevive à atualização, e uma turma que sumiu do quadro aparece como pendente em vez de desaparecer.
+- Catálogo em memória com base persistente: as consultas percorrem objetos em memória (rápido e testável sem banco); o SQLite garante que o sistema abra com a última base aceita mesmo com o site do ICEx fora do ar.
+- `SalaOnline` como especialização: antes, cada consulta testava o nome do prédio. Agora a própria sala responde se está livre e como se descreve, e as consultas não precisam de condição especial.
+- Formatador separado: os textos ficam em `FormatadorDeRespostas`; terminal e bot mostram as mesmas respostas, e mudar um texto não afeta regras.
 
 ## 10. Como executar e testar
 
@@ -455,7 +455,7 @@ python -m unittest discover -s tests -v
 
 São 85 testes `unittest` em 8 arquivos (`test_f01_busca.py` a `test_f05_minha_grade.py`, `test_dominio.py`, `test_fontes.py`, `test_menu.py`), todos aprovados na versão 1.0.0. Cada teste prepara a própria base temporária, então a execução não depende da ordem. A verificação detalhada por funcionalidade será apresentada no documento da 5ª etapa.
 
-**Conteúdo do ZIP.** `guia_salas/` (código-fonte e amostra), `base/guia_salas.db` (base preenchida), `tests/` (testes e dados de teste), `exemplos/grade_exemplo.xlsx`, `scripts/baixar_dados_icex.py`, `deploy/` (instalação do bot no Raspberry Pi), `README.md`, `requirements.txt` e `.env.example` (sem token). Não há ambiente virtual, senhas nem dados pessoais.
+Conteúdo do ZIP: `guia_salas/` (código-fonte e amostra), `base/guia_salas.db` (base preenchida), `tests/` (testes e dados de teste), `exemplos/grade_exemplo.xlsx`, `scripts/baixar_dados_icex.py`, `deploy/` (instalação do bot no Raspberry Pi), `README.md`, `requirements.txt` e `.env.example` (sem token). Não há ambiente virtual, senhas nem dados pessoais.
 
 ## 11. Limitações conhecidas
 
@@ -466,4 +466,4 @@ São 85 testes `unittest` em 8 arquivos (`test_f01_busca.py` a `test_f05_minha_g
 - O limite de 8 disciplinas por grade foi definido pelo grupo, sem norma da UFMG.
 - A grade no terminal é identificada por um apelido, sem senha; qualquer pessoa que use o mesmo computador e apelido acessa a mesma grade.
 - O bot depende de o Raspberry Pi estar ligado e com internet; sem internet, continua respondendo com a última base gravada.
-- O download pelo site não pôde ser executado no ambiente usado para gerar este relatório (rede bloqueada). No Raspberry Pi, o bot baixou a lista completa do ICEx (997 registros) com a mesma `FonteIcexOnline`.
+- A atualização pelo site depende de acesso à internet e do formato atual do JSON do ICEx. No Raspberry Pi, a lista completa baixada pelo bot tinha 997 registros.
