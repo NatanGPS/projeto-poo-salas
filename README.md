@@ -106,3 +106,4 @@ Os PDFs das etapas ficam na pasta `docs/` do repositório (fora do ZIP de códig
 | Aula 17: testes manuais | `docs/aula17/Guia-de-Salas-Testes-Aula-17.pdf` |
 | Protótipo | `docs/prototipo/Guia-de-Salas-Prototipo.pdf` |
 | Produto final | `docs/produto-final/Guia-de-Salas-Produto-Final.pdf` |
+| Verificação do produto final | `docs/verificacao/Guia-de-Salas-Verificacao.pdf` |
