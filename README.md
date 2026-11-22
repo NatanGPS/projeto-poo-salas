@@ -48,6 +48,25 @@ Essas opções precisam de bibliotecas externas (`pip install -r requirements.tx
 | `python -m guia_salas --telegram` | Inicia o bot do Telegram; precisa da variável `TELEGRAM_TOKEN` (ver `.env.example`) |
 | `python scripts/baixar_dados_icex.py` | Salva a lista completa do ICEx em `dados_icex.json` e mostra um resumo |
 
+## Bot no Raspberry Pi
+
+No Raspberry (Raspberry Pi OS), com o projeto baixado:
+
+```bash
+git clone https://github.com/NatanGPS/projeto-poo-salas.git
+cd projeto-poo-salas
+bash deploy/instalar_raspberry.sh
+```
+
+O script instala as dependências, pede o token do bot (gravado só em `.env` no Raspberry) e cria o serviço `guia-salas-bot`, que inicia sozinho quando o Raspberry liga.
+
+| Comando | O que faz |
+|---|---|
+| `sudo systemctl status guia-salas-bot` | mostra se o bot está rodando |
+| `journalctl -u guia-salas-bot -f` | mostra o registro do bot |
+| `sudo systemctl restart guia-salas-bot` | reinicia o bot |
+| `git pull && sudo systemctl restart guia-salas-bot` | atualiza o código e reinicia |
+
 ## Estrutura
 
 ```
@@ -61,6 +80,7 @@ guia_salas/
   dados/          amostra_icex.json
 tests/            testes com unittest e dados de teste
 scripts/          verificação manual da Aula 17 e download dos dados do ICEx
+deploy/           instalação do bot como serviço no Raspberry Pi
 exemplos/         planilha de grade para teste
 ```
 
