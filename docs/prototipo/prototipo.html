@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Guia de Salas: Protótipo funcional</title>
+<link rel="stylesheet" href="../_estilo/documento.css">
+<style>
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.codigo pre .hll { background-color: #ffffcc }
+.codigo pre { background: #f0f0f0; }
+.codigo pre .c { color: #60a0b0; font-style: italic } /* Comment */
+.codigo pre .err { border: 1px solid #FF0000 } /* Error */
+.codigo pre .k { color: #007020; font-weight: bold } /* Keyword */
+.codigo pre .o { color: #666666 } /* Operator */
+.codigo pre .ch { color: #60a0b0; font-style: italic } /* Comment.Hashbang */
+.codigo pre .cm { color: #60a0b0; font-style: italic } /* Comment.Multiline */
+.codigo pre .cp { color: #007020 } /* Comment.Preproc */
+.codigo pre .cpf { color: #60a0b0; font-style: italic } /* Comment.PreprocFile */
+.codigo pre .c1 { color: #60a0b0; font-style: italic } /* Comment.Single */
+.codigo pre .cs { color: #60a0b0; background-color: #fff0f0 } /* Comment.Special */
+.codigo pre .gd { color: #A00000 } /* Generic.Deleted */
+.codigo pre .ge { font-style: italic } /* Generic.Emph */
+.codigo pre .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.codigo pre .gr { color: #FF0000 } /* Generic.Error */
+.codigo pre .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.codigo pre .gi { color: #00A000 } /* Generic.Inserted */
+.codigo pre .go { color: #888888 } /* Generic.Output */
+.codigo pre .gp { color: #c65d09; font-weight: bold } /* Generic.Prompt */
+.codigo pre .gs { font-weight: bold } /* Generic.Strong */
+.codigo pre .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.codigo pre .gt { color: #0044DD } /* Generic.Traceback */
+.codigo pre .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.codigo pre .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.codigo pre .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.codigo pre .kp { color: #007020 } /* Keyword.Pseudo */
+.codigo pre .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.codigo pre .kt { color: #902000 } /* Keyword.Type */
+.codigo pre .m { color: #40a070 } /* Literal.Number */
+.codigo pre .s { color: #4070a0 } /* Literal.String */
+.codigo pre .na { color: #4070a0 } /* Name.Attribute */
+.codigo pre .nb { color: #007020 } /* Name.Builtin */
+.codigo pre .nc { color: #0e84b5; font-weight: bold } /* Name.Class */
+.codigo pre .no { color: #60add5 } /* Name.Constant */
+.codigo pre .nd { color: #555555; font-weight: bold } /* Name.Decorator */
+.codigo pre .ni { color: #d55537; font-weight: bold } /* Name.Entity */
+.codigo pre .ne { color: #007020 } /* Name.Exception */
+.codigo pre .nf { color: #06287e } /* Name.Function */
+.codigo pre .nl { color: #002070; font-weight: bold } /* Name.Label */
+.codigo pre .nn { color: #0e84b5; font-weight: bold } /* Name.Namespace */
+.codigo pre .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.codigo pre .nv { color: #bb60d5 } /* Name.Variable */
+.codigo pre .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.codigo pre .w { color: #bbbbbb } /* Text.Whitespace */
+.codigo pre .mb { color: #40a070 } /* Literal.Number.Bin */
+.codigo pre .mf { color: #40a070 } /* Literal.Number.Float */
+.codigo pre .mh { color: #40a070 } /* Literal.Number.Hex */
+.codigo pre .mi { color: #40a070 } /* Literal.Number.Integer */
+.codigo pre .mo { color: #40a070 } /* Literal.Number.Oct */
+.codigo pre .sa { color: #4070a0 } /* Literal.String.Affix */
+.codigo pre .sb { color: #4070a0 } /* Literal.String.Backtick */
+.codigo pre .sc { color: #4070a0 } /* Literal.String.Char */
+.codigo pre .dl { color: #4070a0 } /* Literal.String.Delimiter */
+.codigo pre .sd { color: #4070a0; font-style: italic } /* Literal.String.Doc */
+.codigo pre .s2 { color: #4070a0 } /* Literal.String.Double */
+.codigo pre .se { color: #4070a0; font-weight: bold } /* Literal.String.Escape */
+.codigo pre .sh { color: #4070a0 } /* Literal.String.Heredoc */
+.codigo pre .si { color: #70a0d0; font-style: italic } /* Literal.String.Interpol */
+.codigo pre .sx { color: #c65d09 } /* Literal.String.Other */
+.codigo pre .sr { color: #235388 } /* Literal.String.Regex */
+.codigo pre .s1 { color: #4070a0 } /* Literal.String.Single */
+.codigo pre .ss { color: #517918 } /* Literal.String.Symbol */
+.codigo pre .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.codigo pre .fm { color: #06287e } /* Name.Function.Magic */
+.codigo pre .vc { color: #bb60d5 } /* Name.Variable.Class */
+.codigo pre .vg { color: #bb60d5 } /* Name.Variable.Global */
+.codigo pre .vi { color: #bb60d5 } /* Name.Variable.Instance */
+.codigo pre .vm { color: #bb60d5 } /* Name.Variable.Magic */
+.codigo pre .il { color: #40a070 } /* Literal.Number.Integer.Long */
+.codigo { border: 1px solid #d5dde6; margin: 8px 0 12px; page-break-inside: avoid; }
+.codigo .arquivo { background: #e8eef5; font-family: "DejaVu Sans Mono", monospace; font-size: 8.4pt; padding: 3px 8px; }
+.codigo pre { margin: 0; padding: 7px 9px; font-size: 8.2pt; line-height: 1.35; white-space: pre-wrap; background: #fbfcfd; }
+.terminal { border-radius: 6px; overflow: hidden; margin: 8px 0 12px; page-break-inside: avoid; border: 1px solid #222; }
+.terminal .barra { background: #3a3a3a; color: #ddd; font-size: 8.4pt; padding: 3px 9px; font-family: "DejaVu Sans", sans-serif; }
+.terminal pre { margin: 0; background: #1e1e1e; color: #e6e6e6; padding: 8px 10px; font-family: "DejaVu Sans Mono", monospace; font-size: 8.2pt; line-height: 1.35; white-space: pre-wrap; }
+</style></head><body>
+
+<h1>Guia de Salas: Protótipo funcional (3ª etapa)</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+<p>Código-fonte, testes e dados estão no arquivo ZIP que acompanha este PDF. Para executar: <code>python -m guia_salas</code>. Para testar: <code>python -m unittest discover -s tests -v</code> (Python 3.10 ou superior, sem bibliotecas externas).</p>
+
+<h2>Etapa 1. Delimitação do incremento</h2>
+<h3>1. Funcionalidades escolhidas</h3>
+<table>
+<tr><th style="width:24%">Funcionalidade</th><th>Contribuição para o problema</th></tr>
+<tr><td><b>F01: Buscar a sala de uma disciplina</b> pelo nome ou código</td><td>Mostra o dia, horário, sala, prédio e andar de cada turma da disciplina. Foi a funcionalidade modelada na segunda entrega.</td></tr>
+<tr><td><b>F02: Consultar salas livres</b> num dia, hora, andar e prédio</td><td>Mostra as salas sem aula naquele horário, por exemplo para estudar entre duas aulas.</td></tr>
+</table>
+<p><b>Fluxo de ponta a ponta.</b> O aluno usa a F01 para descobrir que a aula de Introdução a Banco de Dados (turma TB) é na sala 2014 - DCC, no 2º andar do ICEx, segunda às 09:25. Em seguida, usa a F02 com esse dia, horário, andar e prédio para achar uma sala livre próxima. <b>Dependências:</b> as duas funcionalidades usam o mesmo catálogo, carregado uma vez a partir do quadro do ICEx. A F02 depende das aulas cadastradas para saber o que está ocupado, e os dados de entrada dela (dia, andar, prédio) são os que a F01 devolve.</p>
+
+<h3>2. Contratos</h3>
+<table>
+<tr><th style="width:18%">Item</th><th style="width:41%">F01: Buscar a sala de uma disciplina</th><th>F02: Consultar salas livres</th></tr>
+<tr><td>Quem solicita</td><td>Aluno, pelo menu do terminal (opção 1).</td><td>Aluno, pelo menu do terminal (opção 2).</td></tr>
+<tr><td>Condições iniciais</td><td>Catálogo carregado a partir do quadro do ICEx.</td><td>Catálogo carregado; a F02 só conhece as salas que aparecem em alguma aula.</td></tr>
+<tr><td>Entradas, tipos e unidades</td><td>Termo (texto livre): nome ou código da disciplina.</td><td>Dia (texto: seg, ter, qua, qui, sex, sab); hora (texto HH:MM, horário de Brasília); andar (número inteiro; vazio = todos); prédio (texto: ICEx, CAD1, CAD2, CAD3; vazio = todos).</td></tr>
+<tr><td>Regras de validade</td><td>Termo com pelo menos 3 caracteres após remover espaços. Corresponde pelo código exato ou se cada palavra do termo aparecer no nome (ignorando acentos e maiúsculas; 1 = I).</td><td>Dia reconhecido; hora válida (00:00 a 23:59); andar inteiro e não negativo; prédio existente na base. Uma sala está ocupada se alguma aula a usa no dia, com início ≤ hora &lt; fim. Aulas on-line não ocupam sala.</td></tr>
+<tr><td>Resultado esperado</td><td>Objeto ResultadoDaBusca com as disciplinas encontradas; o menu mostra cada turma com dias, horário e sala. Sem correspondência, o resultado vazio é uma <b>resposta válida</b>, mostrada como "Nenhuma disciplina encontrada...".</td><td>Lista de objetos Sala livres; o menu mostra a lista. Lista vazia é uma <b>resposta válida</b>, mostrada como "Nenhuma sala livre".</td></tr>
+<tr><td>Alteração de estado</td><td>Nenhuma: consulta somente leitura.</td><td>Nenhuma: consulta somente leitura.</td></tr>
+<tr><td>Rejeição relevante</td><td>Termo curto ("C"): exceção TermoDeBuscaInvalido; o menu mostra "Entrada recusada" e continua.</td><td>Prédio inexistente ("CAD9"): exceção PredioDesconhecido com a lista de prédios válidos. Também: andar não numérico ("dois"), andar negativo, hora inválida ("25:00") e dia desconhecido.</td></tr>
+<tr><td>O que permanece inalterado</td><td colspan="2">Em qualquer consulta ou rejeição, o catálogo continua com as mesmas disciplinas, turmas, aulas e salas (verificado nos testes automáticos comparando um retrato do catálogo antes e depois).</td></tr>
+</table>
+<p><b>Dados de demonstração.</b> A base é uma amostra real de 110 registros do quadro do ICEx (disciplinas de MAT, DCC e EST), consultada em 15/10/2026 e incluída no ZIP. A amostra não contém todas as disciplinas do ICEx.</p>
+
+<h3>3. Modelagem conferida</h3>
+<p>O diagrama abaixo mostra as classes implementadas no recorte. Setas contínuas indicam referências mantidas; setas tracejadas indicam objetos criados ou recebidos como argumento; o triângulo indica herança.</p>
+<div class="diagrama alto">
+<pre class="mermaid" data-nome="classes-prototipo">
+classDiagram
+  direction TB
+  class FonteDeDados {
+    &lt;&lt;abstrata&gt;&gt;
+    +nome() str
+    +coletar() list~RegistroDeAula~
+  }
+  class FonteIcex {
+    &lt;&lt;abstrata&gt;&gt;
+    +coletar() list~RegistroDeAula~
+    #_obter_json() dict
+    +interpretar(dados) list~RegistroDeAula~
+  }
+  class FonteIcexOnline {
+    -url : str
+    #_obter_json() dict
+  }
+  class FonteIcexArquivo {
+    -caminho : Path
+    #_obter_json() dict
+  }
+  class AtualizadorDeBase {
+    -fontes : list~FonteDeDados~
+    +atualizar() CatalogoDeAulas, Relatorio
+  }
+  class CatalogoDeAulas {
+    -disciplinas : dict
+    -salas : dict
+    +buscar_disciplinas(termo) list~Disciplina~
+    +salas_livres(dia, instante, andar, predio) list~Sala~
+    +registrar_aula(...) Aula
+  }
+  class ConsultaDeSalas {
+    -catalogo : CatalogoDeAulas
+    +buscar_por_disciplina(termo) ResultadoDaBusca
+    +salas_livres(dia, instante, andar, predio) list~Sala~
+    +trocar_catalogo(novo)
+  }
+  class MenuTerminal {
+    -consulta : ConsultaDeSalas
+    -formatador : FormatadorDeRespostas
+    +executar()
+    +buscar_disciplina()
+    +consultar_salas_livres()
+  }
+  class FormatadorDeRespostas {
+    +busca(resultado) str
+    +salas_livres(salas, dia, instante, andar) str
+  }
+  class ResultadoDaBusca {
+    +termo : str
+    +disciplinas : list
+    +encontrou() bool
+  }
+  class Disciplina {
+    -codigo : str
+    -nome : str
+    +corresponde(termo) bool
+  }
+  class Turma {
+    -codigo : str
+    +agendar_aula(dia, intervalo, sala, origem) Aula
+  }
+  class Aula {
+    -dia : DiaSemana
+    -intervalo : IntervaloDeHorario
+  }
+  class Sala {
+    -identificador : str
+    -predio : str
+    -andar : int ou None
+    +presencial() bool
+    +esta_livre(dia, instante, aulas) bool
+  }
+  FonteDeDados <|-- FonteIcex
+  FonteIcex <|-- FonteIcexOnline
+  FonteIcex <|-- FonteIcexArquivo
+  AtualizadorDeBase --> "1..*" FonteDeDados : fontes
+  AtualizadorDeBase ..> CatalogoDeAulas : cria
+  MenuTerminal --> "1" ConsultaDeSalas
+  MenuTerminal --> "1" FormatadorDeRespostas
+  ConsultaDeSalas --> "1" CatalogoDeAulas
+  ConsultaDeSalas ..> ResultadoDaBusca : cria
+  FormatadorDeRespostas ..> ResultadoDaBusca : argumento
+  CatalogoDeAulas --> "0..*" Disciplina
+  CatalogoDeAulas --> "0..*" Sala
+  Disciplina --> "1..*" Turma
+  Turma --> "1..*" Aula
+  Aula --> "1" Sala
+</pre>
+</div>
+<p class="legenda">Figura 1. Diagrama de classes do recorte implementado.</p>
+
+<p><b>Sequência principal revisada (F01).</b> Em relação à segunda entrega, o pedido agora entra pelo MenuTerminal, e não pelo bot. O restante da colaboração é o mesmo.</p>
+<div class="pagina-paisagem">
+<div class="diagrama">
+<pre class="mermaid" data-nome="sequencia-f01-revisada">
+sequenceDiagram
+  autonumber
+  actor aluno as Aluno (terminal)
+  participant menu as menu:<br>MenuTerminal
+  participant consulta as consulta:<br>ConsultaDeSalas
+  participant cat as catalogo:<br>CatalogoDeAulas
+  participant bd as dcc011:<br>Disciplina
+  participant fmt as formatador:<br>FormatadorDeRespostas
+  aluno->>+menu: opção 1, "banco de dados"
+  menu->>+consulta: buscar_por_disciplina("banco de dados")
+  Note over consulta: R9: 14 caracteres ≥ 3
+  consulta->>+cat: buscar_disciplinas("banco de dados")
+  loop cada disciplina do catálogo
+    cat->>bd: corresponde("banco de dados")
+    bd-->>cat: true (demais: false)
+  end
+  cat-->>-consulta: [dcc011]
+  create participant r as r:<br>ResultadoDaBusca
+  consulta->>r: cria("banco de dados", [dcc011])
+  consulta-->>-menu: r
+  menu->>+fmt: busca(r)
+  fmt->>bd: turmas e aulas
+  bd-->>fmt: TB e TE, 4 aulas
+  fmt-->>-menu: texto da resposta
+  menu-->>-aluno: imprime turmas, dias, horários e salas
+  Note over consulta,bd: somente leitura: catálogo inalterado
+</pre>
+</div>
+<p class="legenda">Figura 2. Sequência principal da F01, revisada para o protótipo.</p>
+</div>
+
+<p><b>Diferenças em relação à entrega anterior.</b></p>
+<ul>
+<li>O ponto de entrada da demonstração é o <b>MenuTerminal</b>. O bot do Telegram continua no código, mas não faz parte deste recorte.</li>
+<li>A fonte de dados foi dividida em uma hierarquia: <b>FonteIcex</b> (abstrata) concentra a conversão do JSON, e <b>FonteIcexOnline</b> e <b>FonteIcexArquivo</b> definem de onde o JSON vem.</li>
+<li>A <b>F02</b> foi implementada com validações próprias: prédio desconhecido (PredioDesconhecido) e andar negativo (DadoInvalido) são rejeitados pela ConsultaDeSalas; andar não numérico e hora inválida são rejeitados ao converter a entrada.</li>
+<li><b>trocar_catalogo</b> passou a validar antes de alterar: recusa um catálogo vazio e mantém o atual.</li>
+<li>O modelo de domínio (Disciplina, Turma, Aula, Sala) e as regras R1 a R11 da segunda entrega não mudaram.</li>
+</ul>
+
+<h2>Etapa 2. Versão executável</h2>
+<h3>4. Herança e polimorfismo</h3>
+<p>O quadro do ICEx é o mesmo JSON, mas o projeto precisa obtê-lo de duas formas: baixando do site (uso real, com dados atualizados) e lendo uma cópia local (demonstração sem internet, testes com dados conhecidos e servidor sem acesso ao site). A conversão do JSON em registros é igual nos dois casos, por isso fica na classe abstrata FonteIcex; cada subclasse implementa apenas <code>_obter_json()</code>. O AtualizadorDeBase chama <code>fonte.coletar()</code> sem saber qual classe concreta recebeu. Uma futura fonte da Escola de Engenharia entraria como outra subclasse de FonteDeDados, sem mudar o atualizador.</p>
+<div class="codigo"><div class="arquivo">guia_salas/fontes/base.py</div><pre><span class="k">class</span> <span class="nc">FonteDeDados</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Fonte de registros de aulas.&quot;&quot;&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">nome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Nome curto da fonte, usado para indicar a origem dos dados.&quot;&quot;&quot;</span>
+
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">coletar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RegistroDeAula</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Obtém os registros de aulas da fonte.&quot;&quot;&quot;</span>
+</pre></div>
+<div class="codigo"><div class="arquivo">guia_salas/fontes/icex.py</div><pre><span class="k">def</span> <span class="nf">coletar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">RegistroDeAula</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Obtém o JSON pela forma definida na subclasse e o converte em registros.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpretar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_obter_json</span><span class="p">())</span>
+
+<span class="nd">@abstractmethod</span>
+<span class="k">def</span> <span class="nf">_obter_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Devolve o JSON do quadro do ICEx ou lança FonteIndisponivel.&quot;&quot;&quot;</span>
+
+<span class="k">def</span> <span class="nf">_obter_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Faz a requisição HTTP e devolve o JSON.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">requests</span>
+    <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FonteIndisponivel</span><span class="p">(</span><span class="s2">&quot;Instale a biblioteca requests para baixar os dados.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">erro</span>
+    <span class="n">sessao</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sessao</span> <span class="ow">or</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">resposta</span> <span class="o">=</span> <span class="n">sessao</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_tempo_limite</span><span class="p">,</span>
+                              <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;User-Agent&quot;</span><span class="p">:</span> <span class="s2">&quot;GuiaDeSalas/0.1&quot;</span><span class="p">})</span>
+        <span class="n">resposta</span><span class="o">.</span><span class="n">raise_for_status</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">resposta</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">RequestException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FonteIndisponivel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Falha ao consultar o ICEx: </span><span class="si">{</span><span class="n">erro</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">erro</span>
+
+<span class="k">def</span> <span class="nf">_obter_json</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Lê e decodifica o arquivo.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_caminho</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">FonteIndisponivel</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Falha ao ler </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_caminho</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">erro</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">erro</span>
+</pre></div>
+<p>A chamada comum, no AtualizadorDeBase:</p>
+<div class="codigo"><div class="arquivo">guia_salas/servicos/atualizador.py</div><pre><span class="k">def</span> <span class="nf">atualizar</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">CatalogoDeAulas</span><span class="p">,</span> <span class="n">RelatorioDeAtualizacao</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Coleta as fontes e devolve o catálogo consolidado com o relatório.&quot;&quot;&quot;</span>
+    <span class="n">catalogo</span> <span class="o">=</span> <span class="n">CatalogoDeAulas</span><span class="p">()</span>
+    <span class="n">relatorio</span> <span class="o">=</span> <span class="n">RelatorioDeAtualizacao</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">fonte</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fontes</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">registros</span> <span class="o">=</span> <span class="n">fonte</span><span class="o">.</span><span class="n">coletar</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">FonteIndisponivel</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+            <span class="n">relatorio</span><span class="o">.</span><span class="n">fontes_com_falha</span><span class="p">[</span><span class="n">fonte</span><span class="o">.</span><span class="n">nome</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">erro</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">registro</span> <span class="ow">in</span> <span class="n">registros</span><span class="p">:</span>
+            <span class="n">relatorio</span><span class="o">.</span><span class="n">registros_lidos</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">relatorio</span><span class="o">.</span><span class="n">aulas_registradas</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">incluir</span><span class="p">(</span><span class="n">catalogo</span><span class="p">,</span> <span class="n">registro</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">ErroDeDominio</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+                <span class="n">relatorio</span><span class="o">.</span><span class="n">recusados</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">registro</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">erro</span><span class="p">)))</span>
+    <span class="k">return</span> <span class="n">catalogo</span><span class="p">,</span> <span class="n">relatorio</span>
+</pre></div>
+<p>O teste abaixo executa <code>coletar()</code> nas duas classes concretas pela mesma chamada e confere que o resultado é o mesmo. A fonte online usa uma sessão simulada (SessaoFalsa), que devolve o JSON de teste sem acessar a internet.</p>
+<div class="codigo"><div class="arquivo">tests/test_fontes.py</div><pre><span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dados</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">REGISTROS_TESTE</span><span class="o">.</span><span class="n">read_text</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">sessao</span> <span class="o">=</span> <span class="n">SessaoFalsa</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dados</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">fontes</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">FonteDeDados</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">FonteIcexArquivo</span><span class="p">(</span><span class="n">REGISTROS_TESTE</span><span class="p">),</span>
+        <span class="n">FonteIcexOnline</span><span class="p">(</span><span class="s2">&quot;https://exemplo.invalido/recupera_salas.php&quot;</span><span class="p">,</span> <span class="n">sessao</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sessao</span><span class="p">),</span>
+    <span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">test_duas_fontes_concretas_entregam_os_mesmos_registros</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">resultados</span> <span class="o">=</span> <span class="p">[</span><span class="n">fonte</span><span class="o">.</span><span class="n">coletar</span><span class="p">()</span> <span class="k">for</span> <span class="n">fonte</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fontes</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">resultados</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">resultados</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">resultados</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([</span><span class="s2">&quot;https://exemplo.invalido/recupera_salas.php&quot;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sessao</span><span class="o">.</span><span class="n">enderecos</span><span class="p">)</span>
+</pre></div>
+
+<h3>5. Estado e responsabilidades</h3>
+<ul>
+<li>Todos os atributos são privados por convenção (prefixo <code>_</code>) e lidos por propriedades somente leitura, por exemplo <code>Sala.identificador</code>, <code>Sala.andar</code> e <code>Disciplina.turmas</code>.</li>
+<li>Não há setters para dados que vêm da fonte. Disciplinas, turmas, aulas e salas vêm do quadro do ICEx e só mudam por operações específicas: <code>CatalogoDeAulas.registrar_aula</code>, <code>Disciplina.obter_turma</code> e <code>Turma.agendar_aula</code>. Esta última verifica a regra R6 (aulas sobrepostas da mesma turma) antes de alterar.</li>
+<li><code>ConsultaDeSalas.trocar_catalogo</code> é o único ponto que troca o estado da consulta e recusa um catálogo vazio antes de alterar.</li>
+<li>ConsultaDeSalas devolve objetos (ResultadoDaBusca, lista de Sala); o FormatadorDeRespostas transforma esses objetos em texto; o MenuTerminal apenas lê e imprime.</li>
+<li>Classes, construtores, propriedades e métodos têm docstrings curtas que dizem o que cada um faz.</li>
+</ul>
+<div class="codigo"><div class="arquivo">guia_salas/servicos/consulta.py</div><pre><span class="k">def</span> <span class="nf">trocar_catalogo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">novo</span><span class="p">:</span> <span class="n">CatalogoDeAulas</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Passa a responder com um catálogo recém-atualizado; recusa um catálogo vazio e mantém o atual.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">novo</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DadoInvalido</span><span class="p">(</span><span class="s2">&quot;O catálogo novo está vazio; a base atual foi mantida.&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_catalogo</span> <span class="o">=</span> <span class="n">novo</span>
+
+<span class="k">def</span> <span class="nf">salas_livres</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dia</span><span class="p">:</span> <span class="n">DiaSemana</span><span class="p">,</span> <span class="n">instante</span><span class="p">:</span> <span class="n">time</span><span class="p">,</span> <span class="n">andar</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">predio</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Sala</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Salas presenciais sem aula no dia e instante informados.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">andar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">andar</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DadoInvalido</span><span class="p">(</span><span class="s2">&quot;O andar não pode ser negativo.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">predio</span><span class="p">:</span>
+        <span class="n">conhecidos</span> <span class="o">=</span> <span class="p">{</span><span class="n">p</span><span class="o">.</span><span class="n">casefold</span><span class="p">():</span> <span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalogo</span><span class="o">.</span><span class="n">predios</span><span class="p">}</span>
+        <span class="k">if</span> <span class="n">predio</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">conhecidos</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">PredioDesconhecido</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Prédio </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">predio</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2"> não encontrado. Prédios na base: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_catalogo</span><span class="o">.</span><span class="n">predios</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">predio</span> <span class="o">=</span> <span class="n">conhecidos</span><span class="p">[</span><span class="n">predio</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">casefold</span><span class="p">()]</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_catalogo</span><span class="o">.</span><span class="n">salas_livres</span><span class="p">(</span><span class="n">dia</span><span class="p">,</span> <span class="n">instante</span><span class="p">,</span> <span class="n">andar</span><span class="p">,</span> <span class="n">predio</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+<h3>6. Execução pelo terminal</h3>
+<p>O comando <code>python -m guia_salas</code> carrega a amostra e abre um menu com as duas funcionalidades. Falhas de conversão (andar "dois", hora "25:00", dia "xyz") e rejeições de regra são mostradas como "Entrada recusada: ..." e o menu continua, sem alterar a base. Opções inexistentes geram "Opção inválida", e o fim da entrada (Ctrl+D) encerra o programa sem erro.</p>
+<div class="codigo"><div class="arquivo">guia_salas/terminal.py</div><pre><span class="k">def</span> <span class="nf">consultar_salas_livres</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;F02: pede dia, hora, andar e prédio e mostra as salas sem aula naquele instante.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">dia</span> <span class="o">=</span> <span class="n">DiaSemana</span><span class="o">.</span><span class="n">de_texto</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ler</span><span class="p">(</span><span class="s2">&quot;Dia (seg, ter, qua, qui, sex, sab): &quot;</span><span class="p">))</span>
+        <span class="n">instante</span> <span class="o">=</span> <span class="n">ler_hora</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ler</span><span class="p">(</span><span class="s2">&quot;Hora (HH:MM): &quot;</span><span class="p">))</span>
+        <span class="n">andar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ler_andar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ler</span><span class="p">(</span><span class="s2">&quot;Andar (vazio para todos): &quot;</span><span class="p">))</span>
+        <span class="n">predio</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ler</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Prédio (</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_consulta</span><span class="o">.</span><span class="n">catalogo</span><span class="o">.</span><span class="n">predios</span><span class="p">)</span><span class="si">}</span><span class="s2">, vazio para todos): &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">salas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_consulta</span><span class="o">.</span><span class="n">salas_livres</span><span class="p">(</span><span class="n">dia</span><span class="p">,</span> <span class="n">instante</span><span class="p">,</span> <span class="n">andar</span><span class="p">,</span> <span class="n">predio</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ErroDeDominio</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_escrever</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Entrada recusada: </span><span class="si">{</span><span class="n">erro</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_escrever</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_formatador</span><span class="o">.</span><span class="n">salas_livres</span><span class="p">(</span><span class="n">salas</span><span class="p">,</span> <span class="n">dia</span><span class="p">,</span> <span class="n">instante</span><span class="p">,</span> <span class="n">andar</span><span class="p">))</span>
+
+<span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">_ler_andar</span><span class="p">(</span><span class="n">texto</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converte o andar digitado; vazio significa todos os andares.&quot;&quot;&quot;</span>
+    <span class="n">texto</span> <span class="o">=</span> <span class="n">texto</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">texto</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">texto</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">erro</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DadoInvalido</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Andar inválido: </span><span class="se">\&quot;</span><span class="si">{</span><span class="n">texto</span><span class="si">}</span><span class="se">\&quot;</span><span class="s2">. Use um número, como 2.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">erro</span>
+</pre></div>
+
+<h3>Dados, persistência e limites desta versão</h3>
+<p>Os dados ficam apenas na memória, carregados da amostra a cada execução. Como as duas funcionalidades são consultas, nada é alterado, e nada se perde ao encerrar além da própria base carregada.</p>
+<table>
+<tr><th style="width:26%">Item</th><th>Registro</th></tr>
+<tr><td>Dados a salvar e recuperar</td><td>Disciplinas (código, nome), turmas (código), aulas (dia, início, fim, origem), salas (prédio, identificador, andar), data e hora da última atualização e os registros recusados de cada atualização.</td></tr>
+<tr><td>Solução a investigar</td><td>SQLite, pelo módulo <code>sqlite3</code> da biblioteca padrão: um único arquivo, sem servidor, adequado ao servidor próprio previsto na proposta.</td></tr>
+<tr><td>Fontes técnicas consultadas</td><td>Documentação oficial do Python, módulo sqlite3 (https://docs.python.org/3/library/sqlite3.html); SQLite, "Appropriate Uses For SQLite" (https://www.sqlite.org/whentouse.html).</td></tr>
+<tr><td>Dúvida</td><td>A cada atualização, substituir toda a base numa transação ou gravar só as diferenças, guardando histórico para avisar o aluno quando uma sala mudar?</td></tr>
+<tr><td>Próximo experimento</td><td>Criar as tabelas disciplina, turma, aula e sala, gravar a amostra de 110 registros e comparar o tempo de abrir o programa lendo do SQLite com o tempo de baixar o JSON do ICEx.</td></tr>
+</table>
+<p><b>Simulações identificadas.</b> (1) No modo padrão, a cópia local do JSON (FonteIcexArquivo) substitui o download do site; o resultado é o mesmo formato de registros. (2) Nos testes, a SessaoFalsa substitui a conexão HTTP da FonteIcexOnline e devolve o JSON de teste. A regra central das duas funcionalidades (correspondência do termo e ocupação das salas) é sempre executada pelo código do projeto.</p>
+
+<h2>Etapa 3. Verificação</h2>
+<h3>7. Cenários planejados e executados</h3>
+<p>Os resultados esperados foram definidos antes da execução, lendo diretamente o JSON da amostra. Cada cenário começa com o programa recém-aberto (base com 30 disciplinas e 199 aulas).</p>
+<table>
+<tr><th style="width:9%">Cenário</th><th style="width:12%">Tipo</th><th style="width:24%">Entradas</th><th style="width:30%">Resultado esperado</th><th>Observado e conclusão</th></tr>
+<tr><td>CP1</td><td>Válido (F01)</td><td>Opção 1; "banco de dados"</td><td>DCC011, TB: Seg/Qua 09:25-11:05, sala 2014 - DCC (ICEx, 2º andar); TE: Ter/Qui 19:00-20:40, sala 213 (CAD3, 2º andar)</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+<tr><td>CP2</td><td>Rejeição (F02, conversão)</td><td>Opção 2; ter; 14:00; andar "dois"</td><td>"Entrada recusada: Andar inválido: "dois". Use um número, como 2."; menu continua</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+<tr><td>CP3</td><td>Rejeição (F02, regra)</td><td>Opção 2; ter; 14:00; 1; prédio "CAD9"</td><td>"Entrada recusada: Prédio "CAD9" não encontrado. Prédios na base: CAD1, CAD2, CAD3, ICEx."</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+<tr><td>CP4</td><td>Sequência (F01 e F02)</td><td>Opção 1, "banco de dados"; depois opção 2: seg; 09:30; 2; ICEx</td><td>Primeiro o resultado de CP1; depois salas livres: 2008 - MAT, 2009 - DCC, 2013 - DCC, 2015 - DCC, 2031, 2032 MAT. A sala 2014 - DCC, ocupada por DCC011-TB, não aparece.</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+<tr><td>CP5</td><td>Limite (F02)</td><td>Opção 2; seg; 11:05; 2; ICEx</td><td>As 7 salas do 2º andar do ICEx, incluindo 2014 - DCC: a aula de DCC011-TB termina às 11:05 e o fim é exclusivo.</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+<tr><td>CP6</td><td>Limite (F01, sem resultado)</td><td>Opção 1; "Programação Orientada a Objetos"</td><td>Resposta vazia: "Nenhuma disciplina encontrada para "Programação Orientada a Objetos"." O termo é válido; a disciplina só não está no quadro do ICEx.</td><td>Igual ao esperado. <span class="ok">Aprovado.</span></td></tr>
+</table>
+
+<h3>8. Testes automatizados (unittest)</h3>
+<p>São 19 testes em quatro arquivos. Cada teste monta um catálogo novo a partir de <code>tests/dados/registros_teste.json</code> (11 registros reais: 7 disciplinas, 19 aulas), sem depender de outro teste. Nas consultas e rejeições, os testes comparam um retrato completo do catálogo antes e depois.</p>
+<table>
+<tr><th style="width:26%">Arquivo</th><th>O que verifica</th></tr>
+<tr><td>test_busca_disciplina.py</td><td>F01: busca por nome e por código (válidos), termo curto (rejeição) e disciplina ausente (resposta vazia válida), sempre com o catálogo inalterado.</td></tr>
+<tr><td>test_salas_livres.py</td><td>F02: sala ocupada não aparece, fim exclusivo, turma conjunta ocupa a sala, aula on-line não vira sala livre, prédio desconhecido e andar negativo (rejeições) com catálogo inalterado.</td></tr>
+<tr><td>test_fontes.py</td><td>Polimorfismo: as duas fontes concretas entregam os mesmos registros e o mesmo catálogo; arquivo inexistente; separação de prédio e sala.</td></tr>
+<tr><td>test_menu.py</td><td>Menu: busca, andar não numérico, hora inválida, opção inválida e fim da entrada, com catálogo inalterado.</td></tr>
+</table>
+<div class="codigo"><div class="arquivo">tests/test_salas_livres.py</div><pre><span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">catalogo</span> <span class="o">=</span> <span class="n">novo_catalogo</span><span class="p">()</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">consulta</span> <span class="o">=</span> <span class="n">ConsultaDeSalas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalogo</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">antes</span> <span class="o">=</span> <span class="n">retrato</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalogo</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_sala_ocupada_nao_aparece</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">livres</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">identificadores</span><span class="p">(</span><span class="n">DiaSemana</span><span class="o">.</span><span class="n">SEGUNDA</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">30</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;icex&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([</span><span class="s2">&quot;2009 - DCC&quot;</span><span class="p">,</span> <span class="s2">&quot;2013 - DCC&quot;</span><span class="p">],</span> <span class="n">livres</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antes</span><span class="p">,</span> <span class="n">retrato</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalogo</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">test_predio_desconhecido_e_rejeitado_sem_alterar_catalogo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">PredioDesconhecido</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">consulta</span><span class="o">.</span><span class="n">salas_livres</span><span class="p">(</span><span class="n">DiaSemana</span><span class="o">.</span><span class="n">TERCA</span><span class="p">,</span> <span class="n">time</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;CAD9&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">antes</span><span class="p">,</span> <span class="n">retrato</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">catalogo</span><span class="p">))</span>
+</pre></div>
+
+<h3>9. Evidências</h3>
+<p>As capturas abaixo são a saída real do programa no terminal, executado em 02/11/2026 com Python 3.13.16. As mesmas saídas estão em <code>docs/prototipo/evidencias/</code>.</p>
+<div class="terminal"><div class="barra">CP1. Válido: busca por "banco de dados"</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 1
+Nome ou código da disciplina: banco de dados
+DCC011 - INTRODUCAO A BANCO DE DADOS
+  TB: Seg/Qua 09:25-11:05, sala 2014 - DCC (ICEx, 2º andar)
+  TE: Ter/Qui 19:00-20:40, sala 213 (CAD3, 2º andar)
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">CP2. Rejeição: andar não numérico</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 2
+Dia (seg, ter, qua, qui, sex, sab): ter
+Hora (HH:MM): 14:00
+Andar (vazio para todos): dois
+Entrada recusada: Andar inválido: &quot;dois&quot;. Use um número, como 2.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">CP3. Rejeição: prédio inexistente</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 2
+Dia (seg, ter, qua, qui, sex, sab): ter
+Hora (HH:MM): 14:00
+Andar (vazio para todos): 1
+Prédio (CAD1, CAD2, CAD3, ICEx, vazio para todos): CAD9
+Entrada recusada: Prédio &quot;CAD9&quot; não encontrado. Prédios na base: CAD1, CAD2, CAD3, ICEx.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">CP4. Sequência: busca e depois salas livres no mesmo andar</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 1
+Nome ou código da disciplina: banco de dados
+DCC011 - INTRODUCAO A BANCO DE DADOS
+  TB: Seg/Qua 09:25-11:05, sala 2014 - DCC (ICEx, 2º andar)
+  TE: Ter/Qui 19:00-20:40, sala 213 (CAD3, 2º andar)
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 2
+Dia (seg, ter, qua, qui, sex, sab): seg
+Hora (HH:MM): 09:30
+Andar (vazio para todos): 2
+Prédio (CAD1, CAD2, CAD3, ICEx, vazio para todos): ICEx
+Salas livres no 2º andar (Segunda, 09:30):
+  2008 - MAT (ICEx)
+  2009 - DCC (ICEx)
+  2013 - DCC (ICEx)
+  2015 - DCC (ICEx)
+  2031 (ICEx)
+  2032 MAT (ICEx)
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">CP5. Limite: sala livre no horário de término</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 2
+Dia (seg, ter, qua, qui, sex, sab): seg
+Hora (HH:MM): 11:05
+Andar (vazio para todos): 2
+Prédio (CAD1, CAD2, CAD3, ICEx, vazio para todos): ICEx
+Salas livres no 2º andar (Segunda, 11:05):
+  2008 - MAT (ICEx)
+  2009 - DCC (ICEx)
+  2013 - DCC (ICEx)
+  2014 - DCC (ICEx)
+  2015 - DCC (ICEx)
+  2031 (ICEx)
+  2032 MAT (ICEx)
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">CP6. Limite: disciplina fora do quadro (resposta vazia válida)</div><pre>$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 1
+Nome ou código da disciplina: Programação Orientada a Objetos
+Nenhuma disciplina encontrada para &quot;Programação Orientada a Objetos&quot;.
+Tente pelo código, como DCC011.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.</pre></div>
+<div class="terminal"><div class="barra">Resultado dos testes automatizados</div><pre>$ python -m unittest discover -s tests -v
+$ python -m unittest discover -s tests -v
+test_busca_por_codigo_ignora_maiusculas (test_busca_disciplina.TestBuscaDisciplina.test_busca_por_codigo_ignora_maiusculas) ... ok
+test_busca_por_nome_devolve_turmas_e_salas (test_busca_disciplina.TestBuscaDisciplina.test_busca_por_nome_devolve_turmas_e_salas) ... ok
+test_disciplina_ausente_devolve_resultado_vazio_valido (test_busca_disciplina.TestBuscaDisciplina.test_disciplina_ausente_devolve_resultado_vazio_valido) ... ok
+test_termo_curto_e_rejeitado_sem_alterar_catalogo (test_busca_disciplina.TestBuscaDisciplina.test_termo_curto_e_rejeitado_sem_alterar_catalogo) ... ok
+test_arquivo_inexistente_lanca_fonte_indisponivel (test_fontes.TestFontes.test_arquivo_inexistente_lanca_fonte_indisponivel) ... ok
+test_arquivo_inexistente_vira_falha_no_relatorio (test_fontes.TestFontes.test_arquivo_inexistente_vira_falha_no_relatorio) ... ok
+test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte (test_fontes.TestFontes.test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte) ... ok
+test_duas_fontes_concretas_entregam_os_mesmos_registros (test_fontes.TestFontes.test_duas_fontes_concretas_entregam_os_mesmos_registros) ... ok
+test_separacao_de_predio_e_sala (test_fontes.TestFontes.test_separacao_de_predio_e_sala) ... ok
+test_andar_nao_numerico_e_recusado_e_menu_continua (test_menu.TestMenu.test_andar_nao_numerico_e_recusado_e_menu_continua) ... ok
+test_busca_pelo_menu (test_menu.TestMenu.test_busca_pelo_menu) ... ok
+test_fim_da_entrada_encerra_sem_erro (test_menu.TestMenu.test_fim_da_entrada_encerra_sem_erro) ... ok
+test_hora_invalida_e_opcao_invalida (test_menu.TestMenu.test_hora_invalida_e_opcao_invalida) ... ok
+test_andar_negativo_e_rejeitado (test_salas_livres.TestSalasLivres.test_andar_negativo_e_rejeitado) ... ok
+test_aula_online_nao_vira_sala_livre (test_salas_livres.TestSalasLivres.test_aula_online_nao_vira_sala_livre) ... ok
+test_predio_desconhecido_e_rejeitado_sem_alterar_catalogo (test_salas_livres.TestSalasLivres.test_predio_desconhecido_e_rejeitado_sem_alterar_catalogo) ... ok
+test_sala_fica_livre_no_horario_de_termino (test_salas_livres.TestSalasLivres.test_sala_fica_livre_no_horario_de_termino) ... ok
+test_sala_ocupada_nao_aparece (test_salas_livres.TestSalasLivres.test_sala_ocupada_nao_aparece) ... ok
+test_turma_conjunta_ocupa_a_sala (test_salas_livres.TestSalasLivres.test_turma_conjunta_ocupa_a_sala) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.142s
+
+OK</pre></div>
+
+<h2>Etapa 4. Balanço do incremento</h2>
+<h3>10. O que funciona, o que é simulado e o que falta</h3>
+<table>
+<tr><th style="width:22%">Situação</th><th>Itens</th></tr>
+<tr><td>Funciona</td><td>F01 e F02 pelo menu do terminal, com a amostra real do ICEx; todas as validações e rejeições dos contratos; 19 testes automatizados passando.</td></tr>
+<tr><td>Simulado</td><td>O download do site é substituído pela cópia local no modo padrão e pela SessaoFalsa nos testes.</td></tr>
+<tr><td>Implementado, mas fora da demonstração</td><td>Opção <code>--online</code> (lista completa do site; não executada neste ambiente porque o acesso ao site estava bloqueado aqui), bot do Telegram (<code>--telegram</code>; não testado com um token real) e preenchimento de grade em planilha.</td></tr>
+<tr><td>Não implementado</td><td>Persistência em banco de dados; consulta de salas da Escola de Engenharia; reconhecimento de abreviações ("BD", "GAAL").</td></tr>
+<tr><td>Limitações</td><td>A amostra tem 110 registros e não cobre todo o quadro do ICEx. Salas que não recebem nenhuma aula não aparecem como livres. "Seg-Sex" é lido como segunda e sexta, o que ainda precisa de confirmação. O andar é deduzido do número da sala e fica desconhecido em casos como "AUD. II".</td></tr>
+</table>
+<table>
+<tr><th style="width:18%">Funcionalidade</th><th style="width:46%">Classes</th><th>Testes</th></tr>
+<tr><td>F01</td><td>MenuTerminal, ConsultaDeSalas, CatalogoDeAulas, Disciplina, ResultadoDaBusca, FormatadorDeRespostas</td><td>test_busca_disciplina.py; test_menu.py</td></tr>
+<tr><td>F02</td><td>MenuTerminal, ConsultaDeSalas, CatalogoDeAulas, Sala, Aula, IntervaloDeHorario, DiaSemana, FormatadorDeRespostas</td><td>test_salas_livres.py; test_menu.py</td></tr>
+<tr><td>Carga da base (apoio às duas)</td><td>FonteDeDados, FonteIcex, FonteIcexOnline, FonteIcexArquivo, AtualizadorDeBase</td><td>test_fontes.py</td></tr>
+</table>
+<p><b>Contribuição.</b> Trabalho individual: Natan Gaspar de Souza é o único integrante e responsável por todas as partes do incremento.</p>
+<p><b>Próximos passos até o produto final.</b> (1) Persistência em SQLite, seguindo o experimento descrito na etapa 2. (2) Atualização periódica da base a partir do site, com o relatório de registros recusados. (3) Disponibilizar F01 e F02 pelo bot do Telegram, que já usa as mesmas classes de consulta. (4) Validar com colegas a decisão de mostrar todas as turmas e o uso de abreviações. (5) Avaliar a inclusão da Escola de Engenharia como nova subclasse de FonteDeDados.</p>
+</body></html>

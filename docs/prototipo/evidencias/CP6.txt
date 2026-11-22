@@ -1,0 +1,17 @@
+$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 1
+Nome ou código da disciplina: Programação Orientada a Objetos
+Nenhuma disciplina encontrada para "Programação Orientada a Objetos".
+Tente pelo código, como DCC011.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.

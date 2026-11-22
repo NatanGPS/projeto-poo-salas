@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Guia de Salas: guia rápido de estudo</title>
+<link rel="stylesheet" href="../_estilo/documento.css">
+<style>
+.diagrama pre.mermaid { background: none; border: 0; }
+.diagrama svg { max-height: 150mm; }
+.diagrama svg[aria-roledescription="flowchart-v2"] { min-width: 55%; max-height: 95mm; }
+td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
+</style>
+</head><body>
+<h1>Guia de Salas: guia rápido de estudo</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+<p>Resumo da arquitetura para estudar e apresentar. A versão completa, com todos os métodos e o plano de melhorias, está em <code>Guia-de-Salas-Arquitetura.pdf</code>.</p>
+<h2>1. A ideia em uma frase</h2>
+<p>O programa baixa o quadro de salas do ICEx, transforma cada linha em objetos (disciplina, turma, aula, sala) e responde duas perguntas do aluno: <strong>onde é a aula de tal disciplina</strong> (F01) e <strong>qual sala está livre agora</strong> (F02), pelo terminal ou pelo Telegram.</p>
+<h2>2. Analogia: uma secretaria</h2>
+<table>
+<thead>
+<tr>
+<th>Na secretaria</th>
+<th>No código</th>
+<th>Faz o quê</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Carteiro que traz a lista de aulas</td>
+<td><strong>Fonte</strong> (<code>FonteIcexOnline</code>, <code>FonteIcexArquivo</code>)</td>
+<td>Busca os dados no site ou num arquivo.</td>
+</tr>
+<tr>
+<td>Secretário que confere e arquiva</td>
+<td><strong>AtualizadorDeBase</strong></td>
+<td>Valida cada linha e descarta as erradas.</td>
+</tr>
+<tr>
+<td>Fichário com as fichas</td>
+<td><strong>CatalogoDeAulas</strong></td>
+<td>Guarda todas as disciplinas, turmas, aulas e salas em memória.</td>
+</tr>
+<tr>
+<td>Atendente do balcão</td>
+<td><strong>ConsultaDeSalas</strong></td>
+<td>Recebe a pergunta, confere se faz sentido e procura no fichário.</td>
+</tr>
+<tr>
+<td>Quem escreve a resposta</td>
+<td><strong>FormatadorDeRespostas</strong></td>
+<td>Transforma o resultado em texto legível.</td>
+</tr>
+<tr>
+<td>Porta de entrada</td>
+<td><strong>MenuTerminal</strong> ou <strong>BotGuiaDeSalas</strong></td>
+<td>Recebe o que o aluno digitou e mostra a resposta.</td>
+</tr>
+</tbody>
+</table>
+<h2>3. Diagrama simples</h2>
+<div class="diagrama"><pre class="mermaid">flowchart TB
+  A([&quot;Aluno&quot;]) --&gt; P[&quot;MenuTerminal ou BotGuiaDeSalas&quot;]
+  P --&gt; C[&quot;ConsultaDeSalas&quot;]
+  C --&gt; K[&quot;CatalogoDeAulas&quot;]
+  K --&gt; O[&quot;Disciplina, Turma, Aula, Sala&quot;]
+  F[&quot;FonteIcex&quot;] --&gt; U[&quot;AtualizadorDeBase&quot;]
+  U --&gt; K
+</pre></div>
+<p class="legenda">Figura 1. Quem conversa com quem. Na inicialização, o carteiro e o secretário enchem o fichário; depois, cada pergunta passa pela porta, pelo atendente e pelo fichário.</p>
+
+<h2>4. As classes, uma linha cada</h2>
+<p><strong>Domínio (o mundo real)</strong></p>
+<ul>
+<li><code>Disciplina</code>: código e nome (DCC011, Introdução a Banco de Dados); tem várias turmas.</li>
+<li><code>Turma</code>: uma oferta da disciplina (TB, TE); tem várias aulas.</li>
+<li><code>Aula</code>: um encontro semanal; liga turma, dia, horário e sala.</li>
+<li><code>Sala</code>: lugar físico (2014 - DCC, no ICEx, 2º andar); sabe dizer se está livre.</li>
+<li><code>IntervaloDeHorario</code>: início e fim (09:25-11:05); sabe se contém um instante.</li>
+<li><code>DiaSemana</code>: enumeração de segunda a sábado.</li>
+<li><code>ErroDeDominio</code>: mãe de todos os erros de regra (dado inválido, prédio desconhecido, termo curto).</li>
+</ul>
+<p><strong>Fontes (de onde vêm os dados)</strong></p>
+<ul>
+<li><code>FonteDeDados</code>: classe abstrata; toda fonte precisa ter <code>coletar()</code>.</li>
+<li><code>FonteIcex</code>: abstrata; sabe ler o formato do ICEx.</li>
+<li><code>FonteIcexOnline</code>: baixa do site.</li>
+<li><code>FonteIcexArquivo</code>: lê de um arquivo local.</li>
+</ul>
+<p><strong>Serviços (o trabalho)</strong></p>
+<ul>
+<li><code>AtualizadorDeBase</code>: junta as fontes e monta o catálogo.</li>
+<li><code>CatalogoDeAulas</code>: guarda tudo e faz as buscas.</li>
+<li><code>ConsultaDeSalas</code>: valida a pergunta e chama o catálogo.</li>
+<li><code>PreenchedorDeGrade</code>: completa uma planilha do aluno com as salas.</li>
+</ul>
+<p><strong>Interface (o que o aluno vê)</strong></p>
+<ul>
+<li><code>MenuTerminal</code>: menu de texto.</li>
+<li><code>BotGuiaDeSalas</code>: liga o programa ao Telegram.</li>
+<li><code>ComandosDoBot</code>: entende <code>/sala</code> e <code>/livres</code>, sem depender do Telegram.</li>
+<li><code>FormatadorDeRespostas</code>: monta as mensagens.</li>
+</ul>
+<h2>5. Classe e objeto na prática</h2>
+<p><strong>Classe</strong> é o molde; <strong>objeto</strong> é uma coisa concreta criada a partir dele. A classe <code>Sala</code> existe uma vez no código; com a amostra, o programa cria 43 objetos <code>Sala</code>.</p>
+<p>Uma linha do quadro do ICEx:</p>
+<pre class="saida">{&quot;codigo_materia&quot;: &quot;DCC011&quot;, &quot;nome_materia&quot;: &quot;INTRODUCAO A BANCO DE DADOS&quot;,
+ &quot;turma&quot;: &quot;TB&quot;, &quot;dia_semana&quot;: &quot;Seg-Qua&quot;, &quot;hora_inicial&quot;: &quot;09:25&quot;,
+ &quot;hora_final&quot;: &quot;11:05&quot;, &quot;nome_sala&quot;: &quot;2014 - DCC&quot;}
+</pre>
+<p>vira estes objetos:</p>
+<pre class="saida">Disciplina(&quot;DCC011&quot;, &quot;INTRODUCAO A BANCO DE DADOS&quot;)
+  Turma(&quot;TB&quot;)
+    Aula(SEGUNDA, 09:25-11:05, sala 2014 - DCC)
+    Aula(QUARTA,  09:25-11:05, sala 2014 - DCC)
+Sala(&quot;2014 - DCC&quot;, predio=&quot;ICEx&quot;, andar=2)   compartilhada pelas duas aulas
+IntervaloDeHorario(09:25, 11:05)
+</pre>
+<p>Repare: "Seg-Qua" virou <strong>duas</strong> aulas, e as duas apontam para o <strong>mesmo</strong> objeto <code>Sala</code>. É por isso que a F02 consegue saber que a sala 2014 está ocupada na segunda às 09:30.</p>
+<p>Números com a amostra: 110 linhas lidas, 30 disciplinas, 199 aulas, 43 salas.</p>
+<h2>6. O caminho de uma pergunta no bot</h2>
+<p>O aluno digita <code>/sala banco de dados</code>:</p>
+<ol>
+<li><code>BotGuiaDeSalas</code> recebe a mensagem do Telegram e repassa o texto para <code>ComandosDoBot.sala()</code>.</li>
+<li><code>ComandosDoBot</code> chama <code>ConsultaDeSalas.buscar_por_disciplina("banco de dados")</code>.</li>
+<li><code>ConsultaDeSalas</code> confere se o termo tem pelo menos 3 letras e pede ao <code>CatalogoDeAulas</code> as disciplinas que combinam.</li>
+<li>Cada <code>Disciplina</code> responde se combina com o termo (<code>corresponde()</code>); DCC011 combina.</li>
+<li><code>FormatadorDeRespostas</code> monta o texto e o bot envia:</li>
+</ol>
+<pre class="saida">DCC011 - INTRODUCAO A BANCO DE DADOS
+  TB: Seg/Qua 09:25-11:05, sala 2014 - DCC (ICEx, 2º andar)
+  TE: Ter/Qui 19:00-20:40, sala 213 (CAD3, 2º andar)
+</pre>
+<p><code>/livres seg 9:30 2</code> segue o mesmo caminho, mas o catálogo pergunta a cada <code>Sala</code> se ela está livre naquele dia e hora.</p>
+<h2>7. Conceitos de POO e onde aparecem</h2>
+<table>
+<thead>
+<tr>
+<th>Conceito</th>
+<th>Onde está no projeto</th>
+<th>Como explicar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Classe e objeto</strong></td>
+<td><code>Sala</code> é a classe; "2014 - DCC" e "213 do CAD3" são objetos</td>
+<td>Molde e coisa concreta.</td>
+</tr>
+<tr>
+<td><strong>Encapsulamento</strong></td>
+<td>Atributos privados (<code>_codigo</code>, <code>_aulas</code>) lidos por propriedades (<code>@property</code>)</td>
+<td>Ninguém de fora muda o código de uma disciplina; só lê.</td>
+</tr>
+<tr>
+<td><strong>Herança</strong></td>
+<td><code>FonteIcexOnline</code> e <code>FonteIcexArquivo</code> herdam de <code>FonteIcex</code>, que herda de <code>FonteDeDados</code>; os erros herdam de <code>ErroDeDominio</code></td>
+<td>A parte comum (ler o formato do ICEx) fica escrita uma vez, na mãe.</td>
+</tr>
+<tr>
+<td><strong>Classe abstrata</strong></td>
+<td><code>FonteDeDados</code> e <code>FonteIcex</code> (usam <code>ABC</code> e <code>@abstractmethod</code>)</td>
+<td>Não dá para criar um objeto delas; servem de contrato.</td>
+</tr>
+<tr>
+<td><strong>Polimorfismo</strong></td>
+<td><code>AtualizadorDeBase</code> chama <code>fonte.coletar()</code> sem saber se a fonte é online ou arquivo</td>
+<td>O mesmo comando funciona de jeitos diferentes conforme o objeto.</td>
+</tr>
+<tr>
+<td><strong>Composição</strong></td>
+<td><code>Disciplina</code> contém <code>Turma</code>, que contém <code>Aula</code>; a turma só é criada por <code>obter_turma()</code></td>
+<td>A parte não existe sem o todo.</td>
+</tr>
+<tr>
+<td><strong>Associação</strong></td>
+<td><code>Aula</code> aponta para uma <code>Sala</code>, que é compartilhada por várias aulas</td>
+<td>A sala existe sozinha; a aula só a usa.</td>
+</tr>
+<tr>
+<td><strong>Enumeração</strong></td>
+<td><code>DiaSemana</code></td>
+<td>Lista fechada de valores possíveis.</td>
+</tr>
+<tr>
+<td><strong>Objeto de valor</strong></td>
+<td><code>IntervaloDeHorario</code> (dataclass imutável)</td>
+<td>Dois intervalos com o mesmo horário são iguais; não muda depois de criado.</td>
+</tr>
+<tr>
+<td><strong>Exceções próprias</strong></td>
+<td><code>DadoInvalido</code>, <code>PredioDesconhecido</code>, <code>TermoDeBuscaInvalido</code></td>
+<td>A regra recusa a entrada e a interface mostra o motivo.</td>
+</tr>
+<tr>
+<td><strong>Sobrescrita de métodos especiais</strong></td>
+<td><code>Sala.__eq__</code> e <code>__hash__</code>, <code>__str__</code> em várias classes, <code>CatalogoDeAulas.__len__</code></td>
+<td>Define quando duas salas são a mesma e como cada objeto aparece em texto.</td>
+</tr>
+<tr>
+<td><strong>Injeção de dependência</strong></td>
+<td><code>MenuTerminal</code> recebe <code>ler</code> e <code>escrever</code>; <code>FonteIcexOnline</code> recebe a sessão HTTP</td>
+<td>Nos testes, troca-se o teclado e a internet por versões falsas.</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Perguntas prováveis e respostas curtas</h2>
+<p><strong>Por que separar em camadas?</strong>
+Para trocar uma parte sem mexer nas outras. O terminal e o Telegram usam a mesma <code>ConsultaDeSalas</code>; trocar o site por um arquivo não muda nenhuma regra.</p>
+<p><strong>Onde está a herança e por que ela foi usada?</strong>
+Nas fontes. As duas fontes do ICEx leem o mesmo formato de JSON e só diferem em onde buscam (site ou arquivo). O código de leitura fica em <code>FonteIcex</code>, e cada filha implementa só <code>_obter_json()</code>.</p>
+<p><strong>Onde está o polimorfismo?</strong>
+No <code>AtualizadorDeBase</code>. Ele recebe uma lista de fontes e chama <code>coletar()</code> em cada uma, sem testar o tipo. Uma fonte nova (por exemplo, da Engenharia) entraria sem mudar o atualizador.</p>
+<p><strong>Qual a diferença entre composição e associação aqui?</strong>
+Turma e aula pertencem à disciplina: não existe turma solta. A sala é independente: várias aulas, de turmas diferentes, usam o mesmo objeto <code>Sala</code>.</p>
+<p><strong>Como o encapsulamento protege as regras?</strong>
+Os atributos são privados e só a própria classe cria os objetos dependentes. Por exemplo, só <code>Turma.agendar_aula()</code> cria uma <code>Aula</code>, e é ali que se verifica se a turma já tem outra aula no mesmo horário.</p>
+<p><strong>O que acontece com um dado errado vindo do site?</strong>
+O objeto recusa (por exemplo, <code>IntervaloDeHorario</code> com fim antes do início lança <code>DadoInvalido</code>). O atualizador anota o registro como recusado e continua com os outros.</p>
+<p><strong>Como o programa sabe que uma sala está livre?</strong>
+Ele pega as aulas do dia e pergunta se alguma, naquela sala, contém o horário. O fim é exclusivo: uma aula até 11:05 libera a sala às 11:05.</p>
+<p><strong>Por que <code>ComandosDoBot</code> é separado de <code>BotGuiaDeSalas</code>?</strong>
+<code>BotGuiaDeSalas</code> é a única classe que depende da biblioteca do Telegram. <code>ComandosDoBot</code> recebe e devolve texto, então pode ser testado sem internet e sem token.</p>
+<p><strong>Onde os dados ficam salvos?</strong>
+Por enquanto só na memória; a base é montada de novo a cada início. O próximo passo previsto é usar SQLite.</p>
+<p><strong>Como foi testado?</strong>
+19 testes automatizados com <code>unittest</code>, usando 11 registros reais conhecidos, mais 6 cenários manuais. Comando: <code>python -m unittest discover -s tests -v</code>.</p>
+<h2>9. Para lembrar</h2>
+<ul>
+<li>Quatro camadas: <strong>interface, serviços, domínio, fontes</strong>.</li>
+<li>Três classes centrais para explicar: <strong>Disciplina</strong> (tem turmas), <strong>Sala</strong> (sabe se está livre), <strong>ConsultaDeSalas</strong> (atende as perguntas).</li>
+<li>Exemplo pronto de herança e polimorfismo: <strong>as fontes de dados</strong>.</li>
+<li>Exemplo pronto de composição: <strong>Disciplina, Turma, Aula</strong>.</li>
+</ul>
+<script src="MERMAID"></script>
+<script>mermaid.initialize({startOnLoad:false, theme:'neutral', themeVariables:{fontSize:'15px'}, fontFamily:'DejaVu Sans, Arial', flowchart:{htmlLabels:false}, sequence:{useMaxWidth:true, actorFontSize:15, messageFontSize:15, noteFontSize:14, width:120}, class:{useMaxWidth:true}});
+mermaid.run().then(()=>{document.body.dataset.pronto='1'}).catch(e=>{console.error(String(e));document.body.dataset.pronto='1'});</script>
+</body></html>

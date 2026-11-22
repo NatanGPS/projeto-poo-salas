@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Guia de Salas — Segunda etapa (Aulas 13 e 14)</title>
+<link rel="stylesheet" href="../_estilo/documento.css">
+</head>
+<body>
+
+<h1>Guia de Salas — Segunda etapa (Aulas 13 e 14)</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+
+<h2>Contexto e ajustes à proposta da aula 10</h2>
+<p>O Guia de Salas é um bot de Telegram que responde, numa única consulta rápida, em que sala e horário acontece uma disciplina. O problema descrito na proposta é a lentidão das consultas nos sites institucionais e a necessidade de repetir a busca.</p>
+<p>Ao construir o modelo de domínio e examinar os dados reais, a proposta foi ajustada nos pontos abaixo.</p>
+<table>
+  <tr><th style="width:32%">Ajuste</th><th>Motivo</th></tr>
+  <tr><td><b>Fonte de dados:</b> nesta fase, apenas o quadro "Distribuição de Salas" do ICEx.</td><td>A página do ICEx obtém os dados de uma lista pública em formato JSON, que o programa consegue ler diretamente. O site da Escola de Engenharia fica como ampliação futura, porque o endereço dos seus dados ainda não foi identificado.</td></tr>
+  <tr><td><b>Dados reais</b> no lugar dos fictícios.</td><td>Os exemplos deste documento usam registros reais do quadro do ICEx, consultados em 15/10/2026. Apenas a aluna do cenário (Ana) é fictícia.</td></tr>
+  <tr><td>Novo conceito <b>Turma</b> entre Disciplina e Aula.</td><td>Cada registro do ICEx traz a turma, e a mesma disciplina tem turmas em salas e prédios diferentes. Na proposta, a aula guardava a disciplina como texto e não distinguia as turmas.</td></tr>
+  <tr><td>O horário passou a ser um <b>intervalo</b> (início e fim) e o dia passou a ter valores fixos.</td><td>Os registros trazem "hora_inicial", "hora_final" e "dia_semana" (por exemplo, "Ter-Qui"). Com início e fim é possível comparar horários e responder se uma sala está livre.</td></tr>
+  <tr><td><b>Prédio</b> virou atributo da sala, e o andar pode ser desconhecido.</td><td>O quadro do ICEx inclui salas do próprio ICEx ("1024", "2014 - DCC"), dos prédios CAD1, CAD2 e CAD3 ("CAD3 - Sala 213") e aulas on-line. Para algumas salas, como o "AUD. II", não há número que indique o andar.</td></tr>
+  <tr><td>Termo de busca com no mínimo 3 caracteres.</td><td>Decisão provisória para evitar que termos como "a" devolvam a base inteira (ver pendências).</td></tr>
+</table>
+
+<h2>Etapa 1 — Funcionalidade e cenário de uso</h2>
+<h3>1. Identificação e escolha</h3>
+<p><b>Projeto:</b> Guia de Salas. <b>Integrante:</b> Natan Gaspar de Souza. <b>Funcionalidade:</b> F01 — Consultar a sala de uma disciplina. O aluno envia ao bot <code>/sala</code> seguido do nome ou do código da disciplina.</p>
+<p><b>Quem solicita:</b> o aluno, pelo Telegram. <b>Resultado útil esperado:</b> uma mensagem com cada turma da disciplina e, para cada aula semanal, o dia, o horário de início e fim, a sala, o prédio e o andar. <b>Contribuição para o problema:</b> substitui a busca no site, que é lenta, por uma consulta à base já carregada.</p>
+
+<h3>2. Cenário principal</h3>
+<table>
+  <tr><th style="width:24%">Elemento</th><th>Descrição</th></tr>
+  <tr><td>Quem inicia</td><td>Ana, aluna (fictícia), numa segunda-feira às 09h00, sem saber onde será a aula de Introdução a Banco de Dados.</td></tr>
+  <tr><td>Estado inicial</td><td>A base foi carregada com estes registros reais do ICEx (2 disciplinas, 4 turmas, 8 aulas):<br>
+    • DCC011 — INTRODUCAO A BANCO DE DADOS, turma TB: segunda e quarta, 09:25–11:05, sala "2014 - DCC" (ICEx, 2º andar);<br>
+    • DCC011, turma TE: terça e quinta, 19:00–20:40, sala 213 do CAD3 (2º andar);<br>
+    • DCC024 — LINGUAGENS DE PROGRAMACAO, turma TM: segunda e quarta, 13:00–14:40, sala 309 do CAD3 (3º andar);<br>
+    • DCC024, turma TE: segunda e quarta, 19:00–20:40, sala "2013 - DCC" (ICEx, 2º andar).</td></tr>
+  <tr><td>Entrada</td><td>Mensagem de texto <code>/sala banco de dados</code>. O termo é texto livre, sem unidade. Na resposta, horários são dados em HH:MM (horário de Brasília) e o andar é um número inteiro.</td></tr>
+  <tr><td>Resultado observável</td><td>Ana recebe: "DCC011 — INTRODUCAO A BANCO DE DADOS; TB: Seg/Qua 09:25–11:05, sala 2014 - DCC (ICEx, 2º andar); TE: Ter/Qui 19:00–20:40, sala 213 (CAD3, 2º andar)". A base continua com 2 disciplinas, 4 turmas e 8 aulas.</td></tr>
+  <tr><td>Início e fim</td><td>Começa quando Ana envia o comando e termina quando ela recebe a resposta.</td></tr>
+  <tr><td>Fora do recorte</td><td>Saber em qual turma Ana está matriculada (o bot não conhece a matrícula e mostra todas as turmas); indicar o caminho até a sala; baixar a lista do ICEx; consultar salas livres; enviar a grade em planilha.</td></tr>
+  <tr><td>Dados fictícios</td><td>Somente a aluna Ana e o momento da consulta. Disciplinas, turmas, horários e salas são registros reais do quadro do ICEx.</td></tr>
+</table>
+
+<h2>Etapa 2 — Glossário e modelo de domínio</h2>
+<h3>3. Glossário</h3>
+<table>
+  <tr><th style="width:17%">Termo</th><th style="width:13%">Tipo</th><th>Significado no projeto</th><th style="width:27%">Dúvidas</th></tr>
+  <tr><td>Aluno</td><td>Ator externo</td><td>Pessoa que consulta o bot. Não é cadastrado nem identificado.</td><td>—</td></tr>
+  <tr><td>Disciplina</td><td>Conceito</td><td>Componente curricular identificado por código (ex.: DCC011) e nome.</td><td>—</td></tr>
+  <tr><td>Turma</td><td>Conceito</td><td>Oferta de uma disciplina no semestre, com código próprio (ex.: TB) e horários próprios.</td><td>Códigos como "TM2/ TN3" representam duas turmas juntas? (ver turma conjunta)</td></tr>
+  <tr><td>Aula</td><td>Conceito</td><td>Encontro semanal de uma turma: um dia, um intervalo de horário e uma sala.</td><td>—</td></tr>
+  <tr><td>Sala</td><td>Conceito</td><td>Espaço onde ocorrem aulas, identificado dentro de um prédio. Aulas remotas usam a sala especial "ON-LINE", que não é presencial.</td><td>Salas que não recebem nenhuma aula não aparecem na lista do ICEx.</td></tr>
+  <tr><td>Turma conjunta</td><td>Informação</td><td>Turmas diferentes que compartilham sala e horário, como DCC006-TL1 e DCC017-TN na sala 407 do CAD3.</td><td>Confirmar com o departamento se é sempre a mesma aula.</td></tr>
+  <tr><td>Código da disciplina, nome, código da turma</td><td>Informação</td><td>Descrevem disciplina e turma.</td><td>—</td></tr>
+  <tr><td>Dia da semana</td><td>Informação</td><td>Valor fixo entre segunda e sábado. "Ter-Qui" é uma lista: terça e quinta.</td><td>"Seg-Sex" é lido como segunda e sexta, não como segunda a sexta.</td></tr>
+  <tr><td>Início, fim</td><td>Informação</td><td>Horários da aula, em HH:MM.</td><td>—</td></tr>
+  <tr><td>Prédio, andar, identificador da sala</td><td>Informação</td><td>Descrevem a sala. Prédio vale ICEx, CAD1, CAD2, CAD3 ou On-line e não virou classe, porque o recorte usa apenas o nome.</td><td>—</td></tr>
+  <tr><td>Origem</td><td>Informação</td><td>Fonte de onde a aula foi obtida (nesta fase, sempre o ICEx).</td><td>—</td></tr>
+  <tr><td>Termo de busca</td><td>Informação de entrada</td><td>Texto enviado pelo aluno; não é guardado.</td><td>Abreviações como "BD" e "GAAL" devem funcionar?</td></tr>
+  <tr><td>Semestre</td><td>Informação</td><td>A base guarda apenas o semestre corrente (2026/2).</td><td>—</td></tr>
+  <tr><td>Consultar sala</td><td>Ação</td><td>Buscar disciplinas que correspondem ao termo e apresentar suas aulas.</td><td>—</td></tr>
+  <tr><td>Corresponder</td><td>Ação</td><td>Decidir se um termo identifica uma disciplina (regra R9).</td><td>—</td></tr>
+  <tr><td>Atualizar base</td><td>Ação</td><td>Baixar a lista do ICEx e montar a base. Fora deste recorte.</td><td>Frequência: diária ou horária?</td></tr>
+</table>
+
+<h3>4. Conceitos, atributos e associações</h3>
+<div class="pagina-paisagem">
+<div class="diagrama">
+<pre class="mermaid" data-nome="modelo-de-dominio">
+classDiagram
+  direction LR
+  class Disciplina {
+    codigo : texto
+    nome : texto
+  }
+  class Turma {
+    codigo : texto
+  }
+  class Aula {
+    dia : DiaSemana
+    inicio : hora HH:MM
+    fim : hora HH:MM
+    origem : texto
+  }
+  class Sala {
+    identificador : texto
+    predio : texto
+    andar : inteiro [0..1]
+  }
+  class DiaSemana {
+    &lt;&lt;enumeração&gt;&gt;
+    SEG
+    TER
+    QUA
+    QUI
+    SEX
+    SAB
+  }
+  Disciplina "1" -- "1..*" Turma : oferece
+  Turma "1" -- "1..*" Aula : reúne-se em
+  Aula "0..*" -- "1" Sala : ocorre em
+</pre>
+</div>
+<p class="legenda">Figura 1 — Modelo de domínio do recorte F01. O andar é opcional ([0..1]).</p>
+</div>
+<table>
+  <tr><th style="width:22%">Associação</th><th>Leitura nos dois sentidos</th></tr>
+  <tr><td>Disciplina — Turma (oferece)</td><td>Cada disciplina da base tem uma ou mais turmas: ela só aparece no quadro porque foi ofertada no semestre (DCC011 tem TB e TE). Cada turma pertence a exatamente uma disciplina.</td></tr>
+  <tr><td>Turma — Aula (reúne-se em)</td><td>Cada turma tem uma ou mais aulas semanais (DCC011-TB tem duas: segunda e quarta). Cada aula pertence a exatamente uma turma.</td></tr>
+  <tr><td>Aula — Sala (ocorre em)</td><td>Cada aula ocorre em exatamente uma sala. Uma sala pode receber nenhuma ou várias aulas, inclusive de turmas diferentes no mesmo horário (turma conjunta).</td></tr>
+</table>
+<p>O aluno não aparece no modelo porque o recorte não guarda nenhum dado sobre ele: ele apenas envia o termo e recebe a resposta.</p>
+
+<h3>5. Restrições textuais</h3>
+<table>
+  <tr><th style="width:7%">Regra</th><th>Restrição</th></tr>
+  <tr><td>R1</td><td>O código da disciplina é único na base; é guardado sem espaços e em maiúsculas.</td></tr>
+  <tr><td>R2</td><td>O código da turma é único dentro da sua disciplina e é guardado sem espaços ("TM2/ TN3" vira "TM2/TN3"). DCC011-TE e DCC024-TE são turmas diferentes.</td></tr>
+  <tr><td>R3</td><td>A sala é identificada pelo par (prédio, identificador), sem diferenciar maiúsculas: "AUDITORIO B-302" e "Auditorio B-302" do CAD3 são a mesma sala.</td></tr>
+  <tr><td>R4</td><td>Em toda aula, o início é anterior ao fim, no mesmo dia. O campo de dias é uma lista: "Ter-Qui" gera uma aula na terça e outra na quinta.</td></tr>
+  <tr><td>R5</td><td>Turmas diferentes podem ocupar a mesma sala no mesmo horário (turma conjunta). A sala conta como ocupada uma única vez.</td></tr>
+  <tr><td>R6</td><td>Uma mesma turma não pode ter duas aulas com horários sobrepostos no mesmo dia.</td></tr>
+  <tr><td>R7</td><td>Uma aula repetida (mesma turma, dia, intervalo e sala) é registrada uma única vez.</td></tr>
+  <tr><td>R8</td><td>O andar é o primeiro dígito do número da sala ("1024" fica no 1º andar; "CAD3 - Sala 310", no 3º). Sem número, o andar fica desconhecido ("AUD. II", "ON-LINE").</td></tr>
+  <tr><td>R9</td><td>O termo de busca, sem espaços extras, tem pelo menos 3 caracteres. Ele corresponde a uma disciplina se for igual ao código (sem diferenciar maiúsculas) ou se cada palavra do termo for igual a uma palavra do nome, ou início de uma palavra do nome quando tiver 3 letras ou mais. Acentos e maiúsculas são ignorados, e os algarismos 1 a 9 equivalem aos romanos I a IX ("Cálculo 1" corresponde a "CALCULO DIFERENCIAL E INTEGRAL I").</td></tr>
+  <tr><td>R10</td><td>A consulta não altera a base.</td></tr>
+  <tr><td>R11</td><td>O prédio vem do nome da sala: "CADn - ..." pertence ao CADn; "... - ICEX" e nomes iniciados por número ("1024", "2014 - DCC") pertencem ao ICEx; "ON-LINE" é aula remota e nunca aparece como sala livre.</td></tr>
+</table>
+<p><b>O que existe de forma independente.</b> Uma sala existe mesmo sem aulas. Uma turma não existe sem a sua disciplina, e uma aula não existe sem a sua turma e a sua sala. Uma disciplina sem turma não entra na base.</p>
+<p><b>Justificativas.</b> Turma é uma classe porque tem identidade própria e agrupa aulas que podem estar em prédios diferentes. O intervalo com início e fim permite verificar R6 e consultar salas livres. Prédio ficou como atributo porque o recorte não usa nenhuma informação do prédio além do nome. A aula on-line foi representada como uma sala especial, e não como outro conceito, para que toda aula continue tendo exatamente uma sala.</p>
+
+<h2>Etapa 3 — Casos permitidos e proibidos</h2>
+<h3>6. Verificação do modelo</h3>
+<p>Os casos P1 a P4 são registros reais do ICEx. Nos casos proibidos, as entradas foram montadas para testar as regras.</p>
+<table>
+  <tr><th style="width:8%">Caso</th><th style="width:40%">Situação</th><th style="width:22%">Fundamento</th><th>Resultado esperado</th></tr>
+  <tr><td>P1</td><td>DCC011 tem a turma TB na sala "2014 - DCC" do ICEx e a turma TE na sala 213 do CAD3.</td><td>Disciplina 1 — 1..* Turma; Aula 0..* — 1 Sala</td><td class="ok">Permitido. A busca mostra as duas turmas.</td></tr>
+  <tr><td>P2</td><td>Sala 1012 do ICEx com MAT038-TB1 na terça, 09:25–11:05, e MAT038-TM4 na terça, 13:00–14:40.</td><td>Sala 1 — 0..* Aula</td><td class="ok">Permitido.</td></tr>
+  <tr><td>P3</td><td>DCC006-TL1 e DCC017-TN na sala 407 do CAD3, segunda e quarta, 14:55–16:35.</td><td>R5</td><td class="ok">Permitido: turma conjunta.</td></tr>
+  <tr><td>P4</td><td>MAT001-TOL1 na sexta, 11:10–12:50, on-line.</td><td>R8; R11</td><td class="ok">Permitido. A busca mostra "on-line" e a sala não entra nas salas livres.</td></tr>
+  <tr><td>X1</td><td>Registrar DCC011-TB na segunda, 10:00–11:40, na sala 1012, quando a turma já tem aula na segunda das 09:25 às 11:05.</td><td>R6</td><td>Proibido. O registro é recusado com conflito de horário e a base fica como estava.</td></tr>
+  <tr><td>X2</td><td>Aula com início 11:05 e fim 09:25.</td><td>R4</td><td>Proibido: dado inválido.</td></tr>
+  <tr><td>X3</td><td>Aula de DCC011-TB sem sala definida.</td><td>Aula 0..* — 1 Sala</td><td>Proibido: toda aula tem exatamente uma sala.</td></tr>
+  <tr><td>X4</td><td>Um mesmo objeto turma TE ligado a DCC011 e a DCC024.</td><td>Turma 1..* — 1 Disciplina; R2</td><td>Proibido. Turmas com o mesmo código em disciplinas diferentes são objetos diferentes.</td></tr>
+  <tr><td>X5</td><td>Aluno envia <code>/sala C</code>.</td><td>R9</td><td>Proibido. A busca é rejeitada com orientação de uso e a base não é consultada.</td></tr>
+</table>
+<p><b>Revisões feitas durante a verificação.</b> (a) Na primeira versão, como na proposta, a aula guardava a disciplina diretamente; o caso P1 mostrou que não era possível distinguir TB de TE, e foi criada a classe Turma. (b) O horário era um texto único, o que impedia decidir X1; passou a ser início e fim. (c) A sala era identificada apenas pelo número; os dados reais misturam ICEx e CAD3, e foi acrescentado o prédio (R3, R11). (d) A primeira versão de R5 proibia duas turmas na mesma sala e horário. Ao carregar os dados reais, o caso P3 foi recusado, embora seja uma oferta real; R5 foi invertida para aceitar turmas conjuntas, e a regra que continua valendo é R6, dentro de uma mesma turma. (e) O andar era obrigatório; os casos "AUD. II" e on-line levaram ao andar opcional. Todos os casos acima foram conferidos no protótipo em Python, com o resultado esperado.</p>
+
+<h2>Etapa 4 — Responsabilidades no cenário</h2>
+<h3>7. Participantes e dados</h3>
+<table>
+  <tr><th style="width:20%">Participante</th><th style="width:28%">Responsabilidade</th><th style="width:22%">Dados que consulta ou mantém</th><th>Operações e justificativa</th></tr>
+  <tr><td>Ana (aluna, externa)</td><td>Inicia o pedido pelo Telegram.</td><td>O termo digitado.</td><td>—</td></tr>
+  <tr><td>bot: ComandosDoBot</td><td>Recebe o pedido inicial e devolve o texto da resposta.</td><td>Referências à consulta e ao formatador.</td><td><code>sala(termo)</code>. Isola o Telegram das regras: o mesmo comando funciona no Telegram e no terminal.</td></tr>
+  <tr><td>consulta: ConsultaDeSalas</td><td>Coordena a funcionalidade: valida o termo e pede a busca ao catálogo.</td><td>Referência ao catálogo.</td><td><code>buscar_por_disciplina(termo)</code>. Concentra a regra de tamanho mínimo (R9), reaproveitada pelo bot e pelo preenchimento de grade.</td></tr>
+  <tr><td>catalogo: CatalogoDeAulas</td><td>Guarda as disciplinas e salas e responde buscas.</td><td>Todas as disciplinas (por código) e salas.</td><td><code>buscar_disciplinas(termo)</code>, <code>disciplina_por_codigo(codigo)</code>. É quem possui a coleção, então é quem a percorre.</td></tr>
+  <tr><td>Disciplina</td><td>Diz se corresponde ao termo e fornece suas aulas.</td><td>Código, nome e turmas.</td><td><code>corresponde(termo)</code>, <code>aulas()</code>. Só ela conhece o próprio nome e código.</td></tr>
+  <tr><td>Turma, Aula, Sala</td><td>Fornecem os dados exibidos.</td><td>Código da turma; dia e intervalo; identificador, prédio e andar.</td><td>Apenas leitura (propriedades).</td></tr>
+  <tr><td>r: ResultadoDaBusca</td><td>Guarda o termo e as disciplinas encontradas.</td><td>Termo e lista de disciplinas.</td><td><code>encontrou</code>. Criado a cada consulta; separa o dado devolvido da sua apresentação.</td></tr>
+  <tr><td>formatador: FormatadorDeRespostas</td><td>Apresenta o resultado como texto.</td><td>Nenhum dado próprio.</td><td><code>busca(resultado)</code>, <code>termo_invalido(motivo)</code>. Mudanças de texto não afetam as regras.</td></tr>
+</table>
+
+<h3>8. Do domínio ao projeto de software — esboço de projeto</h3>
+<p>Disciplina, Turma, Aula e Sala são conceitos do problema. ComandosDoBot, ConsultaDeSalas, CatalogoDeAulas (o cadastro), ResultadoDaBusca e FormatadorDeRespostas são classes de software criadas para coordenar a funcionalidade. No esboço, a seta contínua indica uma <b>referência mantida</b> pelo objeto (atributo); a seta tracejada indica um objeto <b>recebido apenas como argumento</b> ou criado durante a operação.</p>
+<div class="diagrama alto">
+<pre class="mermaid" data-nome="esboco-de-projeto">
+classDiagram
+  direction TB
+  class ComandosDoBot {
+    -consulta : ConsultaDeSalas
+    -formatador : FormatadorDeRespostas
+    +sala(termo: str) str
+  }
+  class ConsultaDeSalas {
+    -catalogo : CatalogoDeAulas
+    +buscar_por_disciplina(termo: str) ResultadoDaBusca
+  }
+  class CatalogoDeAulas {
+    -disciplinas : dict~str, Disciplina~
+    -salas : dict~tuple, Sala~
+    +buscar_disciplinas(termo: str) list~Disciplina~
+    +disciplina_por_codigo(codigo: str) Disciplina
+  }
+  class ResultadoDaBusca {
+    +termo : str
+    +disciplinas : list~Disciplina~
+    +encontrou() bool
+  }
+  class FormatadorDeRespostas {
+    +busca(resultado: ResultadoDaBusca) str
+    +termo_invalido(motivo: str) str
+  }
+  class Disciplina {
+    -codigo : str
+    -nome : str
+    +corresponde(termo: str) bool
+    +aulas() list~Aula~
+  }
+  class Turma {
+    -codigo : str
+    +aulas() list~Aula~
+  }
+  class Aula {
+    -dia : DiaSemana
+    -intervalo : IntervaloDeHorario
+  }
+  class Sala {
+    -identificador : str
+    -predio : str
+    -andar : int ou None
+  }
+  ComandosDoBot --> "1" ConsultaDeSalas : consulta
+  ComandosDoBot --> "1" FormatadorDeRespostas : formatador
+  ConsultaDeSalas --> "1" CatalogoDeAulas : catalogo
+  CatalogoDeAulas --> "0..*" Disciplina : disciplinas
+  CatalogoDeAulas --> "0..*" Sala : salas
+  Disciplina --> "1..*" Turma : turmas
+  Turma --> "1..*" Aula : aulas
+  Aula --> "1" Sala : sala
+  ConsultaDeSalas ..> ResultadoDaBusca : cria
+  FormatadorDeRespostas ..> ResultadoDaBusca : argumento
+</pre>
+</div>
+<p class="legenda">Figura 2 — Esboço de projeto (complemento ao modelo de domínio).</p>
+<p>Exemplos da diferença: ConsultaDeSalas mantém uma referência ao catálogo, porque precisa dele em toda consulta; já FormatadorDeRespostas recebe o ResultadoDaBusca apenas como argumento de <code>busca(resultado)</code> e não o guarda. Da mesma forma, para a funcionalidade de salas livres, <code>Sala.esta_livre(dia, instante, aulas)</code> recebe as aulas como argumento em vez de manter uma lista própria.</p>
+
+<h2>Etapa 5 — Diagramas de sequência</h2>
+<h3>9. Caminho principal: Ana busca "banco de dados"</h3>
+<p>Estado inicial: o do cenário da etapa 1 (2 disciplinas, 4 turmas, 8 aulas). Ana é o chamador externo; o pedido chega ao bot pelo Telegram, cuja biblioteca foi omitida. Por ser uma consulta, a base permanece inalterada.</p>
+<div class="pagina-paisagem">
+<div class="diagrama">
+<pre class="mermaid" data-nome="sequencia-principal">
+sequenceDiagram
+  autonumber
+  actor ana as Ana (aluna)
+  participant bot as bot:<br>ComandosDoBot
+  participant consulta as consulta:<br>ConsultaDeSalas
+  participant cat as catalogo:<br>CatalogoDeAulas
+  participant bd as dcc011:<br>Disciplina
+  participant lp as dcc024:<br>Disciplina
+  participant fmt as formatador:<br>FormatadorDeRespostas
+  ana->>+bot: sala("banco de dados")
+  bot->>+consulta: buscar_por_disciplina("banco de dados")
+  Note over consulta: R9: 14 caracteres ≥ 3
+  consulta->>+cat: buscar_disciplinas("banco de dados")
+  cat->>cat: por código: nenhuma
+  cat->>+bd: corresponde("banco de dados")
+  bd-->>-cat: true
+  cat->>+lp: corresponde("banco de dados")
+  lp-->>-cat: false
+  cat-->>-consulta: [dcc011]
+  create participant r as r:<br>ResultadoDaBusca
+  consulta->>r: cria("banco de dados", [dcc011])
+  consulta-->>-bot: r
+  bot->>+fmt: busca(r)
+  fmt->>+bd: turmas e aulas
+  bd-->>-fmt: TB e TE, 4 aulas
+  fmt-->>-bot: texto da resposta
+  bot-->>-ana: mensagem no Telegram
+  Note over consulta,lp: somente leitura: base inalterada
+</pre>
+</div>
+<p class="legenda">Figura 3 — Sequência principal (consulta com resultado).</p>
+</div>
+<p>O retorno <code>r</code> (passo 11) é o dado devolvido; a apresentação acontece depois, quando o formatador produz o texto (passos 12 a 15) e o bot o envia a Ana (passo 16).</p>
+
+<h3>10. Cenário alternativo: termo inválido ou sem resultado</h3>
+<table>
+  <tr><th style="width:24%">Condição</th><th style="width:26%">Estado inicial e entrada</th><th>Resultado esperado</th></tr>
+  <tr><td>[termo com menos de 3 caracteres]</td><td>Base do cenário principal; Ana envia <code>/sala C</code>.</td><td>A consulta lança TermoDeBuscaInvalido antes de acessar o catálogo; o bot captura a exceção e Ana recebe "Informe ao menos 3 caracteres do nome ou o código da disciplina." (caso X5).</td></tr>
+  <tr><td>[termo válido sem correspondência]</td><td>Base do cenário principal; Ana envia <code>/sala Programação Orientada a Objetos</code>, disciplina que não consta no quadro do ICEx.</td><td>O catálogo devolve uma lista vazia; Ana recebe "Não encontrei nenhuma disciplina para "Programação Orientada a Objetos"", em vez de uma resposta vazia sem explicação.</td></tr>
+</table>
+<div class="pagina-paisagem">
+<div class="diagrama">
+<pre class="mermaid" data-nome="sequencia-alternativa">
+sequenceDiagram
+  autonumber
+  actor ana as Ana (aluna)
+  participant bot as bot:<br>ComandosDoBot
+  participant consulta as consulta:<br>ConsultaDeSalas
+  participant cat as catalogo:<br>CatalogoDeAulas
+  participant fmt as formatador:<br>FormatadorDeRespostas
+  ana->>+bot: sala(termo)
+  bot->>consulta: buscar_por_disciplina(termo)
+  alt termo com menos de 3 caracteres ("C")
+    Note over consulta: R9 falha
+    consulta--xbot: exceção TermoDeBuscaInvalido
+    bot->>+fmt: termo_invalido(motivo)
+    fmt-->>-bot: orientação de uso
+    bot-->>ana: orientação de uso
+  else termo válido sem correspondência ("Programação Orientada a Objetos")
+    consulta->>+cat: buscar_disciplinas(termo)
+    Note over cat: nenhuma corresponde
+    cat-->>-consulta: []
+    create participant r as r:<br>ResultadoDaBusca
+    consulta->>r: cria(termo, [])
+    consulta-->>bot: r (vazio)
+    bot->>+fmt: busca(r)
+    fmt-->>-bot: aviso "não encontrei"
+    bot-->>ana: aviso "não encontrei"
+  end
+  deactivate bot
+  Note over consulta,cat: base inalterada nos dois casos
+</pre>
+</div>
+<p class="legenda">Figura 4 — Sequência alternativa com fragmento alt.</p>
+</div>
+<p><b>Onde os caminhos divergem.</b> Os três caminhos são iguais até o passo 2. Com termo curto, a consulta interrompe a busca lançando uma exceção, que não é um retorno normal de sucesso: nenhum ResultadoDaBusca é criado e o catálogo não é acessado. Com termo válido sem correspondência, o fluxo segue como no principal, mas o resultado vem vazio e o formatador produz um aviso. <b>O que permanece igual:</b> a base não muda, Ana sempre recebe exatamente uma mensagem e a verificação do termo acontece antes de qualquer acesso ao catálogo.</p>
+
+<h2>Etapa 6 — Pendências e conclusão</h2>
+<h3>11. Dúvidas que ainda impedem decisões</h3>
+<table>
+  <tr><th style="width:36%">Dúvida</th><th>Como pretendo esclarecer</th></tr>
+  <tr><td>Turmas conjuntas: códigos como "TM2/ TN3" e duas disciplinas na mesma sala e horário (DCC006 e DCC017) são sempre a mesma aula?</td><td>Perguntar ao DCC; o modelo já aceita o caso (R5) e só a apresentação mudaria.</td></tr>
+  <tr><td>"Seg-Sex" significa segunda e sexta ou segunda a sexta?</td><td>Os registros de MAT001-TE1 (segunda e sexta às 19:00, quarta às 20:55) indicam lista; confirmar com a secretaria do ICEx.</td></tr>
+  <tr><td>Programação Orientada a Objetos não aparece no quadro do ICEx. Disciplinas de outros prédios ficam de fora?</td><td>Avaliar se o site da Engenharia cobre essas disciplinas quando ele for incluído.</td></tr>
+  <tr><td>O aluno quer ver todas as turmas ou informar a sua? Na amostra, MAT001 tem 24 turmas.</td><td>Conversa com colegas de curso (validação já prevista na proposta).</td></tr>
+  <tr><td>Abreviações ("BD", "GAAL") e o mínimo de 3 caracteres.</td><td>Mesma conversa com colegas; decidir se haverá apelidos de disciplina.</td></tr>
+  <tr><td>Salas sem nenhuma aula não aparecem no quadro, então nunca são listadas como livres.</td><td>Montar a lista de salas a partir dos mapas de andar do ICEx.</td></tr>
+</table>
+<p><b>Leitura por outra dupla.</b> Com o glossário, a Figura 1 e as regras R1 a R11, é possível decidir sozinho os casos P1 a X5 sem regras ausentes. As Figuras 3 e 4 mostram quem chama quem, numeradas na ordem, e explicam por que Ana recebe a lista de turmas no caminho principal e uma orientação ou um aviso no alternativo.</p>
+
+</body>
+</html>

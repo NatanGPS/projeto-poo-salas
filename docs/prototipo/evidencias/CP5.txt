@@ -1,0 +1,26 @@
+$ python -m guia_salas
+=== Guia de Salas (ICEx) ===
+Base: amostra real do ICEx (15/10/2026), 30 disciplinas, 199 aulas, 0 registros recusados.
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 2
+Dia (seg, ter, qua, qui, sex, sab): seg
+Hora (HH:MM): 11:05
+Andar (vazio para todos): 2
+Prédio (CAD1, CAD2, CAD3, ICEx, vazio para todos): ICEx
+Salas livres no 2º andar (Segunda, 11:05):
+  2008 - MAT (ICEx)
+  2009 - DCC (ICEx)
+  2013 - DCC (ICEx)
+  2014 - DCC (ICEx)
+  2015 - DCC (ICEx)
+  2031 (ICEx)
+  2032 MAT (ICEx)
+
+1 - Buscar a sala de uma disciplina
+2 - Consultar salas livres
+0 - Sair
+Opção: 0
+Encerrado.

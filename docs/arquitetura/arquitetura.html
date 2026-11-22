@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Guia de Salas: arquitetura e próximos passos</title>
+<link rel="stylesheet" href="../_estilo/documento.css">
+<style>
+.diagrama pre.mermaid { background: none; border: 0; }
+.diagrama svg { max-height: 150mm; }
+td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
+</style>
+</head><body>
+<h1>Guia de Salas: como o sistema funciona e próximos passos</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+<p>Versão do código descrita: 0.1.0 (protótipo da 3ª etapa, novembro de 2026). Escopo atual: somente o quadro de salas do ICEx.</p>
+<h2>1. Visão geral</h2>
+<p>O Guia de Salas responde a duas perguntas do aluno:</p>
+<ul>
+<li><strong>F01, onde é a aula?</strong> O aluno informa o nome ou o código de uma disciplina e recebe as turmas, os dias, os horários e as salas.</li>
+<li><strong>F02, qual sala está livre?</strong> O aluno informa dia, hora, andar e, se quiser, o prédio, e recebe as salas sem aula naquele instante.</li>
+</ul>
+<p>Há ainda uma terceira função, já implementada para o bot: o aluno envia uma planilha <code>.xlsx</code> com as disciplinas e recebe a mesma planilha preenchida com turma, horários e sala.</p>
+<p>Os dados vêm do JSON que a própria página do ICEx usa (<code>recupera_salas.php</code>). O programa lê esse JSON, valida cada registro, monta em memória um catálogo de disciplinas, turmas, aulas e salas e responde às consultas a partir dele. O mesmo núcleo atende três interfaces: o menu do terminal (padrão), o bot do Telegram (<code>--telegram</code>) e o script de download dos dados.</p>
+<p>O código está organizado em camadas. Cada camada só conhece as camadas abaixo dela, o que permite trocar a interface (terminal ou Telegram) ou a origem dos dados (arquivo ou site) sem mexer nas regras.</p>
+<div class="diagrama"><pre class="mermaid">flowchart TB
+  subgraph I[&quot;Interface&quot;]
+    direction LR
+    MT[&quot;MenuTerminal&quot;] ~~~ BOT[&quot;BotGuiaDeSalas&quot;] ~~~ CMD[&quot;ComandosDoBot&quot;] ~~~ FMT[&quot;FormatadorDeRespostas&quot;]
+  end
+  subgraph S[&quot;Serviços&quot;]
+    direction LR
+    CON[&quot;ConsultaDeSalas&quot;] ~~~ GRD[&quot;PreenchedorDeGrade&quot;] ~~~ ATU[&quot;AtualizadorDeBase&quot;] ~~~ CAT[&quot;CatalogoDeAulas&quot;]
+  end
+  subgraph D[&quot;Domínio&quot;]
+    direction LR
+    DIS[&quot;Disciplina, Turma, Aula, Sala&quot;] ~~~ VAL[&quot;DiaSemana, IntervaloDeHorario, erros&quot;]
+  end
+  subgraph F[&quot;Fontes de dados&quot;]
+    direction LR
+    FON[&quot;FonteIcexOnline, FonteIcexArquivo&quot;]
+  end
+  EXT[(&quot;Site do ICEx ou amostra JSON&quot;)]
+  I -- &quot;consultas&quot; --&gt; S
+  S -- &quot;cria e lê objetos&quot; --&gt; D
+  S -- &quot;coletar()&quot; --&gt; F
+  F --&gt; EXT
+</pre></div>
+<p class="legenda">Figura 1. Camadas do sistema e dependências principais.</p>
+
+<h2>2. Pacotes e módulos</h2>
+<table>
+<thead>
+<tr>
+<th>Pacote ou módulo</th>
+<th>Responsabilidade</th>
+<th>Conteúdo principal</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>guia_salas/__main__.py</code></td>
+<td>Ponto de entrada (<code>python -m guia_salas</code>)</td>
+<td><code>main()</code>, <code>iniciar_telegram()</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/configuracao.py</code></td>
+<td>Leitura das variáveis de ambiente</td>
+<td><code>Configuracao</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/texto.py</code></td>
+<td>Normalização de texto para a busca</td>
+<td><code>normalizar()</code>, <code>palavras()</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/terminal.py</code></td>
+<td>Menu de texto do protótipo</td>
+<td><code>MenuTerminal</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/dominio/</code></td>
+<td>Conceitos e regras do problema</td>
+<td><code>Disciplina</code>, <code>Turma</code>, <code>Aula</code>, <code>Sala</code>, <code>DiaSemana</code>, <code>IntervaloDeHorario</code>, exceções</td>
+</tr>
+<tr>
+<td><code>guia_salas/fontes/</code></td>
+<td>Obter os registros brutos de aulas</td>
+<td><code>FonteDeDados</code>, <code>FonteIcex</code>, <code>FonteIcexOnline</code>, <code>FonteIcexArquivo</code>, <code>RegistroDeAula</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/servicos/</code></td>
+<td>Montar a base e executar as consultas</td>
+<td><code>AtualizadorDeBase</code>, <code>CatalogoDeAulas</code>, <code>ConsultaDeSalas</code>, <code>PreenchedorDeGrade</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/bot/</code></td>
+<td>Tudo o que é específico do Telegram e dos textos de resposta</td>
+<td><code>BotGuiaDeSalas</code>, <code>ComandosDoBot</code>, <code>FormatadorDeRespostas</code>, <code>dividir_mensagem()</code></td>
+</tr>
+<tr>
+<td><code>guia_salas/dados/</code></td>
+<td>Amostra real do ICEx (110 registros de 15/10/2026)</td>
+<td><code>amostra_icex.json</code></td>
+</tr>
+<tr>
+<td><code>tests/</code></td>
+<td>19 testes <code>unittest</code> com 11 registros reais conhecidos</td>
+<td><code>test_busca_disciplina.py</code>, <code>test_salas_livres.py</code>, <code>test_fontes.py</code>, <code>test_menu.py</code></td>
+</tr>
+<tr>
+<td><code>scripts/</code></td>
+<td>Download da lista completa e verificação manual da Aula 17</td>
+<td><code>baixar_dados_icex.py</code>, <code>verificacao_manual_aula17.py</code></td>
+</tr>
+</tbody>
+</table>
+<p>Somente o pacote <code>bot/aplicacao.py</code> importa a biblioteca <code>python-telegram-bot</code>. Os comandos (<code>ComandosDoBot</code>) recebem e devolvem texto puro, então podem ser testados sem Telegram e sem internet.</p>
+<h2>3. Classes e objetos</h2>
+<h3>3.1 Domínio</h3>
+<div class="diagrama"><pre class="mermaid">classDiagram
+  direction LR
+  class Disciplina {
+    -_codigo: str
+    -_nome: str
+    -_turmas: dict
+    +turmas() list~Turma~
+    +obter_turma(codigo) Turma
+    +aulas() list~Aula~
+    +corresponde(termo) bool
+  }
+  class Turma {
+    -_codigo: str
+    -_aulas: list
+    +aulas() list~Aula~
+    +agendar_aula(dia, intervalo, sala, origem) Aula
+  }
+  class Aula {
+    -_dia: DiaSemana
+    -_intervalo: IntervaloDeHorario
+    -_sala: Sala
+    -_origem: str
+    +disciplina() Disciplina
+    +mesmo_encontro(outra) bool
+  }
+  class Sala {
+    -_identificador: str
+    -_predio: str
+    -_andar: int ou None
+    +presencial() bool
+    +chave() tuple
+    +esta_livre(dia, instante, aulas) bool
+  }
+  class IntervaloDeHorario {
+    &lt;&lt;dataclass frozen&gt;&gt;
+    +inicio: time
+    +fim: time
+    +contem(instante) bool
+    +sobrepoe(outro) bool
+  }
+  class DiaSemana {
+    &lt;&lt;enumeration&gt;&gt;
+    SEGUNDA a SABADO
+    +de_texto(texto) DiaSemana
+    +varios_de_texto(texto) list
+  }
+  Disciplina &quot;1&quot; *-- &quot;1..*&quot; Turma
+  Turma &quot;1&quot; *-- &quot;0..*&quot; Aula
+  Aula &quot;0..*&quot; --&gt; &quot;1&quot; Sala
+  Aula --&gt; &quot;1&quot; IntervaloDeHorario
+  Aula --&gt; &quot;1&quot; DiaSemana
+</pre></div>
+<p class="legenda">Figura 2. Classes do domínio.</p>
+
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>O que representa</th>
+<th>Regras que garante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Disciplina</code></td>
+<td>Uma disciplina do semestre, identificada pelo código (ex.: DCC011)</td>
+<td>Código e nome não vazios; código guardado em maiúsculas e sem espaços. <code>corresponde(termo)</code> decide se a disciplina atende à busca.</td>
+</tr>
+<tr>
+<td><code>Turma</code></td>
+<td>Uma oferta da disciplina (TB, TE, TM2/TN3)</td>
+<td>É criada só por <code>Disciplina.obter_turma()</code>. <code>agendar_aula()</code> ignora uma aula repetida e lança <code>ConflitoDeHorario</code> se a mesma turma tiver duas aulas sobrepostas no mesmo dia.</td>
+</tr>
+<tr>
+<td><code>Aula</code></td>
+<td>Um encontro semanal: turma, dia, intervalo, sala e fonte de origem</td>
+<td>Criada só por <code>Turma.agendar_aula()</code>.</td>
+</tr>
+<tr>
+<td><code>Sala</code></td>
+<td>Espaço físico identificado por prédio e identificador</td>
+<td>Identificador e prédio não vazios, andar não negativo. Duas salas são iguais quando têm a mesma chave (prédio, identificador), sem diferenciar maiúsculas. Aulas "ON-LINE" usam o prédio "On-line", que não é presencial.</td>
+</tr>
+<tr>
+<td><code>IntervaloDeHorario</code></td>
+<td>Início e fim de uma aula (objeto de valor imutável)</td>
+<td>Início anterior ao fim. O fim é exclusivo: uma aula de 09:25 a 11:05 não ocupa a sala às 11:05.</td>
+</tr>
+<tr>
+<td><code>DiaSemana</code></td>
+<td>Enumeração de segunda a sábado</td>
+<td>Aceita "Seg", "terça", "2ª", "SEG QUA", "Ter-Qui".</td>
+</tr>
+<tr>
+<td><code>ErroDeDominio</code> e subclasses</td>
+<td>Falhas de regra: <code>DadoInvalido</code>, <code>ConflitoDeHorario</code>, <code>TermoDeBuscaInvalido</code>, <code>PredioDesconhecido</code></td>
+<td>Todas herdam de <code>ErroDeDominio</code>, então a interface trata qualquer recusa com um único <code>except</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>O encapsulamento segue um padrão: os atributos são privados (<code>_codigo</code>, <code>_aulas</code>), a leitura é feita por propriedades e a criação dos objetos dependentes passa pelo objeto dono. Assim não existe <code>Turma</code> sem <code>Disciplina</code> nem <code>Aula</code> sem <code>Turma</code>, e as regras de conflito ficam num único lugar.</p>
+<h3>3.2 Fontes de dados</h3>
+<div class="diagrama"><pre class="mermaid">classDiagram
+  direction LR
+  class FonteDeDados {
+    &lt;&lt;abstract&gt;&gt;
+    +nome()* str
+    +coletar()* list~RegistroDeAula~
+  }
+  class FonteIcex {
+    &lt;&lt;abstract&gt;&gt;
+    +CAMPOS: dict
+    +coletar() list~RegistroDeAula~
+    #_obter_json()* dict
+    +interpretar(dados) list~RegistroDeAula~
+  }
+  class FonteIcexOnline {
+    -_url: str
+    -_sessao
+    #_obter_json() dict
+  }
+  class FonteIcexArquivo {
+    -_caminho: Path
+    #_obter_json() dict
+  }
+  class RegistroDeAula {
+    &lt;&lt;dataclass frozen&gt;&gt;
+    codigo, nome, turma, dias
+    inicio, fim, sala, predio, andar, origem
+  }
+  FonteDeDados &lt;|-- FonteIcex
+  FonteIcex &lt;|-- FonteIcexOnline
+  FonteIcex &lt;|-- FonteIcexArquivo
+  FonteDeDados ..&gt; RegistroDeAula : produz
+</pre></div>
+<p class="legenda">Figura 3. Hierarquia das fontes de dados.</p>
+
+<ul>
+<li><strong><code>FonteDeDados</code></strong> é a interface comum: toda fonte tem um <code>nome</code> e um método <code>coletar()</code> que devolve uma lista de <code>RegistroDeAula</code>, ainda sem validação. Uma fonte que não responde lança <code>FonteIndisponivel</code>.</li>
+<li><strong><code>FonteIcex</code></strong> sabe ler o formato do ICEx (<code>{"records": [...]}</code>) e traduzir os campos (<code>nome_materia</code>, <code>codigo_materia</code>, <code>turma</code>, <code>hora_inicial</code>, <code>hora_final</code>, <code>dia_semana</code>, <code>nome_sala</code>). Ela usa o padrão Template Method: <code>coletar()</code> chama <code>_obter_json()</code>, que cada subclasse implementa.</li>
+<li><strong><code>FonteIcexOnline</code></strong> baixa o JSON pelo <code>requests</code>. A sessão HTTP pode ser injetada, o que permite testar sem internet.</li>
+<li><strong><code>FonteIcexArquivo</code></strong> lê uma cópia local, como a amostra em <code>dados/</code>.</li>
+<li>Funções auxiliares: <code>separar_predio("CAD3 - Sala 310")</code> devolve <code>("CAD3", "310")</code>; <code>andar_pelo_numero("1024")</code> devolve 1 (o andar é o primeiro dígito do número da sala).</li>
+</ul>
+<h3>3.3 Serviços</h3>
+<table>
+<thead>
+<tr>
+<th>Classe</th>
+<th>Papel</th>
+<th>Métodos principais</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AtualizadorDeBase</code></td>
+<td>Monta um catálogo novo a partir de todas as fontes configuradas</td>
+<td><code>atualizar()</code> devolve <code>(CatalogoDeAulas, RelatorioDeAtualizacao)</code>. <code>incluir(catalogo, registro)</code> converte um registro em uma ou mais aulas (uma por dia da semana).</td>
+</tr>
+<tr>
+<td><code>RelatorioDeAtualizacao</code></td>
+<td>Resumo da carga</td>
+<td>Registros lidos, aulas registradas, registros recusados com o motivo, fontes com falha.</td>
+</tr>
+<tr>
+<td><code>CatalogoDeAulas</code></td>
+<td>Base em memória: disciplinas por código e salas por chave</td>
+<td><code>registrar_aula()</code>, <code>buscar_disciplinas(termo)</code>, <code>salas_livres(dia, instante, andar, predio)</code>, <code>disciplina_por_codigo()</code>, <code>predios</code>, <code>turmas_na_sala()</code>.</td>
+</tr>
+<tr>
+<td><code>ConsultaDeSalas</code></td>
+<td>Fachada das consultas F01 e F02, usada por todas as interfaces</td>
+<td><code>buscar_por_disciplina(termo)</code> devolve <code>ResultadoDaBusca</code>; <code>salas_livres(...)</code> devolve <code>list[Sala]</code>; <code>trocar_catalogo(novo)</code> troca a base sem reiniciar o bot.</td>
+</tr>
+<tr>
+<td><code>ResultadoDaBusca</code></td>
+<td>Termo pesquisado e disciplinas encontradas</td>
+<td><code>encontrou</code></td>
+</tr>
+<tr>
+<td><code>PreenchedorDeGrade</code></td>
+<td>Completa uma planilha do aluno</td>
+<td><code>preencher(entrada, saida)</code> devolve <code>(localizadas, nao_localizadas)</code>.</td>
+</tr>
+</tbody>
+</table>
+<p><code>ConsultaDeSalas</code> concentra as validações de entrada (termo com pelo menos 3 caracteres, andar não negativo, prédio existente na base). <code>CatalogoDeAulas</code> só executa a busca, então pode ser usado diretamente pelos testes.</p>
+<h3>3.4 Interface com o usuário</h3>
+<table>
+<thead>
+<tr>
+<th>Classe ou função</th>
+<th>Papel</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>MenuTerminal</code></td>
+<td>Menu do protótipo. Recebe as funções <code>ler</code> e <code>escrever</code> por parâmetro (por padrão <code>input</code> e <code>print</code>), o que permite testá-lo com entradas simuladas.</td>
+</tr>
+<tr>
+<td><code>BotGuiaDeSalas</code></td>
+<td>Cria a <code>Application</code> do <code>python-telegram-bot</code>, registra os tratadores de comandos e agenda a atualização periódica da base na <code>job_queue</code>.</td>
+</tr>
+<tr>
+<td><code>ComandosDoBot</code></td>
+<td>Traduz o texto de cada comando (<code>/sala</code>, <code>/livres</code>, <code>/ajuda</code>) em chamadas à <code>ConsultaDeSalas</code> e devolve a resposta em texto. Não depende do Telegram.</td>
+</tr>
+<tr>
+<td><code>FormatadorDeRespostas</code></td>
+<td>Transforma resultados em mensagens. Agrupa dias com o mesmo horário e sala ("Seg/Qua 09:25-11:05"). É usado pelo terminal e pelo bot, por isso as respostas são iguais nos dois.</td>
+</tr>
+<tr>
+<td><code>dividir_mensagem(texto)</code></td>
+<td>Quebra respostas maiores que 4000 caracteres em várias mensagens (o Telegram aceita até 4096), sempre entre linhas.</td>
+</tr>
+</tbody>
+</table>
+<h3>3.5 Funções de apoio</h3>
+<ul>
+<li><code>normalizar(texto)</code> remove acentos, converte para minúsculas e compacta espaços.</li>
+<li><code>palavras(texto)</code> divide o texto normalizado em palavras e troca algarismos de 1 a 9 por romanos, para que "Cálculo 2" encontre "CALCULO DIFERENCIAL E INTEGRAL II".</li>
+<li><code>ler_hora(texto)</code> aceita "7:30", "07:30" e "07h30".</li>
+<li><code>Configuracao.do_ambiente()</code> lê <code>TELEGRAM_TOKEN</code>, <code>GUIA_SALAS_DADOS_ICEX</code> (endereço ou arquivo) e <code>GUIA_SALAS_INTERVALO_MIN</code> (padrão 60). <code>criar_fontes()</code> escolhe <code>FonteIcexOnline</code> para endereços http(s) e <code>FonteIcexArquivo</code> para caminhos locais.</li>
+</ul>
+<h3>3.6 Objetos em execução</h3>
+<p>Com a amostra, o programa mantém em memória um único <code>CatalogoDeAulas</code> com 30 objetos <code>Disciplina</code>, suas turmas, 199 objetos <code>Aula</code> e 43 objetos <code>Sala</code> em quatro prédios (CAD1, CAD2, CAD3, ICEx). Cada <code>Sala</code> existe uma única vez e é compartilhada por todas as aulas que acontecem nela; é isso que permite a F02 saber o que está ocupado. No bot, há também um <code>BotGuiaDeSalas</code>, um <code>ComandosDoBot</code>, um <code>PreenchedorDeGrade</code> e um <code>AtualizadorDeBase</code>, todos apontando para a mesma <code>ConsultaDeSalas</code>. Quando a atualização periódica termina, só o catálogo dentro da consulta é trocado.</p>
+<h2>4. Fluxos de execução no bot do Telegram</h2>
+<h3>4.1 Inicialização</h3>
+<p>Comando: <code>python -m guia_salas --telegram</code>.</p>
+<ol>
+<li><code>iniciar_telegram()</code> lê a <code>Configuracao</code> das variáveis de ambiente e encerra com aviso se <code>TELEGRAM_TOKEN</code> estiver vazio.</li>
+<li><code>Configuracao.criar_fontes()</code> cria a fonte (online por padrão).</li>
+<li><code>AtualizadorDeBase.atualizar()</code> chama <code>coletar()</code> de cada fonte, passa cada registro por <code>incluir()</code> e registra no log o relatório (lidos, registrados, recusados).</li>
+<li>Uma <code>ConsultaDeSalas</code> é criada com o catálogo e entregue ao <code>BotGuiaDeSalas</code>, que registra os tratadores e agenda a atualização a cada <code>GUIA_SALAS_INTERVALO_MIN</code> minutos.</li>
+<li><code>executar()</code> inicia o <code>run_polling()</code>: o bot passa a perguntar ao Telegram por mensagens novas.</li>
+</ol>
+<h3>4.2 Comando /sala</h3>
+<div class="diagrama"><pre class="mermaid">sequenceDiagram
+  actor A as Aluno
+  participant B as BotGuiaDeSalas
+  participant C as ComandosDoBot
+  participant Q as ConsultaDeSalas
+  participant K as CatalogoDeAulas
+  participant F as Formatador
+  A-&gt;&gt;B: /sala banco de dados
+  B-&gt;&gt;C: sala(termo)
+  C-&gt;&gt;Q: buscar_por_disciplina(termo)
+  alt menos de 3 caracteres
+    Q--&gt;&gt;C: TermoDeBuscaInvalido
+    C-&gt;&gt;F: termo_invalido(motivo)
+  else termo válido
+    Q-&gt;&gt;K: buscar_disciplinas(termo)
+    K--&gt;&gt;Q: [DCC011]
+    Q--&gt;&gt;C: ResultadoDaBusca
+    C-&gt;&gt;F: busca(resultado)
+  end
+  F--&gt;&gt;C: texto
+  C--&gt;&gt;B: texto
+  B-&gt;&gt;B: dividir_mensagem(texto)
+  B--&gt;&gt;A: reply_text(parte)
+</pre></div>
+<p class="legenda">Figura 4. Sequência do comando /sala (Formatador é o FormatadorDeRespostas; o Telegram entrega a mensagem ao BotGuiaDeSalas por um CommandHandler).</p>
+
+<p>A busca primeiro tenta o código exato. Se não houver, compara palavras: cada palavra do termo precisa ser igual ou ser o começo (com pelo menos 3 letras) de alguma palavra do nome. Exemplo de resposta real com a amostra:</p>
+<pre class="saida">DCC011 - INTRODUCAO A BANCO DE DADOS
+  TB: Seg/Qua 09:25-11:05, sala 2014 - DCC (ICEx, 2º andar)
+  TE: Ter/Qui 19:00-20:40, sala 213 (CAD3, 2º andar)
+</pre>
+<h3>4.3 Comando /livres</h3>
+<p>Formato: <code>/livres &lt;dia&gt; &lt;hora&gt; &lt;andar&gt; [prédio]</code>, por exemplo <code>/livres seg 9:30 2 icex</code>.</p>
+<ol>
+<li><code>ComandosDoBot.livres()</code> separa os argumentos e converte dia (<code>DiaSemana.de_texto</code>), hora e andar. Com menos de três argumentos ou valores inválidos, devolve a mensagem de uso.</li>
+<li><code>ConsultaDeSalas.salas_livres()</code> valida o andar e o prédio (prédio desconhecido gera <code>PredioDesconhecido</code> com a lista de prédios existentes).</li>
+<li><code>CatalogoDeAulas.salas_livres()</code> percorre as salas presenciais, aplica os filtros e pergunta a cada <code>Sala</code> se está livre (<code>esta_livre</code>), comparando com todas as aulas daquele dia.</li>
+<li><code>FormatadorDeRespostas.salas_livres()</code> monta a lista ou o aviso de que nenhuma sala está livre.</li>
+</ol>
+<pre class="saida">Salas livres no 2º andar (Segunda, 09:30):
+  2008 - MAT (ICEx)
+  2009 - DCC (ICEx)
+  2013 - DCC (ICEx)
+  2015 - DCC (ICEx)
+  2031 (ICEx)
+  2032 MAT (ICEx)
+</pre>
+<h3>4.4 Envio de planilha</h3>
+<p>Quando o aluno envia um documento <code>.xlsx</code>, <code>BotGuiaDeSalas._grade()</code> baixa o arquivo para uma pasta temporária e chama <code>PreenchedorDeGrade.preencher()</code>. Para cada linha, a primeira coluna é usada como termo de busca e, se existir uma coluna "Turma", ela escolhe a turma. Três colunas são acrescentadas (Turma encontrada, Dias e horários, Sala) e a planilha volta para o aluno com o total de disciplinas localizadas. Fotos recebem a resposta de que só planilhas são aceitas.</p>
+<h3>4.5 Atualização periódica</h3>
+<p>A cada intervalo, <code>_atualizar_base()</code> executa um <code>AtualizadorDeBase.atualizar()</code> completo e chama <code>ConsultaDeSalas.trocar_catalogo()</code>. Se o catálogo novo vier vazio (site fora do ar, por exemplo), a troca é recusada e o bot continua respondendo com a base anterior. O relatório vai para o log.</p>
+<h2>5. Regras de negócio que merecem atenção</h2>
+<table>
+<thead>
+<tr>
+<th>Regra</th>
+<th>Implementação</th>
+<th>Motivo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fim de aula exclusivo</td>
+<td><code>IntervaloDeHorario.contem()</code> usa <code>inicio &lt;= instante &lt; fim</code></td>
+<td>A sala fica livre exatamente no horário de término.</td>
+</tr>
+<tr>
+<td>Turmas conjuntas</td>
+<td>Turmas diferentes podem dividir sala e horário</td>
+<td>O quadro real tem casos como DCC006-TL1 e DCC017-TN na sala 407 do CAD3.</td>
+</tr>
+<tr>
+<td>Conflito na mesma turma</td>
+<td><code>Turma.agendar_aula()</code> lança <code>ConflitoDeHorario</code></td>
+<td>Uma turma não pode estar em dois lugares ao mesmo tempo; o registro é recusado e aparece no relatório.</td>
+</tr>
+<tr>
+<td>Dias compostos</td>
+<td>"Ter-Qui" vira duas aulas (terça e quinta)</td>
+<td>"Seg-Sex" é lido como segunda e sexta; ainda falta confirmar.</td>
+</tr>
+<tr>
+<td>Andar</td>
+<td>Primeiro dígito do número da sala</td>
+<td>Fica desconhecido em salas sem número, como "AUD. II".</td>
+</tr>
+<tr>
+<td>Salas conhecidas</td>
+<td>Só existem salas que aparecem em alguma aula</td>
+<td>Uma sala sem nenhuma aula no semestre nunca aparece como livre.</td>
+</tr>
+<tr>
+<td>Registros inválidos</td>
+<td>Recusados um a um, sem interromper a carga</td>
+<td>Um registro com horário quebrado não derruba a base inteira.</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Comandos disponíveis hoje</h2>
+<table>
+<thead>
+<tr>
+<th>Comando</th>
+<th>Exemplo</th>
+<th>Resposta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/start</code>, <code>/ajuda</code>, <code>/help</code></td>
+<td><code>/ajuda</code></td>
+<td>Lista de comandos com exemplos.</td>
+</tr>
+<tr>
+<td><code>/sala &lt;nome ou código&gt;</code></td>
+<td><code>/sala calculo 2</code>, <code>/sala DCC011</code></td>
+<td>Turmas, dias, horários e salas de cada disciplina encontrada.</td>
+</tr>
+<tr>
+<td><code>/livres &lt;dia&gt; &lt;hora&gt; &lt;andar&gt; [prédio]</code></td>
+<td><code>/livres ter 14:00 1</code>, <code>/livres seg 10:00 3 cad3</code></td>
+<td>Salas sem aula no instante informado.</td>
+</tr>
+<tr>
+<td>Planilha <code>.xlsx</code></td>
+<td>Arquivo com as disciplinas na primeira coluna</td>
+<td>A mesma planilha com turma, horários e sala.</td>
+</tr>
+</tbody>
+</table>
+<p>Para executar o bot: instalar as dependências (<code>pip install -r requirements.txt</code>), definir <code>TELEGRAM_TOKEN</code> com o token criado no BotFather e rodar <code>python -m guia_salas --telegram</code>.</p>
+<h2>7. Situação atual</h2>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Situação</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F01 e F02 no terminal com a amostra</td>
+<td>Funcionando; 19 testes automatizados passando.</td>
+</tr>
+<tr>
+<td>Modo <code>--online</code></td>
+<td>Implementado; não executado no ambiente de desenvolvimento, que não alcança o site do ICEx.</td>
+</tr>
+<tr>
+<td>Bot do Telegram</td>
+<td>Implementado; ainda não testado com um token real.</td>
+</tr>
+<tr>
+<td>Preenchimento de planilha</td>
+<td>Implementado; sem testes automatizados.</td>
+</tr>
+<tr>
+<td>Persistência</td>
+<td>Não existe: a base é refeita na memória a cada início.</td>
+</tr>
+<tr>
+<td>Escola de Engenharia</td>
+<td>Fora do escopo nesta fase.</td>
+</tr>
+</tbody>
+</table>
+<h2>8. Melhorias futuras</h2>
+<p>As melhorias estão agrupadas na ordem sugerida de execução. As da primeira fase saíram da leitura do código atual; as demais vêm das pendências registradas e da proposta do projeto.</p>
+<h3>8.1 Fase 1: deixar o bot pronto para uso real</h3>
+<table>
+<thead>
+<tr>
+<th>Melhoria</th>
+<th>Situação no código hoje</th>
+<th>O que mudar</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Primeiro teste com token real e <code>--online</code></td>
+<td>Nunca executados</td>
+<td>Criar o bot no BotFather, rodar com a lista completa do ICEx e registrar quantos registros são recusados.</td>
+</tr>
+<tr>
+<td>Testes do bot</td>
+<td>Não há testes de <code>ComandosDoBot</code>, <code>dividir_mensagem</code> e <code>PreenchedorDeGrade</code></td>
+<td>Criar testes com o mesmo catálogo de <code>tests/dados/</code>, sem Telegram, já que os comandos recebem e devolvem texto.</td>
+</tr>
+<tr>
+<td>Atualização sem travar o bot</td>
+<td><code>_atualizar_base()</code> e <code>_grade()</code> são assíncronos, mas chamam código síncrono (download HTTP, leitura da planilha); enquanto rodam, o bot não responde a ninguém</td>
+<td>Executar essas chamadas com <code>asyncio.to_thread()</code>.</td>
+</tr>
+<tr>
+<td>Tratamento de erros</td>
+<td>Não há <code>add_error_handler</code>; uma exceção inesperada fica só no log e o aluno não recebe resposta</td>
+<td>Registrar um tratador que responde "Não foi possível responder agora" e registra o erro.</td>
+</tr>
+<tr>
+<td>Leitura de hora duplicada</td>
+<td><code>ComandosDoBot.livres()</code> converte a hora por conta própria, em vez de usar <code>ler_hora()</code></td>
+<td>Usar <code>ler_hora()</code>, para que terminal e bot aceitem os mesmos formatos e mostrem as mesmas mensagens de erro.</td>
+</tr>
+<tr>
+<td>Andar obrigatório no bot</td>
+<td>No terminal o andar é opcional; no <code>/livres</code> é obrigatório</td>
+<td>Aceitar <code>/livres ter 14:00</code> para todos os andares.</td>
+</tr>
+<tr>
+<td>Arquivo devolvido aberto</td>
+<td><code>saida.open("rb")</code> em <code>_grade()</code> não é fechado</td>
+<td>Abrir com <code>with</code>.</td>
+</tr>
+<tr>
+<td>Menu de comandos</td>
+<td>Os comandos só aparecem em <code>/ajuda</code></td>
+<td>Registrar a lista com <code>set_my_commands()</code>, para o Telegram sugerir os comandos ao digitar "/".</td>
+</tr>
+</tbody>
+</table>
+<h3>8.2 Fase 2: facilitar o uso pelo aluno</h3>
+<ul>
+<li><strong><code>/agora [andar] [prédio]</code></strong>: salas livres no dia e hora atuais (fuso <code>America/Sao_Paulo</code>), sem o aluno digitar dia e hora.</li>
+<li><strong>Texto sem comando</strong>: tratar uma mensagem como "banco de dados" como se fosse <code>/sala banco de dados</code>.</li>
+<li><strong>Filtro por turma</strong>: <code>/sala DCC011 TB</code> mostra só a turma do aluno. Hoje MAT001 tem 24 turmas, o que gera respostas longas.</li>
+<li><strong>Botões</strong>: quando a busca encontra várias disciplinas, oferecer botões (<code>InlineKeyboardMarkup</code>) para escolher uma; no <code>/livres</code>, botões para dia e andar, guiados por um <code>ConversationHandler</code>.</li>
+<li><strong>Abreviações</strong>: um dicionário de apelidos ("BD", "GAAL", "AEDS") consultado por <code>Disciplina.corresponde()</code> ou pelo catálogo.</li>
+<li><strong>Turmas conjuntas juntas</strong>: mostrar "DCC006-TL1 e DCC017-TN" lado a lado na mesma sala, a partir de <code>CatalogoDeAulas.turmas_na_sala()</code>, que já existe.</li>
+<li><strong>Validação com colegas</strong> das decisões ainda abertas (todas as turmas ou só uma, abreviações, mínimo de 3 caracteres).</li>
+</ul>
+<h3>8.3 Fase 3: persistência e avisos</h3>
+<ul>
+<li><strong>SQLite</strong> (<code>sqlite3</code>, biblioteca padrão), conforme o experimento planejado no protótipo: tabelas disciplina, turma, aula e sala, mais a data da última atualização e os registros recusados. O bot passa a iniciar mesmo com o site fora do ar. Pode entrar como mais uma subclasse de <code>FonteDeDados</code> (leitura) e um repositório chamado pelo <code>AtualizadorDeBase</code> (gravação).</li>
+<li><strong><code>/minhagrade</code></strong>: o aluno salva suas disciplinas e turmas uma vez e consulta tudo com um comando.</li>
+<li><strong>Aviso de mudança de sala</strong>: comparar o catálogo novo com o anterior em cada atualização e avisar quem salvou aquela turma.</li>
+<li><strong>Lista completa de salas</strong>: cadastrar as salas existentes, inclusive as que não têm aula, para a F02 não esconder salas sempre livres.</li>
+<li><strong>Desempenho</strong>: indexar as aulas por dia e sala dentro do <code>CatalogoDeAulas</code>. Hoje cada consulta de salas livres percorre todas as aulas, o que é suficiente para cerca de 420 registros, mas cresce com a base.</li>
+</ul>
+<h3>8.4 Fase 4: implantação</h3>
+<ul>
+<li>Rodar o bot num servidor (máquina própria ou serviço gratuito), com <code>run_polling()</code> ou, mais tarde, webhook.</li>
+<li>Empacotar com um <code>Dockerfile</code> e guardar o token só em variável de ambiente.</li>
+<li>Log em arquivo com o relatório de cada atualização, para identificar mudanças no formato do JSON do ICEx.</li>
+</ul>
+<h3>8.5 Fora do escopo atual</h3>
+<ul>
+<li><strong>Escola de Engenharia</strong>: entraria como nova subclasse de <code>FonteDeDados</code> (por exemplo <code>FonteEngenharia</code>), sem mudança no atualizador nem nas consultas, quando o endereço dos dados for identificado.</li>
+<li><strong>Grade enviada como imagem</strong>: exigiria reconhecimento de texto (OCR); hoje o bot pede uma planilha.</li>
+<li><strong>Confirmar o significado de "Seg-Sex"</strong> com a secretaria do ICEx.</li>
+</ul>
+<h2>9. Resumo das classes por funcionalidade</h2>
+<table>
+<thead>
+<tr>
+<th>Funcionalidade</th>
+<th>Classes envolvidas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Carga da base</td>
+<td><code>Configuracao</code>, <code>FonteDeDados</code>, <code>FonteIcex</code>, <code>FonteIcexOnline</code>, <code>FonteIcexArquivo</code>, <code>RegistroDeAula</code>, <code>AtualizadorDeBase</code>, <code>RelatorioDeAtualizacao</code>, <code>CatalogoDeAulas</code></td>
+</tr>
+<tr>
+<td>F01, busca de disciplina</td>
+<td><code>ComandosDoBot</code> ou <code>MenuTerminal</code>, <code>ConsultaDeSalas</code>, <code>CatalogoDeAulas</code>, <code>Disciplina</code>, <code>ResultadoDaBusca</code>, <code>FormatadorDeRespostas</code></td>
+</tr>
+<tr>
+<td>F02, salas livres</td>
+<td><code>ComandosDoBot</code> ou <code>MenuTerminal</code>, <code>ConsultaDeSalas</code>, <code>CatalogoDeAulas</code>, <code>Sala</code>, <code>Aula</code>, <code>IntervaloDeHorario</code>, <code>DiaSemana</code>, <code>FormatadorDeRespostas</code></td>
+</tr>
+<tr>
+<td>Planilha</td>
+<td><code>BotGuiaDeSalas</code>, <code>PreenchedorDeGrade</code>, <code>ConsultaDeSalas</code></td>
+</tr>
+<tr>
+<td>Atualização periódica</td>
+<td><code>BotGuiaDeSalas</code>, <code>AtualizadorDeBase</code>, <code>ConsultaDeSalas</code></td>
+</tr>
+</tbody>
+</table>
+<script src="MERMAID"></script>
+<script>mermaid.initialize({startOnLoad:false, theme:'neutral', themeVariables:{fontSize:'15px'}, fontFamily:'DejaVu Sans, Arial', flowchart:{htmlLabels:false}, sequence:{useMaxWidth:true, actorFontSize:15, messageFontSize:15, noteFontSize:14, width:120}, class:{useMaxWidth:true}});
+mermaid.run().then(()=>{document.body.dataset.pronto='1'}).catch(e=>{console.error(String(e));document.body.dataset.pronto='1'});</script>
+</body></html>

@@ -1,0 +1,27 @@
+@page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+body { font-family: "DejaVu Sans", Arial, sans-serif; font-size: 10.5pt; line-height: 1.45; color: #1d1d1f; }
+h1 { font-size: 19pt; margin: 0 0 4px; }
+h2 { font-size: 14pt; margin: 22px 0 8px; padding-bottom: 3px; border-bottom: 2px solid #1f4e79; color: #1f4e79; page-break-after: avoid; }
+h3 { font-size: 11.5pt; margin: 14px 0 6px; page-break-after: avoid; }
+p { margin: 5px 0 7px; text-align: justify; }
+table { border-collapse: collapse; width: 100%; margin: 6px 0 10px; font-size: 9.3pt; page-break-inside: auto; }
+tr { page-break-inside: avoid; }
+th, td { border: 1px solid #b7c3d0; padding: 4px 6px; vertical-align: top; text-align: left; }
+th { background: #e8eef5; }
+code, pre.saida { font-family: "DejaVu Sans Mono", monospace; font-size: 8.6pt; }
+pre.saida { background: #f5f7fa; border: 1px solid #d5dde6; padding: 8px; white-space: pre-wrap; page-break-inside: auto; }
+.capa { border: 2px solid #1f4e79; padding: 14px 16px; margin-bottom: 14px; }
+.capa p { margin: 2px 0; text-align: left; }
+.sub { color: #555; }
+.diagrama { text-align: center; margin: 8px 0 4px; page-break-inside: avoid; }
+.diagrama svg { max-width: 100%; height: auto; }
+.legenda { text-align: center; font-size: 9pt; color: #444; margin-bottom: 10px; }
+.nota { background: #fff8e6; border-left: 4px solid #e0a800; padding: 6px 10px; margin: 8px 0; }
+.ok { color: #1b6e2d; font-weight: bold; }
+.quebra { page-break-before: always; }
+ul, ol { margin: 4px 0 8px 20px; padding-left: 6px; }
+li { margin: 2px 0; }
+@page paisagem { size: A4 landscape; margin: 12mm 14mm; }
+.pagina-paisagem { page: paisagem; }
+.pagina-paisagem .diagrama svg { width: 100% !important; max-width: 100% !important; height: auto; max-height: 160mm; }
+.diagrama.alto svg { max-height: 200mm; width: auto !important; }

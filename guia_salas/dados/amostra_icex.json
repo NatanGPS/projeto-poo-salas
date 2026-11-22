@@ -1,0 +1,994 @@
+{
+ "records": [
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF1",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Seg",
+   "nome_sala": "1026"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF1",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qua",
+   "nome_sala": "1026"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF1",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Sex",
+   "nome_sala": "1026"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF2",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Seg",
+   "nome_sala": "1021"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF2",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qua",
+   "nome_sala": "1021"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TF2",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Sex",
+   "nome_sala": "1021"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL III",
+   "codigo_materia": "MAT002",
+   "turma": "TD",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "1026"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL III",
+   "codigo_materia": "MAT002",
+   "turma": "TN1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL III",
+   "codigo_materia": "MAT002",
+   "turma": "TN2",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2032 MAT"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS A",
+   "codigo_materia": "MAT015",
+   "turma": "TM1",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "2008 - MAT"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS A",
+   "codigo_materia": "MAT015",
+   "turma": "TD2",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TN1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "1024"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg",
+   "nome_sala": "2031"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qua",
+   "nome_sala": "2031"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TF",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Seg",
+   "nome_sala": "1020"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TF",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qua",
+   "nome_sala": "1020"
+  },
+  {
+   "nome_materia": "EQUACOES DIFERENCIAIS B",
+   "codigo_materia": "MAT016",
+   "turma": "TM2",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "HISTORIA DA MATEMATICA",
+   "codigo_materia": "MAT025",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "HISTORIA DA MATEMATICA",
+   "codigo_materia": "MAT025",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Sex",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "FUNDAMENTOS DE ALGEBRA",
+   "codigo_materia": "MAT028",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Ter",
+   "nome_sala": "1017"
+  },
+  {
+   "nome_materia": "FUNDAMENTOS DE ALGEBRA",
+   "codigo_materia": "MAT028",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qui",
+   "nome_sala": "1017"
+  },
+  {
+   "nome_materia": "FUNDAMENTOS DE ALGEBRA",
+   "codigo_materia": "MAT028",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Sex",
+   "nome_sala": "1017"
+  },
+  {
+   "nome_materia": "FUNDAMENTOS DE ALGEBRA",
+   "codigo_materia": "MAT028",
+   "turma": "TM",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui-Sex",
+   "nome_sala": "1026"
+  },
+  {
+   "nome_materia": "ALGEBRA A",
+   "codigo_materia": "MAT034",
+   "turma": "TN",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "2008 - MAT"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TE1",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "2008 - MAT"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TE1",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qui",
+   "nome_sala": "2008 - MAT"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TM1",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1024"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TM3",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TN3",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "2032 MAT"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TA1",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TG",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Seg",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TG",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qua",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TB1",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TE2",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "1022"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TE2",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qui",
+   "nome_sala": "1022"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TM4",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL II",
+   "codigo_materia": "MAT039",
+   "turma": "TF1",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Seg",
+   "nome_sala": "2032 MAT"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL II",
+   "codigo_materia": "MAT039",
+   "turma": "TF1",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Qua",
+   "nome_sala": "2032 MAT"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL II",
+   "codigo_materia": "MAT039",
+   "turma": "TN1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2008 - MAT"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL II",
+   "codigo_materia": "MAT039",
+   "turma": "TD2",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "1019"
+  },
+  {
+   "nome_materia": "QUIMICA ORGANICA III",
+   "codigo_materia": "QUI059",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "2014 - DCC"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TZ",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - LAICO B 307"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TD",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - LAICO B 307"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TN1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - LAICO B 307"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TM1",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD2 - B206-B207 LAB"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Qua",
+   "nome_sala": "2009 - DCC"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg",
+   "nome_sala": "1009 - Laboratorio"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qui",
+   "nome_sala": "CAD3 - LAICO B 307"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TM2/ TN3",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - LAICO B 307"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "CAD3 - Sala 206 ENG"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TN2",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg",
+   "nome_sala": "1009 e 1010 - Laboratorio"
+  },
+  {
+   "nome_materia": "ORGANIZACAO DE COMPUTADORES I",
+   "codigo_materia": "DCC006",
+   "turma": "TL1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "ORGANIZACAO DE COMPUTADORES I",
+   "codigo_materia": "DCC006",
+   "turma": "TL",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 208"
+  },
+  {
+   "nome_materia": "INTRODUCAO A BANCO DE DADOS",
+   "codigo_materia": "DCC011",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 213"
+  },
+  {
+   "nome_materia": "INTRODUCAO A BANCO DE DADOS",
+   "codigo_materia": "DCC011",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2014 - DCC"
+  },
+  {
+   "nome_materia": "INTRODUCAO A ARQUITETURA DE COMPUTADORES",
+   "codigo_materia": "DCC017",
+   "turma": "TN",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "REDES DE COMPUTADORES",
+   "codigo_materia": "DCC023",
+   "turma": "TM",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 211"
+  },
+  {
+   "nome_materia": "REDES DE COMPUTADORES",
+   "codigo_materia": "DCC023",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg",
+   "nome_sala": "CAD3 - AUDITORIO B-302"
+  },
+  {
+   "nome_materia": "REDES DE COMPUTADORES",
+   "codigo_materia": "DCC023",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qua",
+   "nome_sala": "CAD3 - AUDITORIO B-302"
+  },
+  {
+   "nome_materia": "LINGUAGENS DE PROGRAMACAO",
+   "codigo_materia": "DCC024",
+   "turma": "TM",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 309"
+  },
+  {
+   "nome_materia": "LINGUAGENS DE PROGRAMACAO",
+   "codigo_materia": "DCC024",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2013 - DCC"
+  },
+  {
+   "nome_materia": "TCC: MANUTENCAO E EVOLUCAO DE SOFTWARE",
+   "codigo_materia": "DCC030",
+   "turma": "TZ5",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD1 - 311"
+  },
+  {
+   "nome_materia": "ANALISE NUMERICA",
+   "codigo_materia": "DCC033",
+   "turma": "TN",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 212"
+  },
+  {
+   "nome_materia": "ANALISE NUMERICA",
+   "codigo_materia": "DCC033",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "CAD3 - Sala 212"
+  },
+  {
+   "nome_materia": "ANALISE NUMERICA",
+   "codigo_materia": "DCC033",
+   "turma": "TE",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qui",
+   "nome_sala": "CAD3 - Sala 212"
+  },
+  {
+   "nome_materia": "ANALISE NUMERICA",
+   "codigo_materia": "DCC033",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 313"
+  },
+  {
+   "nome_materia": "CALCULO NUMERICO",
+   "codigo_materia": "DCC034",
+   "turma": "TM2",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 307"
+  },
+  {
+   "nome_materia": "CALCULO NUMERICO",
+   "codigo_materia": "DCC034",
+   "turma": "TB1",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Auditorio B306"
+  },
+  {
+   "nome_materia": "CALCULO NUMERICO",
+   "codigo_materia": "DCC034",
+   "turma": "TA1",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - AUDITORIO B-301"
+  },
+  {
+   "nome_materia": "CALCULO NUMERICO",
+   "codigo_materia": "DCC034",
+   "turma": "TB2/ TB1",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - AUDITORIO B-301"
+  },
+  {
+   "nome_materia": "PESQUISA OPERACIONAL",
+   "codigo_materia": "DCC035",
+   "turma": "TZ",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 212"
+  },
+  {
+   "nome_materia": "INTRODUCAO AOS SISTEMAS LOGICOS",
+   "codigo_materia": "DCC114",
+   "turma": "TZ2/TZ1",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - AUDITORIO B-302"
+  },
+  {
+   "nome_materia": "FUNDAMENTOS DA TEORIA DA COMPUTACAO",
+   "codigo_materia": "DCC129",
+   "turma": "TZ",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 310"
+  },
+  {
+   "nome_materia": "COMPUTACAO NATURAL",
+   "codigo_materia": "DCC191",
+   "turma": "TL4",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 312"
+  },
+  {
+   "nome_materia": "ENGENHARIA DE SOFTWARE",
+   "codigo_materia": "DCC603",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - AUDITORIO B-301"
+  },
+  {
+   "nome_materia": "ENGENHARIA DE SOFTWARE",
+   "codigo_materia": "DCC603",
+   "turma": "TN",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - AUDITORIO B-302"
+  },
+  {
+   "nome_materia": "SISTEMAS OPERACIONAIS",
+   "codigo_materia": "DCC605",
+   "turma": "TM",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 212"
+  },
+  {
+   "nome_materia": "SISTEMAS OPERACIONAIS",
+   "codigo_materia": "DCC605",
+   "turma": "TZ",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 312"
+  },
+  {
+   "nome_materia": "TEORIA DOS GRAFOS",
+   "codigo_materia": "DCC199",
+   "turma": "TL4",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "2015 - DCC"
+  },
+  {
+   "nome_materia": "INTERACAO HUMANO-COMPUTADOR",
+   "codigo_materia": "DCC194",
+   "turma": "TL1",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 307"
+  },
+  {
+   "nome_materia": "PROBABILIDADE I",
+   "codigo_materia": "EST007",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:55",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1024"
+  },
+  {
+   "nome_materia": "ESTATISTICA PARA ENGENHARIA CIVIL",
+   "codigo_materia": "EST027",
+   "turma": "TA2",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 310"
+  },
+  {
+   "nome_materia": "ESTATISTICA PARA ENGENHARIA CIVIL",
+   "codigo_materia": "EST027",
+   "turma": "TA1",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1023"
+  },
+  {
+   "nome_materia": "ESTATISTICA E PROBABILIDADES",
+   "codigo_materia": "EST031",
+   "turma": "TE2",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter",
+   "nome_sala": "CAD3 - Sala 309"
+  },
+  {
+   "nome_materia": "ESTATISTICA E PROBABILIDADES",
+   "codigo_materia": "EST031",
+   "turma": "TE2",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qui",
+   "nome_sala": "CAD3 - Sala 309"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TN1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 408"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TN2",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 409"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TN3",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 410"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TN4",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 411"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TE2",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TE2",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qua",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TE2",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Sex",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TD2",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 211"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TN5",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 412"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TOL1",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Sex",
+   "nome_sala": "ON-LINE"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TOL2",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Sex",
+   "nome_sala": "ON-LINE"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TZ2",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 409"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TA1",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 307"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TA2",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 309"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TM1",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "AUD. II - ICEX"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TM2",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 409"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TM3",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 410"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TM4",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 411"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TA3",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 406"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TA4",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Auditorio B-302"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TZ1",
+   "hora_inicial": "17:00",
+   "hora_final": "18:40",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 410"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TD1",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 213"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TE1",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg-Sex",
+   "nome_sala": "CAD3 - Sala 406"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TE1",
+   "hora_inicial": "20:55",
+   "hora_final": "22:35",
+   "dia_semana": "Qua",
+   "nome_sala": "CAD3 - Sala 406"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TB1",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg-Qua-Sex",
+   "nome_sala": "CAD3 - Sala 309"
+  }
+ ]
+}

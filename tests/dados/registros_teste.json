@@ -1,0 +1,103 @@
+{
+ "records": [
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TB1",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "GEOMETRIA ANALITICA E ALGEBRA LINEAR",
+   "codigo_materia": "MAT038",
+   "turma": "TM4",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "1012"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Qua",
+   "nome_sala": "2009 - DCC"
+  },
+  {
+   "nome_materia": "PROGRAMACAO DE COMPUTADORES",
+   "codigo_materia": "DCC001",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg",
+   "nome_sala": "1009 - Laboratorio"
+  },
+  {
+   "nome_materia": "ORGANIZACAO DE COMPUTADORES I",
+   "codigo_materia": "DCC006",
+   "turma": "TL1",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "INTRODUCAO A BANCO DE DADOS",
+   "codigo_materia": "DCC011",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Ter-Qui",
+   "nome_sala": "CAD3 - Sala 213"
+  },
+  {
+   "nome_materia": "INTRODUCAO A BANCO DE DADOS",
+   "codigo_materia": "DCC011",
+   "turma": "TB",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2014 - DCC"
+  },
+  {
+   "nome_materia": "INTRODUCAO A ARQUITETURA DE COMPUTADORES",
+   "codigo_materia": "DCC017",
+   "turma": "TN",
+   "hora_inicial": "14:55",
+   "hora_final": "16:35",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 407"
+  },
+  {
+   "nome_materia": "LINGUAGENS DE PROGRAMACAO",
+   "codigo_materia": "DCC024",
+   "turma": "TM",
+   "hora_inicial": "13:00",
+   "hora_final": "14:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "CAD3 - Sala 309"
+  },
+  {
+   "nome_materia": "LINGUAGENS DE PROGRAMACAO",
+   "codigo_materia": "DCC024",
+   "turma": "TE",
+   "hora_inicial": "19:00",
+   "hora_final": "20:40",
+   "dia_semana": "Seg-Qua",
+   "nome_sala": "2013 - DCC"
+  },
+  {
+   "nome_materia": "CALCULO DIFERENCIAL E INTEGRAL I",
+   "codigo_materia": "MAT001",
+   "turma": "TOL1",
+   "hora_inicial": "11:10",
+   "hora_final": "12:50",
+   "dia_semana": "Sex",
+   "nome_sala": "ON-LINE"
+  }
+ ]
+}

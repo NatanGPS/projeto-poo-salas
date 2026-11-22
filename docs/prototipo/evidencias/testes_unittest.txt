@@ -1,0 +1,25 @@
+$ python -m unittest discover -s tests -v
+test_busca_por_codigo_ignora_maiusculas (test_busca_disciplina.TestBuscaDisciplina.test_busca_por_codigo_ignora_maiusculas) ... ok
+test_busca_por_nome_devolve_turmas_e_salas (test_busca_disciplina.TestBuscaDisciplina.test_busca_por_nome_devolve_turmas_e_salas) ... ok
+test_disciplina_ausente_devolve_resultado_vazio_valido (test_busca_disciplina.TestBuscaDisciplina.test_disciplina_ausente_devolve_resultado_vazio_valido) ... ok
+test_termo_curto_e_rejeitado_sem_alterar_catalogo (test_busca_disciplina.TestBuscaDisciplina.test_termo_curto_e_rejeitado_sem_alterar_catalogo) ... ok
+test_arquivo_inexistente_lanca_fonte_indisponivel (test_fontes.TestFontes.test_arquivo_inexistente_lanca_fonte_indisponivel) ... ok
+test_arquivo_inexistente_vira_falha_no_relatorio (test_fontes.TestFontes.test_arquivo_inexistente_vira_falha_no_relatorio) ... ok
+test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte (test_fontes.TestFontes.test_atualizador_monta_o_mesmo_catalogo_com_qualquer_fonte) ... ok
+test_duas_fontes_concretas_entregam_os_mesmos_registros (test_fontes.TestFontes.test_duas_fontes_concretas_entregam_os_mesmos_registros) ... ok
+test_separacao_de_predio_e_sala (test_fontes.TestFontes.test_separacao_de_predio_e_sala) ... ok
+test_andar_nao_numerico_e_recusado_e_menu_continua (test_menu.TestMenu.test_andar_nao_numerico_e_recusado_e_menu_continua) ... ok
+test_busca_pelo_menu (test_menu.TestMenu.test_busca_pelo_menu) ... ok
+test_fim_da_entrada_encerra_sem_erro (test_menu.TestMenu.test_fim_da_entrada_encerra_sem_erro) ... ok
+test_hora_invalida_e_opcao_invalida (test_menu.TestMenu.test_hora_invalida_e_opcao_invalida) ... ok
+test_andar_negativo_e_rejeitado (test_salas_livres.TestSalasLivres.test_andar_negativo_e_rejeitado) ... ok
+test_aula_online_nao_vira_sala_livre (test_salas_livres.TestSalasLivres.test_aula_online_nao_vira_sala_livre) ... ok
+test_predio_desconhecido_e_rejeitado_sem_alterar_catalogo (test_salas_livres.TestSalasLivres.test_predio_desconhecido_e_rejeitado_sem_alterar_catalogo) ... ok
+test_sala_fica_livre_no_horario_de_termino (test_salas_livres.TestSalasLivres.test_sala_fica_livre_no_horario_de_termino) ... ok
+test_sala_ocupada_nao_aparece (test_salas_livres.TestSalasLivres.test_sala_ocupada_nao_aparece) ... ok
+test_turma_conjunta_ocupa_a_sala (test_salas_livres.TestSalasLivres.test_turma_conjunta_ocupa_a_sala) ... ok
+
+----------------------------------------------------------------------
+Ran 19 tests in 0.142s
+
+OK

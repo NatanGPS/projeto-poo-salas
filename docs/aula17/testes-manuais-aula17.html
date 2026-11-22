@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Guia de Salas — Testes manuais (Aula 17)</title>
+<link rel="stylesheet" href="../_estilo/documento.css"></head><body>
+
+<h1>Guia de Salas — Testes manuais (Aula 17)</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+<p>Protótipo: pacote <code>guia_salas</code>; script de verificação <code>scripts/verificacao_manual_aula17.py</code>. Os cenários usam registros reais do quadro de salas do ICEx, consultados em 15/10/2026.</p>
+
+<h2>Funcionalidades da última entrega</h2>
+<table>
+<tr><th style="width:9%">Código</th><th style="width:30%">Funcionalidade</th><th>Situação no protótipo</th></tr>
+<tr><td>F01</td><td>Consultar a sala de uma disciplina (<code>/sala</code>)</td><td>Implementada; recorte usado nos diagramas das aulas 13 e 14.</td></tr>
+<tr><td>F02</td><td>Consultar salas livres por dia, hora e andar (<code>/livres</code>)</td><td>Implementada.</td></tr>
+<tr><td>F03</td><td>Enviar a grade em planilha e receber as salas preenchidas</td><td>Implementada para planilha .xlsx; imagem ainda não é lida.</td></tr>
+<tr><td>F04</td><td>Atualizar a base a partir do quadro do ICEx</td><td>Implementada: lê o JSON público usado pela página do ICEx. Conferida com uma amostra de 110 registros reais.</td></tr>
+</table>
+
+<h2>Etapa 1 — Funcionalidades como perguntas verificáveis</h2>
+<table>
+<tr><th style="width:8%"></th><th style="width:23%">Quem inicia e pré-condições</th><th style="width:23%">Entradas aceitas, rejeitadas e limites</th><th style="width:23%">Retorno, apresentação e estado</th><th>Dúvidas registradas</th></tr>
+<tr><td>F01</td><td>Aluno. A base precisa estar carregada.</td><td>Aceita código ou nome com 3 ou mais caracteres. Rejeita termo vazio ou com menos de 3. Limite: nenhum resultado; vários resultados ("Cálculo" devolve MAT001, MAT039, MAT002 e DCC034); disciplina com muitas turmas (MAT001 tem 24 na amostra), cuja resposta é dividida em várias mensagens se passar do limite do Telegram.</td><td>Devolve as disciplinas encontradas; o aluno vê turmas, dias, horários e salas, ou um aviso. A base nunca muda.</td><td>Abreviações como "BD" não são encontradas hoje. Mostrar todas as turmas ou só a do aluno?</td></tr>
+<tr><td>F02</td><td>Aluno. Base carregada.</td><td>Aceita dia (SEG a SAB), hora HH:MM e andar inteiro, com prédio opcional. Rejeita dia, hora ou andar ilegíveis. Limites: aula terminando exatamente na hora pedida (o fim é exclusivo); nenhuma sala livre; aulas on-line não ocupam sala.</td><td>Lista de salas livres ou "Nenhuma sala livre". A base não muda.</td><td>A base só conhece salas que aparecem em alguma aula; salas nunca usadas não aparecem como livres.</td></tr>
+<tr><td>F03</td><td>Aluno. Base carregada; planilha .xlsx com as disciplinas na primeira coluna.</td><td>Aceita códigos ou nomes; uma coluna "Turma" é opcional. Linhas vazias são ignoradas. Disciplina não localizada não interrompe as demais.</td><td>Devolve a planilha com "Turma encontrada", "Dias e horários" e "Sala", ou "não localizada", e a contagem de localizadas. A base não muda.</td><td>Formato da grade que os alunos realmente usam; leitura de imagem.</td></tr>
+<tr><td>F04</td><td>Mantenedor, de forma periódica.</td><td>Registros do ICEx com dia, horário e sala válidos. Recusa horário invertido, dia desconhecido e aulas sobrepostas da mesma turma (R6). Aceita turmas conjuntas (R5). Site fora do ar não apaga a base atual.</td><td>Monta um catálogo novo e um relatório (lidos, registrados, recusados, falhas). Se nada for carregado, o catálogo anterior é mantido.</td><td>"Seg-Sex" significa segunda e sexta ou segunda a sexta?</td></tr>
+</table>
+
+<h2>Etapa 2 — Cenários planejados</h2>
+<p>O esperado foi definido antes da execução. Os cenários não executados ficam registrados para as próximas verificações.</p>
+<table>
+<tr><th style="width:11%">Cenário</th><th style="width:30%">Preparação e ação</th><th style="width:31%">Resultado esperado</th><th>Situação</th></tr>
+<tr><td>F01-C01</td><td>DCC011 e DCC024 reais; <code>/sala banco de dados</code></td><td>DCC011 com turmas TB (2014 - DCC, ICEx) e TE (213, CAD3); base inalterada</td><td>Executado</td></tr>
+<tr><td>F01-C02</td><td>Mesma base; <code>/sala C</code></td><td>Rejeição com orientação de uso; base inalterada</td><td>Executado</td></tr>
+<tr><td>F01-C03</td><td>Mesma base; <code>/sala Programação Orientada a Objetos</code></td><td>Aviso "Não encontrei..."; base inalterada</td><td>Executado</td></tr>
+<tr><td>F01-C04</td><td>Mesma base; <code>/sala dcc011</code> (minúsculas)</td><td>Mesmo resultado de C01</td><td>Não executado: mesma regra de C01, prioridade menor</td></tr>
+<tr><td>F01-C05</td><td>Mesma base; <code>/sala BD</code></td><td>Rejeitado por ter 2 caracteres; decidir se abreviações serão aceitas</td><td>Não executado: regra indefinida</td></tr>
+<tr><td>F01-C06</td><td>Amostra de 110 registros; <code>/sala Cálculo 1</code></td><td>Só MAT001, com 24 turmas, incluindo TOL1 e TOL2 on-line</td><td>Não executado nesta atividade</td></tr>
+<tr><td>F02-C01</td><td>Amostra; <code>/livres ter 14:00 1</code></td><td>1009 - Laboratorio, 1009 e 1010 - Laboratorio, 1017, 1020, 1021, 1022, 1023</td><td>Não executado nesta atividade</td></tr>
+<tr><td>F02-C02</td><td>Sala 1012 com MAT038-TB1 TER 09:25–11:05; consultar TER 11:05, 1º andar</td><td>1012 aparece livre (fim exclusivo)</td><td>Não executado</td></tr>
+<tr><td>F02-C03</td><td><code>/livres xyz 14:00 1</code></td><td>Mensagem "Não entendi o dia, a hora ou o andar"</td><td>Não executado</td></tr>
+<tr><td>F03-C01</td><td><code>exemplos/grade_exemplo.xlsx</code>: DCC011/TB, "Linguagens de Programação", MAT038/TM4, "Programação Orientada a Objetos"</td><td>3 localizadas, 1 "não localizada"</td><td>Não executado nesta atividade</td></tr>
+<tr><td>F04-C01</td><td>Amostra com DCC006-TL1 e DCC017-TN na sala 407 do CAD3, mesmo horário</td><td>As duas aulas registradas (turma conjunta); nenhum registro recusado</td><td>Não executado nesta atividade</td></tr>
+<tr><td>F04-C02</td><td>Endereço do ICEx inacessível</td><td>Falha no relatório; base anterior mantida</td><td>Não executado</td></tr>
+</table>
+
+<h2>Etapa 3 — Execução dos três cenários</h2>
+<h3>Por que estes três</h3>
+<p>Os três verificam a funcionalidade F01, a mesma dos diagramas das aulas 13 e 14. Escolhi <b>"banco de dados"</b> para conferir a correspondência pelo nome (o aluno digita em minúsculas e com parte do nome, e o quadro usa maiúsculas sem acento) e confirmar que a consulta devolve todas as turmas, com o prédio certo de cada uma (ICEx e CAD3), sem alterar a base. Escolhi <b>"C"</b> para conferir que o termo curto é rejeitado com uma orientação, antes de consultar o catálogo, sem criar resultado. Escolhi <b>"Programação Orientada a Objetos"</b>, que de fato não consta no quadro do ICEx, para conferir o limite de ausência de resultados: a proposta exige um aviso explícito em vez de uma resposta vazia sem explicação.</p>
+<h3>Como foi executado</h3>
+<p>Cada cenário cria o seu próprio catálogo com <code>preparar_catalogo()</code>, sem depender de dados de outra execução. O envio pelo Telegram foi substituído por um registro local (<code>CanalSimulado</code>). O script imprime o esperado, escrito antes, ao lado do observado. Para repetir: abrir <code>scripts/verificacao_manual_aula17.py</code> no VS Code e usar o botão Run, ou executar <code>python scripts/verificacao_manual_aula17.py</code> na pasta do projeto.</p>
+
+<h3>Ficha F01-C01 — uso válido</h3>
+
+<table>
+<tr><th style="width:24%">Campo</th><th>Registro</th></tr>
+<tr><td>Funcionalidade</td><td>F01 — Consultar a sala de uma disciplina (<code>/sala</code>).</td></tr>
+<tr><td>Cenário</td><td>F01-C01 — Buscar "banco de dados" com DCC011 cadastrada.</td></tr>
+<tr><td>Regra verificada</td><td>R9: as palavras do termo aparecem no nome "INTRODUCAO A BANCO DE DADOS" (maiúsculas ignoradas) e não em "LINGUAGENS DE PROGRAMACAO". R10: a consulta não altera a base.</td></tr>
+<tr><td>Preparação / estado inicial</td><td>Catálogo novo, preparado por <code>preparar_catalogo()</code> a partir de 4 registros reais do quadro do ICEx (consultados em 15/10/2026): DCC011 — INTRODUCAO A BANCO DE DADOS, turma TB (SEG e QUA 09:25–11:05, sala 2014 - DCC do ICEx) e turma TE (TER e QUI 19:00–20:40, sala 213 do CAD3); DCC024 — LINGUAGENS DE PROGRAMACAO, turma TM (SEG e QUA 13:00–14:40, sala 309 do CAD3) e turma TE (SEG e QUA 19:00–20:40, sala 2013 - DCC). Estado: 2 disciplinas, 4 turmas, 8 aulas. Registro de mensagens simuladas vazio.</td></tr>
+<tr><td>Entrada e passos</td><td>Chamar <code>ConsultaDeSalas.buscar_por_disciplina("banco de dados")</code>; chamar <code>ComandosDoBot.sala("banco de dados")</code> e registrar a mensagem no canal simulado; conferir disciplinas, aulas, mensagens e estado.</td></tr>
+<tr><td>Resultado e estado esperados</td><td>Uma disciplina (DCC011); quatro aulas: TB SEG e QUA 09:25–11:05 na sala 2014 - DCC (ICEx), TE TER e QUI 19:00–20:40 na sala 213 (CAD3); uma mensagem registrada; catálogo com 2 disciplinas, 4 turmas, 8 aulas.</td></tr>
+<tr><td>Resultado e estado observados</td><td>Disciplinas: [DCC011]. Aulas: as quatro esperadas, na mesma ordem, com prédio e sala corretos. Uma mensagem registrada com as turmas TB e TE. Estado final: 2 disciplinas, 4 turmas, 8 aulas.</td></tr>
+<tr><td>Conclusão e evidência</td><td><span class="ok">Aprovado.</span> Evidência: transcrição abaixo (execução de 15/10/2026).</td></tr>
+</table>
+<pre class="saida">F01-C01 — Válido: /sala banco de dados com DCC011 cadastrada
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  disciplinas encontradas
+    esperado:  [&#x27;DCC011&#x27;]
+    observado: [&#x27;DCC011&#x27;]
+    confere:   sim
+  aulas (turma, dia, horário, prédio, sala)
+    esperado:  [(&#x27;TB&#x27;, &#x27;SEG&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TB&#x27;, &#x27;QUA&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TE&#x27;, &#x27;TER&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;), (&#x27;TE&#x27;, &#x27;QUI&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;)]
+    observado: [(&#x27;TB&#x27;, &#x27;SEG&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TB&#x27;, &#x27;QUA&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TE&#x27;, &#x27;TER&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;), (&#x27;TE&#x27;, &#x27;QUI&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;)]
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | 📚 DCC011 — INTRODUCAO A BANCO DE DADOS
+  |   TB: Seg/Qua 09:25–11:05 · sala 2014 - DCC (ICEx, 2º andar)
+  |   TE: Ter/Qui 19:00–20:40 · sala 213 (CAD3, 2º andar)</pre>
+<h3 class="quebra">Ficha F01-C02 — entrada inválida</h3>
+
+<table>
+<tr><th style="width:24%">Campo</th><th>Registro</th></tr>
+<tr><td>Funcionalidade</td><td>F01 — Consultar a sala de uma disciplina (<code>/sala</code>).</td></tr>
+<tr><td>Cenário</td><td>F01-C02 — Buscar com o termo "  C " (1 caractere após remover espaços).</td></tr>
+<tr><td>Regra verificada</td><td>R9: termos com menos de 3 caracteres são rejeitados antes de consultar o catálogo; a rejeição não altera a base.</td></tr>
+<tr><td>Preparação / estado inicial</td><td>Catálogo novo, preparado por <code>preparar_catalogo()</code> a partir de 4 registros reais do quadro do ICEx (consultados em 15/10/2026): DCC011 — INTRODUCAO A BANCO DE DADOS, turma TB (SEG e QUA 09:25–11:05, sala 2014 - DCC do ICEx) e turma TE (TER e QUI 19:00–20:40, sala 213 do CAD3); DCC024 — LINGUAGENS DE PROGRAMACAO, turma TM (SEG e QUA 13:00–14:40, sala 309 do CAD3) e turma TE (SEG e QUA 19:00–20:40, sala 2013 - DCC). Estado: 2 disciplinas, 4 turmas, 8 aulas. Registro de mensagens simuladas vazio.</td></tr>
+<tr><td>Entrada e passos</td><td>Chamar <code>buscar_por_disciplina("  C ")</code> e capturar a exceção; chamar <code>ComandosDoBot.sala("  C ")</code> e registrar a mensagem; conferir o estado.</td></tr>
+<tr><td>Resultado e estado esperados</td><td>Exceção TermoDeBuscaInvalido na consulta; o bot responde com a orientação "Informe ao menos 3 caracteres..."; uma mensagem registrada; estado inalterado (2 disciplinas, 4 turmas, 8 aulas).</td></tr>
+<tr><td>Resultado e estado observados</td><td>Exceção TermoDeBuscaInvalido. Mensagem: "Informe ao menos 3 caracteres do nome ou o código da disciplina. Exemplo: /sala banco de dados". Uma mensagem. Estado: 2 disciplinas, 4 turmas, 8 aulas.</td></tr>
+<tr><td>Conclusão e evidência</td><td><span class="ok">Aprovado.</span> Evidência: transcrição abaixo.</td></tr>
+</table>
+<pre class="saida">F01-C02 — Inválido: /sala C (termo com menos de 3 caracteres)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  exceção lançada pela consulta
+    esperado:  TermoDeBuscaInvalido
+    observado: TermoDeBuscaInvalido
+    confere:   sim
+  mensagem é a orientação de uso
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Informe ao menos 3 caracteres do nome ou o código da disciplina.
+  | Exemplo: /sala banco de dados</pre>
+<h3>Ficha F01-C03 — limite: nenhum resultado</h3>
+
+<table>
+<tr><th style="width:24%">Campo</th><th>Registro</th></tr>
+<tr><td>Funcionalidade</td><td>F01 — Consultar a sala de uma disciplina (<code>/sala</code>).</td></tr>
+<tr><td>Cenário</td><td>F01-C03 — Buscar "Programação Orientada a Objetos", disciplina que não consta no quadro do ICEx.</td></tr>
+<tr><td>Regra verificada</td><td>Ausência de resultados: termo válido sem correspondência gera aviso explícito, e não uma resposta vazia; R10.</td></tr>
+<tr><td>Preparação / estado inicial</td><td>Catálogo novo, preparado por <code>preparar_catalogo()</code> a partir de 4 registros reais do quadro do ICEx (consultados em 15/10/2026): DCC011 — INTRODUCAO A BANCO DE DADOS, turma TB (SEG e QUA 09:25–11:05, sala 2014 - DCC do ICEx) e turma TE (TER e QUI 19:00–20:40, sala 213 do CAD3); DCC024 — LINGUAGENS DE PROGRAMACAO, turma TM (SEG e QUA 13:00–14:40, sala 309 do CAD3) e turma TE (SEG e QUA 19:00–20:40, sala 2013 - DCC). Estado: 2 disciplinas, 4 turmas, 8 aulas. Registro de mensagens simuladas vazio.</td></tr>
+<tr><td>Entrada e passos</td><td>Chamar <code>buscar_por_disciplina("Programação Orientada a Objetos")</code>; chamar <code>ComandosDoBot.sala(...)</code> com o mesmo termo e registrar a mensagem; conferir o resultado e o estado.</td></tr>
+<tr><td>Resultado e estado esperados</td><td>Resultado com <code>encontrou = False</code> e lista vazia; mensagem começando por "Não encontrei nenhuma disciplina para "Programação Orientada a Objetos""; uma mensagem; estado inalterado.</td></tr>
+<tr><td>Resultado e estado observados</td><td><code>encontrou = False</code>, lista vazia, mensagem "Não encontrei nenhuma disciplina para "Programação Orientada a Objetos". Confira o nome ou tente pelo código (ex.: DCC011)."; uma mensagem; estado: 2 disciplinas, 4 turmas, 8 aulas.</td></tr>
+<tr><td>Conclusão e evidência</td><td><span class="ok">Aprovado.</span> Evidência: transcrição abaixo.</td></tr>
+</table>
+<pre class="saida">F01-C03 — Limite: /sala Programação Orientada a Objetos (nenhum resultado)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  resultado encontrou algo?
+    esperado:  False
+    observado: False
+    confere:   sim
+  disciplinas encontradas
+    esperado:  []
+    observado: []
+    confere:   sim
+  mensagem informa que não encontrou
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Não encontrei nenhuma disciplina para &quot;Programação Orientada a Objetos&quot;.
+  | Confira o nome ou tente pelo código (ex.: DCC011).</pre>
+
+<h2>Comparação, divergências e observações</h2>
+<p>Nos três cenários, os valores e o estado observados coincidem com o esperado; não houve divergência a corrigir. A conferência foi feita sobre valores (disciplinas, turmas, dias, horários e salas), sobre a mensagem apresentada e sobre o estado da base, e não apenas sobre a ausência de erro.</p>
+<p>Observação feita fora dos três cenários, ao carregar a amostra real: a primeira versão da regra de conflito de sala recusou DCC017-TN, que divide a sala 407 do CAD3 com DCC006-TL1 no mesmo horário. A divergência foi registrada, a regra foi revista para aceitar turmas conjuntas e a carga foi repetida sem recusas (cenário F04-C01).</p>
+
+<h2 class="quebra">Anexo — transcrição completa da execução</h2>
+<pre class="saida">========================================================================
+F01-C01 — Válido: /sala banco de dados com DCC011 cadastrada
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  disciplinas encontradas
+    esperado:  [&#x27;DCC011&#x27;]
+    observado: [&#x27;DCC011&#x27;]
+    confere:   sim
+  aulas (turma, dia, horário, prédio, sala)
+    esperado:  [(&#x27;TB&#x27;, &#x27;SEG&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TB&#x27;, &#x27;QUA&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TE&#x27;, &#x27;TER&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;), (&#x27;TE&#x27;, &#x27;QUI&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;)]
+    observado: [(&#x27;TB&#x27;, &#x27;SEG&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TB&#x27;, &#x27;QUA&#x27;, &#x27;09:25–11:05&#x27;, &#x27;ICEx&#x27;, &#x27;2014 - DCC&#x27;), (&#x27;TE&#x27;, &#x27;TER&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;), (&#x27;TE&#x27;, &#x27;QUI&#x27;, &#x27;19:00–20:40&#x27;, &#x27;CAD3&#x27;, &#x27;213&#x27;)]
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | 📚 DCC011 — INTRODUCAO A BANCO DE DADOS
+  |   TB: Seg/Qua 09:25–11:05 · sala 2014 - DCC (ICEx, 2º andar)
+  |   TE: Ter/Qui 19:00–20:40 · sala 213 (CAD3, 2º andar)
+========================================================================
+F01-C02 — Inválido: /sala C (termo com menos de 3 caracteres)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  exceção lançada pela consulta
+    esperado:  TermoDeBuscaInvalido
+    observado: TermoDeBuscaInvalido
+    confere:   sim
+  mensagem é a orientação de uso
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Informe ao menos 3 caracteres do nome ou o código da disciplina.
+  | Exemplo: /sala banco de dados
+========================================================================
+F01-C03 — Limite: /sala Programação Orientada a Objetos (nenhum resultado)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  resultado encontrou algo?
+    esperado:  False
+    observado: False
+    confere:   sim
+  disciplinas encontradas
+    esperado:  []
+    observado: []
+    confere:   sim
+  mensagem informa que não encontrou
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Não encontrei nenhuma disciplina para &quot;Programação Orientada a Objetos&quot;.
+  | Confira o nome ou tente pelo código (ex.: DCC011).
+========================================================================
+Resumo
+========================================================================
+  F01-C01: observado confere com o esperado
+  F01-C02: observado confere com o esperado
+  F01-C03: observado confere com o esperado
+</pre>
+</body></html>

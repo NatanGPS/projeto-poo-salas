@@ -1,0 +1,80 @@
+========================================================================
+F01-C01 — Válido: /sala banco de dados com DCC011 cadastrada
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  disciplinas encontradas
+    esperado:  ['DCC011']
+    observado: ['DCC011']
+    confere:   sim
+  aulas (turma, dia, horário, prédio, sala)
+    esperado:  [('TB', 'SEG', '09:25–11:05', 'ICEx', '2014 - DCC'), ('TB', 'QUA', '09:25–11:05', 'ICEx', '2014 - DCC'), ('TE', 'TER', '19:00–20:40', 'CAD3', '213'), ('TE', 'QUI', '19:00–20:40', 'CAD3', '213')]
+    observado: [('TB', 'SEG', '09:25–11:05', 'ICEx', '2014 - DCC'), ('TB', 'QUA', '09:25–11:05', 'ICEx', '2014 - DCC'), ('TE', 'TER', '19:00–20:40', 'CAD3', '213'), ('TE', 'QUI', '19:00–20:40', 'CAD3', '213')]
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | 📚 DCC011 — INTRODUCAO A BANCO DE DADOS
+  |   TB: Seg/Qua 09:25–11:05 · sala 2014 - DCC (ICEx, 2º andar)
+  |   TE: Ter/Qui 19:00–20:40 · sala 213 (CAD3, 2º andar)
+========================================================================
+F01-C02 — Inválido: /sala C (termo com menos de 3 caracteres)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  exceção lançada pela consulta
+    esperado:  TermoDeBuscaInvalido
+    observado: TermoDeBuscaInvalido
+    confere:   sim
+  mensagem é a orientação de uso
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Informe ao menos 3 caracteres do nome ou o código da disciplina.
+  | Exemplo: /sala banco de dados
+========================================================================
+F01-C03 — Limite: /sala Programação Orientada a Objetos (nenhum resultado)
+========================================================================
+Estado inicial: 2 disciplinas, 4 turmas, 8 aulas; mensagens enviadas: 0
+  resultado encontrou algo?
+    esperado:  False
+    observado: False
+    confere:   sim
+  disciplinas encontradas
+    esperado:  []
+    observado: []
+    confere:   sim
+  mensagem informa que não encontrou
+    esperado:  True
+    observado: True
+    confere:   sim
+  mensagens enviadas
+    esperado:  1
+    observado: 1
+    confere:   sim
+  estado do catálogo (inalterado)
+    esperado:  2 disciplinas, 4 turmas, 8 aulas
+    observado: 2 disciplinas, 4 turmas, 8 aulas
+    confere:   sim
+Mensagem registrada:
+  | Não encontrei nenhuma disciplina para "Programação Orientada a Objetos".
+  | Confira o nome ou tente pelo código (ex.: DCC011).
+========================================================================
+Resumo
+========================================================================
+  F01-C01: observado confere com o esperado
+  F01-C02: observado confere com o esperado
+  F01-C03: observado confere com o esperado
