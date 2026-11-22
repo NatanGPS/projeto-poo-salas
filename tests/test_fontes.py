@@ -1,11 +1,17 @@
-"""Testes das fontes de dados: a mesma operação coletar() em duas classes concretas."""
+"""Fontes de dados: a mesma operação coletar() em três classes concretas."""
 
 import json
 import unittest
 
-from apoio import REGISTROS_TESTE
-from guia_salas.fontes import FonteDeDados, FonteIcexArquivo, FonteIcexOnline, FonteIndisponivel
-from guia_salas.fontes.icex import separar_predio
+from apoio import REGISTROS_TESTE, TesteComBase, retrato
+from guia_salas.dados import (
+    FonteBancoLocal,
+    FonteDeDados,
+    FonteIcexArquivo,
+    FonteIcexOnline,
+    FonteIndisponivel,
+)
+from guia_salas.dados.fonte_icex import separar_predio
 from guia_salas.servicos.atualizador import AtualizadorDeBase
 
 
@@ -72,6 +78,18 @@ class TestFontes(unittest.TestCase):
         self.assertEqual(("CAD3", "310"), separar_predio("CAD3 - Sala 310"))
         self.assertEqual(("ICEx", "AUD. II"), separar_predio("AUD. II - ICEX"))
         self.assertEqual(("On-line", "ON-LINE"), separar_predio("ON-LINE"))
+
+
+class TestFonteBancoLocal(TesteComBase):
+    """Estado inicial: base de teste gravada a partir de tests/dados/registros_teste.json."""
+
+    def test_base_local_reconstroi_o_mesmo_catalogo_da_fonte_original(self):
+        original, _ = AtualizadorDeBase([FonteIcexArquivo(REGISTROS_TESTE)]).atualizar()
+        fontes: list[FonteDeDados] = [FonteIcexArquivo(REGISTROS_TESTE), FonteBancoLocal(self.sistema.banco)]
+        for fonte in fontes:
+            catalogo, relatorio = AtualizadorDeBase([fonte]).atualizar()
+            self.assertEqual([], relatorio.recusados)
+            self.assertEqual(retrato(original), retrato(catalogo))
 
 
 if __name__ == "__main__":

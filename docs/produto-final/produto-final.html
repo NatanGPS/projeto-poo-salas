@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<title>Guia de Salas: Produto final</title>
+<link rel="stylesheet" href="../_estilo/documento.css">
+<style>
+.diagrama pre.mermaid { background: none; border: 0; }
+.diagrama svg { max-height: 150mm; }
+.diagrama svg[aria-roledescription="flowchart-v2"] { min-width: 55%; max-height: 95mm; }
+td code, li code, p code { background: #f0f3f7; padding: 0 2px; }
+</style>
+</head><body>
+<h1>Guia de Salas: Produto final (4ª etapa)</h1>
+<p class="sub">Natan Gaspar de Souza</p>
+<p><strong>Versão entregue:</strong> 1.0.0, arquivo <code>guia-salas-1.0.0.zip</code> (SHA-256 <code>7e06d28c73761ade0cdc62561dcd7104d900cbacec215b65bfa205e53f7f0e56</code>), gerado a partir do commit <code>41aee24</code> do repositório. Python 3.10 ou superior (testado com 3.13.18).</p>
+<h2>1. Problema, público e escopo</h2>
+<p><strong>Problema.</strong> Para saber em que sala e horário acontece uma disciplina, o aluno consulta sites institucionais lentos, um por unidade, e repete a busca a cada mudança. Também não há uma forma simples de descobrir uma sala vazia para estudar entre duas aulas.</p>
+<p><strong>Público.</strong> Alunos que têm aulas nas salas distribuídas pelo ICEx (prédio do ICEx e CAD1, CAD2 e CAD3), que usam o sistema pelo terminal ou pelo bot do Telegram. O mantenedor (o grupo) atualiza a base de aulas.</p>
+<p><strong>Escopo.</strong> O sistema reúne em uma base local o quadro "Distribuição de Salas" do ICEx e responde, sem depender do site no momento da consulta: onde é a aula de uma disciplina, quais salas estão livres, qual é a sala de cada disciplina de uma planilha e qual é a semana de aulas do aluno.</p>
+<h3>1.1 Ajustes de escopo</h3>
+<table>
+<thead>
+<tr>
+<th>Ajuste</th>
+<th>Justificativa</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Somente o quadro do ICEx; a Escola de Engenharia ficou fora.</td>
+<td>O endereço dos dados da Engenharia não foi identificado. A interface <code>FonteDeDados</code> permite incluí-la como nova subclasse, sem mudar as consultas.</td>
+</tr>
+<tr>
+<td>Grade enviada só como planilha .xlsx, sem imagem.</td>
+<td>Imagem exigiria reconhecimento de texto (OCR), fora do tempo da disciplina.</td>
+</tr>
+<tr>
+<td>Dados reais do ICEx no lugar de dados fictícios.</td>
+<td>O JSON público do ICEx foi lido diretamente. Só a grade de exemplo (<code>ana</code>) é fictícia.</td>
+</tr>
+<tr>
+<td>Nova funcionalidade F05, Minha grade.</td>
+<td>Completa o objetivo da proposta ("enviar a grade e receber as salas"): o aluno guarda suas turmas uma vez e consulta a semana inteira. É a funcionalidade que altera dados com regras de negócio.</td>
+</tr>
+<tr>
+<td>Atualização da base (F04) manual no terminal e automática no bot.</td>
+<td>No terminal, o mantenedor escolhe a origem (site ou arquivo); no bot, a atualização roda logo após o início e a cada 60 minutos.</td>
+</tr>
+</tbody>
+</table>
+<h2>2. Funcionalidades</h2>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Funcionalidade</th>
+<th>Origem</th>
+<th>Quem solicita</th>
+<th>Resultado para o usuário</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>F01</td>
+<td>Buscar a sala de uma disciplina pelo nome ou código</td>
+<td>Protótipo</td>
+<td>Aluno</td>
+<td>Turmas da disciplina com dias, horários, sala, prédio e andar.</td>
+</tr>
+<tr>
+<td>F02</td>
+<td>Consultar salas livres num dia, hora, andar e prédio</td>
+<td>Protótipo</td>
+<td>Aluno</td>
+<td>Lista de salas presenciais sem aula naquele instante.</td>
+</tr>
+<tr>
+<td>F03</td>
+<td>Preencher planilha de disciplinas</td>
+<td>Nova (o código existia no bot, sem validação nem testes)</td>
+<td>Aluno</td>
+<td>Cópia da planilha com turma, dias e horários e sala de cada disciplina.</td>
+</tr>
+<tr>
+<td>F04</td>
+<td>Atualizar a base de aulas</td>
+<td>Nova (no protótipo a base era só memória)</td>
+<td>Mantenedor ou bot</td>
+<td>Base trocada pela carga nova, com histórico; ou recusa com a base anterior mantida.</td>
+</tr>
+<tr>
+<td>F05</td>
+<td>Minha grade: adicionar turmas, ver a semana, remover disciplina e alterar o nome</td>
+<td>Nova</td>
+<td>Aluno</td>
+<td>Grade salva, sem conflito de horário, mostrada dia a dia com as salas.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Como iniciar.</strong> <code>python -m guia_salas</code> abre o menu do terminal com as opções 1 a 5. <code>python -m guia_salas --telegram</code> inicia o bot (comandos <code>/sala</code>, <code>/livres</code>, <code>/minhagrade</code>, <code>/adicionar</code>, <code>/remover</code> e envio de planilha). <code>python -m guia_salas --preparar-base</code> recria a base de demonstração.</p>
+<p><strong>Funcionalidades opcionais.</strong> O bot do Telegram é uma segunda interface para as mesmas funcionalidades; o terminal é suficiente para todas. A opção <code>--online</code> atualiza pelo site antes de abrir o menu.</p>
+<p><strong>Pendências que afetam a versão entregue.</strong> "Seg-Sex" no quadro é lido como segunda e sexta (não como segunda a sexta), a confirmar com o ICEx; abreviações como "BD" e "GAAL" não são reconhecidas; salas sem nenhuma aula no semestre nunca aparecem como livres.</p>
+<h2>3. Contratos</h2>
+<p>Em todos os contratos, "base" é o arquivo SQLite <code>base/guia_salas.db</code> e "catálogo" é a cópia em memória das aulas da base. Toda recusa lança uma subclasse de <code>ErroDeDominio</code>; o terminal mostra "Entrada recusada: motivo" e o bot mostra o motivo, e o menu continua.</p>
+<h3>F01. Buscar a sala de uma disciplina</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Condições iniciais</td>
+<td>Base com aulas carregadas (a demonstração tem 30 disciplinas e 199 aulas).</td>
+</tr>
+<tr>
+<td>Dados informados</td>
+<td>Termo (texto livre): nome ou código da disciplina.</td>
+</tr>
+<tr>
+<td>Regras</td>
+<td>Pelo menos 3 caracteres após remover espaços. Corresponde pelo código exato (sem diferenciar maiúsculas) ou se cada palavra do termo for igual ou início (com 3 letras ou mais) de uma palavra do nome. Acentos e maiúsculas são ignorados, e os algarismos 1 a 9 equivalem aos romanos I a IX.</td>
+</tr>
+<tr>
+<td>Sucesso</td>
+<td>Lista de disciplinas, cada uma com suas turmas, dias, horário (HH:MM, horário de Brasília), sala, prédio e andar. Sem correspondência, a resposta vazia é válida: "Nenhuma disciplina encontrada para ...".</td>
+</tr>
+<tr>
+<td>Rejeição</td>
+<td>Termo com menos de 3 caracteres (<code>TermoDeBuscaInvalido</code>).</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td>Nada muda: consulta somente leitura.</td>
+</tr>
+</tbody>
+</table>
+<h3>F02. Consultar salas livres</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Condições iniciais</td>
+<td>Base com aulas carregadas. Só são conhecidas as salas que aparecem em alguma aula.</td>
+</tr>
+<tr>
+<td>Dados informados</td>
+<td>Dia (seg a sab); hora (HH:MM, horário de Brasília); andar (inteiro; vazio para todos); prédio (ICEx, CAD1, CAD2, CAD3; vazio para todos).</td>
+</tr>
+<tr>
+<td>Regras</td>
+<td>Uma sala está ocupada se alguma aula a usa no dia com início ≤ hora &lt; fim (o fim é exclusivo). Turmas conjuntas ocupam a sala uma vez. Sala on-line nunca é livre.</td>
+</tr>
+<tr>
+<td>Sucesso</td>
+<td>Lista de salas livres com prédio, ordenada por prédio, andar e nome. Lista vazia é válida: "Nenhuma sala livre ...".</td>
+</tr>
+<tr>
+<td>Rejeições</td>
+<td>Dia desconhecido, hora fora de 00:00 a 23:59 ou em outro formato, andar não numérico ou negativo (<code>DadoInvalido</code>); prédio que não existe na base (<code>PredioDesconhecido</code>, com a lista de prédios válidos).</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td>Nada muda.</td>
+</tr>
+</tbody>
+</table>
+<h3>F03. Preencher planilha de disciplinas</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Condições iniciais</td>
+<td>Base com aulas carregadas; biblioteca <code>openpyxl</code> instalada.</td>
+</tr>
+<tr>
+<td>Dados informados</td>
+<td>Caminho de uma planilha .xlsx. A linha 1 é o cabeçalho; a coluna 1 traz o nome ou código de cada disciplina; uma coluna chamada "Turma" (opcional) escolhe a turma.</td>
+</tr>
+<tr>
+<td>Regras</td>
+<td>Cada linha é buscada pela regra da F01. Com turma informada, só ela é aceita; sem turma, usa a primeira turma da disciplina. Linhas não encontradas não interrompem as demais.</td>
+</tr>
+<tr>
+<td>Sucesso</td>
+<td>Cópia gravada ao lado da original, com o sufixo <code>_com_salas</code>, com três colunas novas (Turma encontrada, Dias e horários, Sala); linhas não encontradas recebem "não localizada". Mostra os totais de localizadas e não localizadas.</td>
+</tr>
+<tr>
+<td>Rejeições</td>
+<td>Extensão diferente de .xlsx, arquivo inexistente, arquivo que não é planilha, planilha sem disciplinas, saída igual à entrada, falha ao gravar (<code>PlanilhaInvalida</code>). Nenhuma cópia é criada.</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td>A planilha original e a base não mudam.</td>
+</tr>
+</tbody>
+</table>
+<h3>F04. Atualizar a base de aulas</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Condições iniciais</td>
+<td>Base aberta (pode estar vazia na primeira execução).</td>
+</tr>
+<tr>
+<td>Dados informados</td>
+<td>Origem: 1 para o site do ICEx (<code>recupera_salas.php</code>) ou 2 para um arquivo JSON no mesmo formato.</td>
+</tr>
+<tr>
+<td>Regras</td>
+<td>Cada registro é validado (dias reconhecidos, início anterior ao fim, sala com identificador, sem aulas sobrepostas na mesma turma); registros inválidos são recusados um a um. A carga inteira é recusada se a fonte falhar, se nenhuma aula for válida ou se mais da metade dos registros lidos for recusada. Exatamente metade recusada ainda é aceita.</td>
+</tr>
+<tr>
+<td>Sucesso</td>
+<td>Numa única transação, as tabelas de disciplinas, turmas, salas e aulas são substituídas e uma linha é acrescentada ao histórico (data e hora, origem, lidos, registradas, recusados). Em seguida, as consultas passam a usar o catálogo novo. Mostra os totais.</td>
+</tr>
+<tr>
+<td>Rejeições</td>
+<td><code>AtualizacaoRecusada</code> com o motivo: fonte indisponível, JSON em formato inesperado, carga sem aulas, proporção de recusas acima do limite, falha do SQLite ao gravar.</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td>Na recusa, base e catálogo ficam como estavam (a transação é desfeita). Em qualquer caso, as grades dos alunos são preservadas; turmas que deixaram de existir aparecem como "Não encontradas na base atual".</td>
+</tr>
+</tbody>
+</table>
+<h3>F05. Minha grade</h3>
+<table>
+<thead>
+<tr>
+<th>Item</th>
+<th>Contrato</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Condições iniciais</td>
+<td>Base com aulas carregadas. A grade é identificada por um apelido no terminal (2 a 40 letras sem acento, números, ponto, hífen, sublinhado) ou pela conversa no Telegram (<code>telegram:&lt;id&gt;</code>). A demonstração traz a grade <code>ana</code>.</td>
+</tr>
+<tr>
+<td>Dados informados</td>
+<td>Adicionar: uma ou mais disciplinas com turma, como <code>DCC011 TB; MAT001 TA1</code> (separadas por ponto e vírgula, vírgula ou linha). Remover: código da disciplina. Alterar nome: texto de 1 a 40 caracteres.</td>
+</tr>
+<tr>
+<td>Regras</td>
+<td>No máximo uma turma por disciplina e no máximo 8 disciplinas; um pedido tem no máximo 8 itens. Disciplina e turma precisam existir na base. Duas aulas de turmas diferentes da grade não podem se sobrepor no mesmo dia (aulas encostadas, como 09:10 e 09:10, são permitidas; aulas on-line também contam). O pedido é atendido por inteiro ou recusado por inteiro.</td>
+</tr>
+<tr>
+<td>Sucesso</td>
+<td>Adicionar grava todas as turmas do pedido; ver mostra as aulas da semana por dia, com horário, disciplina, turma e sala; remover retira a disciplina; alterar nome troca o nome exibido.</td>
+</tr>
+<tr>
+<td>Rejeições</td>
+<td>Pedido vazio ou fora do formato CÓDIGO TURMA, identificação ou nome inválidos (<code>DadoInvalido</code>); disciplina ou turma inexistente, remoção de disciplina fora da grade (<code>NaoEncontrado</code>, com as turmas existentes); disciplina repetida no pedido ou já na grade (<code>Duplicidade</code>); mais de 8 disciplinas (<code>LimiteExcedido</code>); conflito de horário (<code>ConflitoDeHorario</code>, indicando as duas aulas); falha do SQLite (<code>GravacaoFalhou</code>).</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td>Na recusa, nenhuma turma do pedido é gravada e a grade fica como estava, inclusive quando o pedido tinha várias turmas válidas. As aulas da base não mudam.</td>
+</tr>
+</tbody>
+</table>
+<h2>4. Camadas e colaboração</h2>
+<p>O código está dividido em três camadas, uma por pacote. Cada camada só conhece a de baixo; o módulo <code>sistema.py</code> monta os objetos e entrega o mesmo <code>Sistema</code> ao terminal e ao bot.</p>
+<div class="diagrama"><pre class="mermaid">flowchart TB
+  subgraph A[&quot;Apresentação: guia_salas/apresentacao&quot;]
+    direction LR
+    MT[&quot;MenuTerminal&quot;] ~~~ BOT[&quot;BotGuiaDeSalas&quot;] ~~~ CMD[&quot;ComandosDoBot&quot;] ~~~ FMT[&quot;FormatadorDeRespostas&quot;]
+  end
+  subgraph N[&quot;Negócio: guia_salas/servicos e guia_salas/dominio&quot;]
+    direction LR
+    SRV[&quot;ConsultaDeSalas, PreenchedorDeGrade, ServicoDeAtualizacao, ServicoMinhaGrade&quot;] ~~~ CAT[&quot;CatalogoDeAulas, AtualizadorDeBase&quot;]
+    DOM[&quot;Disciplina, Turma, Aula, Sala, SalaOnline, GradeDoAluno&quot;]
+  end
+  subgraph D[&quot;Dados: guia_salas/dados&quot;]
+    direction LR
+    FON[&quot;FonteIcexOnline, FonteIcexArquivo, FonteBancoLocal&quot;] ~~~ REP[&quot;RepositorioDeAulas, RepositorioDeGrades, BancoDeDados&quot;]
+  end
+  EXT[(&quot;Site do ICEx, arquivo JSON, base SQLite&quot;)]
+  A -- &quot;chama serviços&quot; --&gt; N
+  N -- &quot;coletar, carregar, salvar&quot; --&gt; D
+  D --&gt; EXT
+</pre></div>
+<p class="legenda">Figura 1. Camadas e pacotes.</p>
+
+<table>
+<thead>
+<tr>
+<th>Camada</th>
+<th>Módulos e classes</th>
+<th>Responsabilidade</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apresentação</td>
+<td><code>apresentacao/terminal.py</code> (<code>MenuTerminal</code>), <code>apresentacao/comandos.py</code> (<code>ComandosDoBot</code>), <code>apresentacao/telegram_bot.py</code> (<code>BotGuiaDeSalas</code>), <code>apresentacao/formatacao.py</code> (<code>FormatadorDeRespostas</code>)</td>
+<td>Ler entradas, converter textos (hora, dia, andar), chamar um serviço e mostrar o resultado ou o motivo da recusa. Não contém regras. Só <code>telegram_bot.py</code> importa a biblioteca do Telegram.</td>
+</tr>
+<tr>
+<td>Negócio</td>
+<td><code>servicos/</code> (<code>ConsultaDeSalas</code>, <code>CatalogoDeAulas</code>, <code>PreenchedorDeGrade</code>, <code>ServicoDeAtualizacao</code>, <code>AtualizadorDeBase</code>, <code>ServicoMinhaGrade</code>) e <code>dominio/</code> (entidades, valores e exceções)</td>
+<td>Aplicar as regras e coordenar as operações: validar antes de alterar, decidir o que é aceito e pedir a gravação.</td>
+</tr>
+<tr>
+<td>Dados</td>
+<td><code>dados/</code> (<code>FonteDeDados</code> e subclasses, <code>BancoDeDados</code>, <code>RepositorioDeAulas</code>, <code>RepositorioDeGrades</code>)</td>
+<td>Obter registros brutos das fontes e guardar ou recuperar linhas do SQLite. Não conhece as regras do domínio.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MVC.</strong> O projeto não segue MVC à risca, mas há correspondência: o Model é a camada de negócio com o domínio; a View é o <code>FormatadorDeRespostas</code>, que transforma resultados em texto; o Controller é o <code>MenuTerminal</code> ou o <code>ComandosDoBot</code>, que recebe o pedido, chama o serviço e escolhe a resposta. A camada de dados fica abaixo do Model.</p>
+<p><strong>Colaboração em uma operação (F05, adicionar).</strong> O menu lê o pedido e chama <code>ServicoMinhaGrade.adicionar</code>. O serviço abre a grade (o repositório devolve os códigos salvos e o catálogo devolve os objetos <code>Turma</code>), procura no catálogo cada turma do pedido, pede a <code>GradeDoAluno.adicionar</code> que aplique as regras e, só se todas passarem, manda o <code>RepositorioDeGrades</code> gravar numa transação. O formatador monta a confirmação.</p>
+<div class="pagina-paisagem">
+<div class="diagrama"><pre class="mermaid">sequenceDiagram
+  autonumber
+  actor aluno as Aluno
+  participant menu as menu: MenuTerminal
+  participant srv as servico: ServicoMinhaGrade
+  participant rep as repositorio: RepositorioDeGrades
+  participant cat as catalogo: CatalogoDeAulas
+  participant g as grade: GradeDoAluno
+  aluno-&gt;&gt;menu: opção 4, &quot;ana&quot;, opção 2, &quot;DCC024 TM#59; DCC001 TB&quot;
+  menu-&gt;&gt;srv: adicionar(&quot;ana&quot;, pedido)
+  srv-&gt;&gt;rep: carregar(&quot;ana&quot;)
+  rep--&gt;&gt;srv: GradeSalva [DCC011 TB]
+  srv-&gt;&gt;cat: turma(&quot;DCC011&quot;, &quot;TB&quot;)
+  srv-&gt;&gt;g: restaurar([DCC011 TB], {})
+  srv-&gt;&gt;srv: ler_pedido(pedido)
+  srv-&gt;&gt;cat: turma(&quot;DCC024&quot;,&quot;TM&quot;) e turma(&quot;DCC001&quot;,&quot;TB&quot;)
+  alt disciplina ou turma inexistente
+    cat--&gt;&gt;srv: NaoEncontrado
+  else turmas encontradas
+    srv-&gt;&gt;g: adicionar([DCC024 TM, DCC001 TB])
+    alt repetida, limite ou conflito
+      g--&gt;&gt;srv: ConflitoDeHorario (DCC011 TB x DCC001 TB)
+      Note over g,rep: nada é alterado nem gravado
+    else todas as regras atendidas
+      g-&gt;&gt;g: inclui as turmas
+      srv-&gt;&gt;rep: salvar(GradeSalva) em uma transação
+    end
+  end
+  srv--&gt;&gt;menu: turmas adicionadas ou exceção
+  menu--&gt;&gt;aluno: &quot;Adicionada(s) à grade: ...&quot; ou &quot;Entrada recusada: ...&quot;
+</pre></div>
+<p class="legenda">Figura 2. Sequência da F05 (adicionar turmas). Com o pedido do exemplo, DCC001 TB conflita com DCC011 TB na segunda, 09:25, e DCC024 TM também não é gravada.</p>
+
+</div>
+<div class="pagina-paisagem">
+<h2>5. Diagrama de classes</h2>
+<div class="diagrama"><pre class="mermaid">classDiagram
+  direction LR
+  class Disciplina {
+    -_codigo: str
+    -_nome: str
+    -_turmas: dict
+    +turmas() list~Turma~
+    +obter_turma(codigo) Turma
+    +corresponde(termo) bool
+  }
+  class Turma {
+    -_codigo: str
+    -_aulas: list
+    +aulas() list~Aula~
+    +agendar_aula(dia, intervalo, sala, origem) Aula
+  }
+  class Aula {
+    -_dia: DiaSemana
+    -_intervalo: IntervaloDeHorario
+    -_sala: Sala
+    -_origem: str
+    +mesmo_encontro(outra) bool
+  }
+  class Sala {
+    -_identificador: str
+    -_predio: str
+    -_andar: int ou None
+    +andar() int ou None
+    +andar(valor) setter
+    +criar(id, predio, andar)$ Sala
+    +presencial() bool
+    +esta_livre(dia, instante, aulas) bool
+    +descricao() str
+  }
+  class SalaOnline {
+    +presencial() bool
+    +esta_livre(...) bool
+    +descricao() str
+  }
+  class GradeDoAluno {
+    -_identificador: str
+    -_nome: str
+    -_turmas: dict
+    -_ausentes: dict
+    +nome(valor) setter
+    +adicionar(turmas)
+    +remover(codigo) str
+    +aulas() list~Aula~
+  }
+  class IntervaloDeHorario {
+    &lt;&lt;dataclass frozen&gt;&gt;
+    +inicio: time
+    +fim: time
+    +contem(instante) bool
+    +sobrepoe(outro) bool
+  }
+  class DiaSemana {
+    &lt;&lt;enumeration&gt;&gt;
+  }
+  Disciplina &quot;1&quot; *-- &quot;1..*&quot; Turma
+  Turma &quot;1&quot; *-- &quot;1..*&quot; Aula
+  Aula &quot;0..*&quot; --&gt; &quot;1&quot; Sala
+  Aula --&gt; IntervaloDeHorario
+  Aula --&gt; DiaSemana
+  Sala &lt;|-- SalaOnline
+  GradeDoAluno &quot;0..*&quot; --&gt; &quot;0..8&quot; Turma
+</pre></div>
+<p class="legenda">Figura 3. Classes do domínio. A grade referencia turmas do catálogo; não as possui.</p>
+
+</div>
+<div class="pagina-paisagem">
+<div class="diagrama"><pre class="mermaid">classDiagram
+  direction LR
+  class FonteDeDados {
+    &lt;&lt;abstract&gt;&gt;
+    +nome()* str
+    +descricao() str
+    +coletar()* list~RegistroDeAula~
+  }
+  class FonteIcex {
+    &lt;&lt;abstract&gt;&gt;
+    +coletar() list~RegistroDeAula~
+    #_obter_json()* dict
+    +interpretar(dados)$ list
+  }
+  class FonteIcexOnline {
+    -_url: str
+    #_obter_json() dict
+  }
+  class FonteIcexArquivo {
+    -_caminho: Path
+    #_obter_json() dict
+  }
+  class FonteBancoLocal {
+    -_banco: BancoDeDados
+    +coletar() list~RegistroDeAula~
+  }
+  class BancoDeDados {
+    -_caminho: Path
+    +transacao() Connection
+  }
+  class RepositorioDeAulas {
+    +substituir(catalogo, registro)
+    +ultima_atualizacao()
+    +historico()
+  }
+  class RepositorioDeGrades {
+    +carregar(aluno) GradeSalva
+    +salvar(grade)
+  }
+  class AtualizadorDeBase {
+    +atualizar() catalogo, relatorio
+  }
+  class ServicoDeAtualizacao {
+    +atualizar(fonte) Relatorio
+  }
+  class ServicoMinhaGrade {
+    +abrir(aluno) GradeDoAluno
+    +adicionar(aluno, pedido) list
+    +remover(aluno, codigo) str
+    +renomear(aluno, nome)
+  }
+  class ConsultaDeSalas {
+    +buscar_por_disciplina(termo)
+    +salas_livres(dia, hora, andar, predio)
+    +trocar_catalogo(novo)
+  }
+  class CatalogoDeAulas {
+    +buscar_disciplinas(termo)
+    +salas_livres(...)
+    +turma(codigo, turma) Turma
+  }
+  class PreenchedorDeGrade {
+    +preencher(entrada, saida) ResultadoDaPlanilha
+  }
+  FonteDeDados &lt;|-- FonteIcex
+  FonteIcex &lt;|-- FonteIcexOnline
+  FonteIcex &lt;|-- FonteIcexArquivo
+  FonteDeDados &lt;|-- FonteBancoLocal
+  FonteBancoLocal --&gt; BancoDeDados
+  RepositorioDeAulas --&gt; BancoDeDados
+  RepositorioDeGrades --&gt; BancoDeDados
+  AtualizadorDeBase --&gt; &quot;1..*&quot; FonteDeDados
+  ServicoDeAtualizacao --&gt; ConsultaDeSalas
+  ServicoDeAtualizacao --&gt; RepositorioDeAulas
+  ServicoMinhaGrade --&gt; ConsultaDeSalas
+  ServicoMinhaGrade --&gt; RepositorioDeGrades
+  PreenchedorDeGrade --&gt; ConsultaDeSalas
+  ConsultaDeSalas --&gt; CatalogoDeAulas
+</pre></div>
+<p class="legenda">Figura 4. Serviços (negócio) e classes da camada de dados.</p>
+
+</div>
+<h3>5.1 Requisitos de orientação a objetos</h3>
+<table>
+<thead>
+<tr>
+<th>Requisito</th>
+<th>Onde aparece</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Classes de domínio com responsabilidade relevante</td>
+<td><code>Disciplina</code> (decide se corresponde ao termo), <code>Turma</code> (impede aulas sobrepostas da mesma turma), <code>Sala</code> (decide se está livre), <code>GradeDoAluno</code> (limite, repetição e conflito), <code>IntervaloDeHorario</code> (início antes do fim, sobreposição).</td>
+</tr>
+<tr>
+<td>Estado encapsulado</td>
+<td>Atributos com prefixo <code>_</code>, lidos por <code>@property</code>. Listas são devolvidas como cópias (<code>turmas</code>, <code>ausentes</code>), então quem lê não altera o objeto.</td>
+</tr>
+<tr>
+<td>Getters e setters</td>
+<td>Atributos que admitem alteração direta têm setter com validação: <code>Sala.andar</code> (inteiro não negativo ou desconhecido; o construtor também passa por ele) e <code>GradeDoAluno.nome</code> (1 a 40 caracteres). Códigos e identificadores, que identificam o objeto, são somente leitura.</td>
+</tr>
+<tr>
+<td>Operações de domínio</td>
+<td>Alterações com regra usam métodos próprios, nunca setters: <code>GradeDoAluno.adicionar</code> e <code>remover</code>, <code>Turma.agendar_aula</code>, <code>ConsultaDeSalas.trocar_catalogo</code>, <code>ServicoDeAtualizacao.atualizar</code>.</td>
+</tr>
+<tr>
+<td>Classe abstrata</td>
+<td><code>FonteDeDados</code> (contrato de toda fonte: <code>nome</code> e <code>coletar()</code>) e <code>FonteIcex</code> (Template Method: converte o JSON e deixa <code>_obter_json()</code> para as subclasses).</td>
+</tr>
+<tr>
+<td>Herança por especialização</td>
+<td><code>FonteIcexOnline</code> e <code>FonteIcexArquivo</code> especializam <code>FonteIcex</code>; <code>FonteBancoLocal</code> especializa <code>FonteDeDados</code>; <code>SalaOnline</code> especializa <code>Sala</code>; as exceções especializam <code>ErroDeDominio</code>.</td>
+</tr>
+<tr>
+<td>Polimorfismo</td>
+<td><code>AtualizadorDeBase</code> chama <code>fonte.coletar()</code> sem saber se a fonte é o site, um arquivo ou a base local. <code>CatalogoDeAulas.salas_livres</code> chama <code>sala.esta_livre()</code> e a <code>SalaOnline</code> responde sempre que não; <code>descricao()</code> também muda por classe. A interface trata qualquer recusa com um único <code>except ErroDeDominio</code>.</td>
+</tr>
+</tbody>
+</table>
+<h2>6. Diagramas de sequência</h2>
+<p>A sequência da F01 é a mesma do protótipo; muda só a entrada, que agora vem do <code>Sistema</code> montado com a base SQLite. A F05 está na Figura 2. A Figura 5 mostra a F04, que envolve várias tabelas e precisa preservar o estado quando é recusada.</p>
+<div class="pagina-paisagem">
+<div class="diagrama"><pre class="mermaid">sequenceDiagram
+  autonumber
+  actor m as Mantenedor
+  participant menu as menu: MenuTerminal
+  participant srv as servico: ServicoDeAtualizacao
+  participant atu as AtualizadorDeBase
+  participant f as fonte: FonteIcexArquivo
+  participant rep as repositorio: RepositorioDeAulas
+  participant con as consulta: ConsultaDeSalas
+  m-&gt;&gt;menu: opção 5, origem 2, &quot;carga.json&quot;
+  menu-&gt;&gt;srv: atualizar(fonte)
+  srv-&gt;&gt;atu: atualizar()
+  atu-&gt;&gt;f: coletar()
+  alt arquivo ausente ou JSON inválido
+    f--&gt;&gt;atu: FonteIndisponivel
+    atu--&gt;&gt;srv: relatório com fonte em falha
+    srv--&gt;&gt;menu: AtualizacaoRecusada
+  else registros lidos
+    f--&gt;&gt;atu: registros
+    atu-&gt;&gt;atu: incluir(registro) para cada um, recusando os inválidos
+    atu--&gt;&gt;srv: catálogo novo e relatório
+    alt nenhuma aula ou mais da metade recusada
+      srv--&gt;&gt;menu: AtualizacaoRecusada
+    else carga aceita
+      srv-&gt;&gt;rep: substituir(catalogo, registro) em uma transação
+      alt erro do SQLite
+        rep--&gt;&gt;srv: FalhaNaBase (transação desfeita)
+        srv--&gt;&gt;menu: AtualizacaoRecusada
+      else gravado
+        srv-&gt;&gt;con: trocar_catalogo(novo)
+        srv--&gt;&gt;menu: relatório
+      end
+    end
+  end
+  menu--&gt;&gt;m: &quot;Base atualizada: ...&quot; ou &quot;Entrada recusada: ... A base anterior foi mantida.&quot;
+</pre></div>
+<p class="legenda">Figura 5. Sequência da F04 com os caminhos de recusa.</p>
+
+</div>
+<p>A F02 e a F03 seguem o mesmo padrão: o menu converte as entradas, chama <code>ConsultaDeSalas.salas_livres</code> ou <code>PreenchedorDeGrade.preencher</code>, recebe objetos ou uma exceção e passa o resultado ao formatador.</p>
+<h2>7. Base de dados</h2>
+<p>A base é um arquivo SQLite (módulo <code>sqlite3</code> da biblioteca padrão), escolhido no protótipo por não exigir servidor e caber no Raspberry Pi onde o bot roda.</p>
+<table>
+<thead>
+<tr>
+<th>Tabela</th>
+<th>Conteúdo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>disciplina</code></td>
+<td>código (chave) e nome</td>
+</tr>
+<tr>
+<td><code>turma</code></td>
+<td>disciplina e código, únicos juntos</td>
+</tr>
+<tr>
+<td><code>sala</code></td>
+<td>prédio, identificador (únicos juntos) e andar (pode ser nulo)</td>
+</tr>
+<tr>
+<td><code>aula</code></td>
+<td>turma, sala, dia (SEG a SAB), início, fim e origem</td>
+</tr>
+<tr>
+<td><code>atualizacao</code></td>
+<td>histórico de cargas aceitas: data e hora, origem, lidos, aulas registradas, recusados</td>
+</tr>
+<tr>
+<td><code>grade</code></td>
+<td>identificador do aluno (chave) e nome da grade</td>
+</tr>
+<tr>
+<td><code>grade_turma</code></td>
+<td>aluno, código da disciplina e código da turma</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Inicialização.</strong> O ZIP traz <code>base/guia_salas.db</code> já preenchida. O comando <code>python -m guia_salas --preparar-base</code> refaz a carga a partir de <code>guia_salas/dados/amostra_icex.json</code> (110 registros reais do ICEx de 15/10/2026: 30 disciplinas, 199 aulas, 42 salas presenciais) e cria a grade fictícia <code>ana</code> (DCC011 TB, MAT038 TB1, MAT001 TA1). Se o arquivo não existir, o programa faz isso sozinho na primeira execução.</p>
+<p><strong>Uso no programa.</strong> Ao iniciar, a <code>FonteBancoLocal</code> lê as aulas gravadas e o <code>AtualizadorDeBase</code> monta o catálogo em memória, que responde às consultas. A F04 grava na base antes de trocar o catálogo. A F05 lê e grava a grade a cada operação.</p>
+<p><strong>Base de teste.</strong> Os testes criam, para cada caso, uma base nova numa pasta temporária, carregada de <code>tests/dados/</code>; a base de demonstração nunca é usada.</p>
+<p><strong>Simulações.</strong> O site do ICEx não é simulado no uso normal: a opção 1 da F04 baixa os dados reais. O arquivo JSON local (<code>FonteIcexArquivo</code>) reproduz a resposta do site, no mesmo formato, para uso sem internet. Nos testes, uma sessão HTTP falsa substitui a conexão e devolve o JSON de teste ou simula o site fora do ar.</p>
+<h2>8. Tratamento de erros</h2>
+<table>
+<thead>
+<tr>
+<th>Situação</th>
+<th>Onde é tratada</th>
+<th>Resposta</th>
+<th>Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hora "25:00", "14" ou "dez horas"</td>
+<td><code>ler_hora</code> (conversão)</td>
+<td>"Horário inválido: '25:00'"</td>
+<td>Sem alteração</td>
+</tr>
+<tr>
+<td>Andar "dois"</td>
+<td><code>MenuTerminal.ler_andar</code> (conversão)</td>
+<td>"Andar inválido: "dois". Use um número, como 2."</td>
+<td>Sem alteração</td>
+</tr>
+<tr>
+<td>Dia "domingo", prédio "CAD9", andar -1</td>
+<td><code>DiaSemana</code>, <code>ConsultaDeSalas</code></td>
+<td>Motivo e valores válidos</td>
+<td>Sem alteração</td>
+</tr>
+<tr>
+<td>Planilha inexistente, corrompida ou vazia</td>
+<td><code>PreenchedorDeGrade</code></td>
+<td>Motivo; nenhuma cópia criada</td>
+<td>Original preservada</td>
+</tr>
+<tr>
+<td>Pedido da grade com uma turma inválida entre várias</td>
+<td><code>ServicoMinhaGrade</code> e <code>GradeDoAluno</code></td>
+<td>Motivo do item recusado</td>
+<td>Nenhuma turma do pedido gravada</td>
+</tr>
+<tr>
+<td>Carga com fonte fora do ar ou formato inválido</td>
+<td><code>ServicoDeAtualizacao</code></td>
+<td>Motivo e "A base anterior foi mantida."</td>
+<td>Base e catálogo preservados</td>
+</tr>
+<tr>
+<td>Erro do SQLite no meio da gravação</td>
+<td><code>BancoDeDados.transacao</code></td>
+<td><code>FalhaNaBase</code> convertida em recusa</td>
+<td>Transação desfeita</td>
+</tr>
+<tr>
+<td>Erro inesperado no bot</td>
+<td>tratador de erros do <code>BotGuiaDeSalas</code></td>
+<td>"Não foi possível responder agora."</td>
+<td>Registro no log</td>
+</tr>
+</tbody>
+</table>
+<h2>9. Decisões de projeto</h2>
+<ul>
+<li><strong>As regras ficam na camada de negócio.</strong> O conflito de horário está em <code>GradeDoAluno</code> e a regra de sala ocupada em <code>Sala.esta_livre</code> e <code>IntervaloDeHorario</code>. O terminal e o bot chamam os mesmos serviços, então aceitam e recusam exatamente os mesmos pedidos. A mesma <code>IntervaloDeHorario.sobrepoe</code> decide conflito na turma (carga da base) e na grade do aluno, e <code>contem</code> decide ocupação na F02.</li>
+<li><strong>Validar tudo antes de alterar.</strong> <code>GradeDoAluno.adicionar</code> confere repetição, limite e conflito para o pedido inteiro e só então inclui as turmas; <code>ServicoDeAtualizacao</code> confere a carga antes de gravar e grava antes de trocar o catálogo. Assim, uma recusa nunca deixa metade da operação feita.</li>
+<li><strong>Transação para operações com vários registros.</strong> A F04 apaga e regrava quatro tabelas e a F05 regrava todas as linhas de uma grade; ambas usam uma única transação do SQLite, desfeita em caso de erro.</li>
+<li><strong>Grade guarda códigos, não referências às aulas.</strong> A base de aulas é substituída a cada atualização; se a grade apontasse para linhas de <code>aula</code>, perderia os dados. Guardando "DCC011 TB", a grade sobrevive à atualização, e uma turma que sumiu do quadro aparece como pendente em vez de desaparecer.</li>
+<li><strong>Catálogo em memória com base persistente.</strong> As consultas percorrem objetos em memória (rápido e testável sem banco); o SQLite garante que o sistema abra com a última base aceita mesmo com o site do ICEx fora do ar.</li>
+<li><strong><code>SalaOnline</code> como especialização.</strong> Antes, cada consulta testava o nome do prédio. Agora a própria sala responde se está livre e como se descreve, e as consultas não precisam de condição especial.</li>
+<li><strong>Formatador separado.</strong> Os textos ficam em <code>FormatadorDeRespostas</code>; terminal e bot mostram as mesmas respostas, e mudar um texto não afeta regras.</li>
+</ul>
+<h2>10. Como executar e testar</h2>
+<pre class="saida">pip install -r requirements.txt
+python -m guia_salas --preparar-base       (opcional: o ZIP já traz a base)
+python -m guia_salas
+python -m unittest discover -s tests -v
+</pre>
+<p>São 85 testes <code>unittest</code> em 8 arquivos (<code>test_f01_busca.py</code> a <code>test_f05_minha_grade.py</code>, <code>test_dominio.py</code>, <code>test_fontes.py</code>, <code>test_menu.py</code>), todos aprovados na versão 1.0.0. Cada teste prepara a própria base temporária, então a execução não depende da ordem. A verificação detalhada por funcionalidade será apresentada no documento da 5ª etapa.</p>
+<p><strong>Conteúdo do ZIP.</strong> <code>guia_salas/</code> (código-fonte e amostra), <code>base/guia_salas.db</code> (base preenchida), <code>tests/</code> (testes e dados de teste), <code>exemplos/grade_exemplo.xlsx</code>, <code>scripts/baixar_dados_icex.py</code>, <code>deploy/</code> (instalação do bot no Raspberry Pi), <code>README.md</code>, <code>requirements.txt</code> e <code>.env.example</code> (sem token). Não há ambiente virtual, senhas nem dados pessoais.</p>
+<h2>11. Limitações conhecidas</h2>
+<ul>
+<li>Somente as salas do quadro do ICEx; a Escola de Engenharia não está incluída.</li>
+<li>Salas sem nenhuma aula no semestre não são conhecidas e nunca aparecem como livres.</li>
+<li>"Seg-Sex" é lido como segunda e sexta; a interpretação ainda não foi confirmada com o ICEx.</li>
+<li>A busca não reconhece abreviações ("BD", "GAAL"). Na F03, quando o termo corresponde a mais de uma disciplina, usa a primeira em ordem de código.</li>
+<li>O limite de 8 disciplinas por grade foi definido pelo grupo, sem norma da UFMG.</li>
+<li>A grade no terminal é identificada por um apelido, sem senha; qualquer pessoa que use o mesmo computador e apelido acessa a mesma grade.</li>
+<li>O bot depende de o Raspberry Pi estar ligado e com internet; sem internet, continua respondendo com a última base gravada.</li>
+<li>O download pelo site não pôde ser executado no ambiente usado para gerar este relatório (rede bloqueada). No Raspberry Pi, o bot baixou a lista completa do ICEx (997 registros) com a mesma <code>FonteIcexOnline</code>.</li>
+</ul>
+<script src="MERMAID"></script>
+<script>mermaid.initialize({startOnLoad:false, theme:'neutral', themeVariables:{fontSize:'15px'}, fontFamily:'DejaVu Sans, Arial', flowchart:{htmlLabels:false}, sequence:{useMaxWidth:true, actorFontSize:15, messageFontSize:15, noteFontSize:14, width:120}, class:{useMaxWidth:true}});
+mermaid.run().then(()=>{document.body.dataset.pronto='1'}).catch(e=>{console.error(String(e));document.body.dataset.pronto='1'});</script>
+</body></html>

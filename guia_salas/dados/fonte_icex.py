@@ -5,11 +5,11 @@ import re
 from abc import abstractmethod
 from pathlib import Path
 
-from guia_salas.fontes.base import FonteDeDados, FonteIndisponivel, RegistroDeAula, andar_pelo_numero
+from guia_salas.dados.fonte_base import FonteDeDados, FonteIndisponivel, RegistroDeAula, andar_pelo_numero
 
 PAGINA = "https://www.icex.ufmg.br/icex_novo/minha-salas/"
 URL_DADOS = "https://www.icex.ufmg.br/minhasala/recupera_salas.php"
-AMOSTRA = Path(__file__).resolve().parent.parent / "dados" / "amostra_icex.json"
+AMOSTRA = Path(__file__).resolve().parent / "amostra_icex.json"
 PREDIO_ICEX = "ICEx"
 PREDIO_ONLINE = "On-line"
 
@@ -44,8 +44,12 @@ class FonteIcex(FonteDeDados):
     def interpretar(cls, dados: dict | list) -> list[RegistroDeAula]:
         """Converte o JSON do quadro do ICEx em registros."""
         itens = dados.get("records", []) if isinstance(dados, dict) else dados
+        if not isinstance(itens, list):
+            raise FonteIndisponivel("O JSON não tem a lista de aulas esperada (chave records).")
         registros = []
         for item in itens:
+            if not isinstance(item, dict):
+                item = {}
             valor = lambda chave: str(item.get(cls.CAMPOS[chave], "") or "").strip()
             predio, sala = separar_predio(valor("sala"))
             registros.append(RegistroDeAula(
@@ -77,6 +81,11 @@ class FonteIcexOnline(FonteIcex):
         """Endereço consultado."""
         return self._url
 
+    @property
+    def descricao(self) -> str:
+        """Endereço do site, gravado no histórico de atualizações."""
+        return f"site do ICEx ({self._url})"
+
     def _obter_json(self) -> dict | list:
         """Faz a requisição HTTP e devolve o JSON."""
         try:
@@ -86,7 +95,7 @@ class FonteIcexOnline(FonteIcex):
         sessao = self._sessao or requests.Session()
         try:
             resposta = sessao.get(self._url, timeout=self._tempo_limite,
-                                  headers={"User-Agent": "GuiaDeSalas/0.1"})
+                                  headers={"User-Agent": "GuiaDeSalas/1.0"})
             resposta.raise_for_status()
             return resposta.json()
         except (requests.RequestException, ValueError) as erro:
@@ -104,6 +113,11 @@ class FonteIcexArquivo(FonteIcex):
     def caminho(self) -> Path:
         """Arquivo lido."""
         return self._caminho
+
+    @property
+    def descricao(self) -> str:
+        """Nome do arquivo, gravado no histórico de atualizações."""
+        return f"arquivo {self._caminho.name}"
 
     def _obter_json(self) -> dict | list:
         """Lê e decodifica o arquivo."""

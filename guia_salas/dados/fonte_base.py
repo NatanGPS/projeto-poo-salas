@@ -11,7 +11,7 @@ class FonteIndisponivel(Exception):
 
 @dataclass(frozen=True)
 class RegistroDeAula:
-    """Registro de aula como veio da fonte, ainda sem validação."""
+    """Registro de aula como veio da fonte, ainda sem validação (textos crus, andar deduzido)."""
 
     codigo: str
     nome: str
@@ -26,16 +26,21 @@ class RegistroDeAula:
 
 
 class FonteDeDados(ABC):
-    """Fonte de registros de aulas."""
+    """Fonte abstrata de registros de aulas; cada subclasse define de onde e como eles vêm."""
 
     @property
     @abstractmethod
     def nome(self) -> str:
         """Nome curto da fonte, usado para indicar a origem dos dados."""
 
+    @property
+    def descricao(self) -> str:
+        """Origem detalhada gravada no histórico de atualizações; por padrão, o nome."""
+        return self.nome
+
     @abstractmethod
     def coletar(self) -> list[RegistroDeAula]:
-        """Obtém os registros de aulas da fonte."""
+        """Obtém os registros de aulas da fonte ou lança FonteIndisponivel."""
 
 
 def andar_pelo_numero(sala: str) -> int | None:
