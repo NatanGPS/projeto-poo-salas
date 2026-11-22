@@ -2,3 +2,5 @@ __pycache__/
 *.pyc
 .env
 .venv/
+base/*.db
+*_com_salas.xlsx

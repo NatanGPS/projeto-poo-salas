@@ -1,4 +1,4 @@
-"""Cadastro em memória das disciplinas, salas e aulas consolidadas."""
+"""Catálogo em memória das disciplinas, salas e aulas carregadas da base."""
 
 from datetime import time
 
@@ -7,7 +7,9 @@ from guia_salas.dominio import (
     DiaSemana,
     Disciplina,
     IntervaloDeHorario,
+    NaoEncontrado,
     Sala,
+    Turma,
 )
 
 
@@ -43,9 +45,21 @@ class CatalogoDeAulas:
         return self._disciplinas.get("".join(codigo.split()).upper())
 
     def obter_sala(self, identificador: str, predio: str, andar: int | None) -> Sala:
-        """Devolve a sala cadastrada com essa chave, criando-a se necessário."""
-        nova = Sala(identificador, predio, andar)
+        """Devolve a sala cadastrada com essa chave, criando-a (Sala ou SalaOnline) se necessário."""
+        nova = Sala.criar(identificador, predio, andar)
         return self._salas.setdefault(nova.chave, nova)
+
+    def turma(self, codigo_disciplina: str, codigo_turma: str) -> Turma:
+        """Devolve a turma pelos códigos; lança NaoEncontrado se a disciplina ou a turma não existir."""
+        disciplina = self.disciplina_por_codigo(codigo_disciplina)
+        if disciplina is None:
+            raise NaoEncontrado(f"Disciplina {codigo_disciplina.strip().upper()} não encontrada na base.")
+        chave = "".join(codigo_turma.split()).upper()
+        for turma in disciplina.turmas:
+            if turma.codigo == chave:
+                return turma
+        existentes = ", ".join(t.codigo for t in disciplina.turmas)
+        raise NaoEncontrado(f"Turma {chave} de {disciplina.codigo} não encontrada. Turmas existentes: {existentes}.")
 
     def registrar_aula(self, codigo: str, nome: str, turma: str, dia: DiaSemana,
                        intervalo: IntervaloDeHorario, sala: Sala, origem: str) -> Aula:
@@ -72,12 +86,11 @@ class CatalogoDeAulas:
 
     def salas_livres(self, dia: DiaSemana, instante: time, andar: int | None = None,
                      predio: str | None = None) -> list[Sala]:
-        """Salas conhecidas sem aula no dia e instante, com filtro opcional de andar e prédio."""
-        aulas = self.aulas()
+        """Salas conhecidas sem aula no dia e instante; cada sala decide por esta_livre (SalaOnline nunca)."""
+        aulas = [a for a in self.aulas() if a.dia == dia]
         return [
             sala for sala in self.salas
-            if sala.presencial
-            and (andar is None or sala.andar == andar)
+            if (andar is None or sala.andar == andar)
             and (predio is None or sala.predio.lower() == predio.lower())
             and sala.esta_livre(dia, instante, aulas)
         ]

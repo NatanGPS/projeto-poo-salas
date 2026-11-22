@@ -1,0 +1,85 @@
+{
+ "records": [
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 1",
+   "codigo_materia": "TST001",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Seg",
+   "nome_sala": "1001"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 2",
+   "codigo_materia": "TST002",
+   "turma": "TA",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Seg",
+   "nome_sala": "1002"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 3",
+   "codigo_materia": "TST003",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Ter",
+   "nome_sala": "1003"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 4",
+   "codigo_materia": "TST004",
+   "turma": "TA",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Ter",
+   "nome_sala": "1004"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 5",
+   "codigo_materia": "TST005",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Qua",
+   "nome_sala": "1005"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 6",
+   "codigo_materia": "TST006",
+   "turma": "TA",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Qua",
+   "nome_sala": "1006"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 7",
+   "codigo_materia": "TST007",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Qui",
+   "nome_sala": "1007"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 8",
+   "codigo_materia": "TST008",
+   "turma": "TA",
+   "hora_inicial": "09:25",
+   "hora_final": "11:05",
+   "dia_semana": "Qui",
+   "nome_sala": "1008"
+  },
+  {
+   "nome_materia": "DISCIPLINA FICTICIA 9",
+   "codigo_materia": "TST009",
+   "turma": "TA",
+   "hora_inicial": "07:30",
+   "hora_final": "09:10",
+   "dia_semana": "Sex",
+   "nome_sala": "1009"
+  }
+ ]
+}
